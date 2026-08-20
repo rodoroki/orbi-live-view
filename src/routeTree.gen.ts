@@ -10,33 +10,115 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AtmosferaRouteImport } from './routes/atmosfera'
+import { Route as EventosRouteImport } from './routes/eventos'
+import { Route as ExplorarRouteImport } from './routes/explorar'
+import { Route as OceanoRouteImport } from './routes/oceano'
+import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as TimelineRouteImport } from './routes/timeline'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AtmosferaRoute = AtmosferaRouteImport.update({
+  id: '/atmosfera',
+  path: '/atmosfera',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventosRoute = EventosRouteImport.update({
+  id: '/eventos',
+  path: '/eventos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExplorarRoute = ExplorarRouteImport.update({
+  id: '/explorar',
+  path: '/explorar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OceanoRoute = OceanoRouteImport.update({
+  id: '/oceano',
+  path: '/oceano',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TimelineRoute = TimelineRouteImport.update({
+  id: '/timeline',
+  path: '/timeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/atmosfera': typeof AtmosferaRoute
+  '/eventos': typeof EventosRoute
+  '/explorar': typeof ExplorarRoute
+  '/oceano': typeof OceanoRoute
+  '/sobre': typeof SobreRoute
+  '/timeline': typeof TimelineRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/atmosfera': typeof AtmosferaRoute
+  '/eventos': typeof EventosRoute
+  '/explorar': typeof ExplorarRoute
+  '/oceano': typeof OceanoRoute
+  '/sobre': typeof SobreRoute
+  '/timeline': typeof TimelineRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/atmosfera': typeof AtmosferaRoute
+  '/eventos': typeof EventosRoute
+  '/explorar': typeof ExplorarRoute
+  '/oceano': typeof OceanoRoute
+  '/sobre': typeof SobreRoute
+  '/timeline': typeof TimelineRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/atmosfera'
+    | '/eventos'
+    | '/explorar'
+    | '/oceano'
+    | '/sobre'
+    | '/timeline'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/atmosfera'
+    | '/eventos'
+    | '/explorar'
+    | '/oceano'
+    | '/sobre'
+    | '/timeline'
+  id:
+    | '__root__'
+    | '/'
+    | '/atmosfera'
+    | '/eventos'
+    | '/explorar'
+    | '/oceano'
+    | '/sobre'
+    | '/timeline'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AtmosferaRoute: typeof AtmosferaRoute
+  EventosRoute: typeof EventosRoute
+  ExplorarRoute: typeof ExplorarRoute
+  OceanoRoute: typeof OceanoRoute
+  SobreRoute: typeof SobreRoute
+  TimelineRoute: typeof TimelineRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +130,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/atmosfera': {
+      id: '/atmosfera'
+      path: '/atmosfera'
+      fullPath: '/atmosfera'
+      preLoaderRoute: typeof AtmosferaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/eventos': {
+      id: '/eventos'
+      path: '/eventos'
+      fullPath: '/eventos'
+      preLoaderRoute: typeof EventosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explorar': {
+      id: '/explorar'
+      path: '/explorar'
+      fullPath: '/explorar'
+      preLoaderRoute: typeof ExplorarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oceano': {
+      id: '/oceano'
+      path: '/oceano'
+      fullPath: '/oceano'
+      preLoaderRoute: typeof OceanoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/timeline': {
+      id: '/timeline'
+      path: '/timeline'
+      fullPath: '/timeline'
+      preLoaderRoute: typeof TimelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AtmosferaRoute: AtmosferaRoute,
+  EventosRoute: EventosRoute,
+  ExplorarRoute: ExplorarRoute,
+  OceanoRoute: OceanoRoute,
+  SobreRoute: SobreRoute,
+  TimelineRoute: TimelineRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
