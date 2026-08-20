@@ -1,24 +1,53 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { PlanetStage } from "@/components/orbi/PlanetStage";
+import { ContextPanel, PanelRow } from "@/components/orbi/ContextPanel";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "ORBI LIVE — Mapa planetário" },
+      {
+        name: "description",
+        content:
+          "Observe o planeta em uma interface minimalista de inteligência planetária, com eventos, atmosfera e oceanos em um único mapa.",
+      },
+      { property: "og:title", content: "ORBI LIVE — Mapa planetário" },
+      {
+        property: "og:description",
+        content: "Uma janela sofisticada para observar a Terra.",
+      },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="flex h-[calc(100vh-4rem)]">
+      <div className="min-w-0 flex-1">
+        <PlanetStage />
+      </div>
+      <ContextPanel eyebrow="Contexto" title="Observação global">
+        <div className="flex flex-col gap-3">
+          <PanelRow label="Camada" value="Base" />
+          <PanelRow label="Eventos ativos" value="128" />
+          <PanelRow label="Fontes" value="6" />
+          <PanelRow label="Atualizado" value="00:12 UTC" />
+        </div>
+        <div className="flex flex-col gap-4">
+          <p className="label-track text-muted-foreground">Sinais recentes</p>
+          {[
+            ["Incêndio · Amazônia", "há 12 min"],
+            ["Ciclone · Pacífico Sul", "há 34 min"],
+            ["Sismo M4.8 · Chile", "há 1 h"],
+          ].map(([t, s]) => (
+            <div key={t} className="border-l border-primary/40 pl-3">
+              <p className="text-sm text-foreground">{t}</p>
+              <p className="label-track mt-1 text-[9px] text-muted-foreground">{s}</p>
+            </div>
+          ))}
+        </div>
+      </ContextPanel>
     </div>
   );
 }
