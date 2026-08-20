@@ -1,4 +1,3 @@
-<<<<<<<
 import { useState } from "react";
 import { Globe2, Activity, Clock, Info, Plus, Minus, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
@@ -123,4 +122,3 @@ export function ContextCard({
     </div>
   );
 }
->>>>>>>
