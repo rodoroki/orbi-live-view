@@ -9,7 +9,7 @@ const markers = [
 export function PlanetStage() {
   return (
     <div
-      className="relative flex h-full min-h-[560px] items-center justify-center overflow-hidden"
+      className="absolute inset-0 flex items-center justify-center overflow-hidden"
       style={{ background: "var(--gradient-void)" }}
     >
       <div
@@ -21,7 +21,7 @@ export function PlanetStage() {
         }}
       />
 
-      <div className="relative aspect-square w-[min(62vh,620px)]">
+      <div className="relative aspect-square w-[min(78vh,780px)]">
         <img
           src={globe}
           alt="Representação do planeta Terra observada do espaço"
@@ -49,12 +49,12 @@ export function PlanetStage() {
         ))}
       </div>
 
-      <div className="absolute bottom-6 left-6 flex gap-8">
+      <div className="absolute bottom-7 left-6 flex gap-8">
         <Meta label="Lat" value="-23.55" />
         <Meta label="Lon" value="-46.63" />
         <Meta label="Zoom" value="2.4×" />
       </div>
-      <p className="label-track absolute bottom-6 right-6 text-[9px] text-muted-foreground/70">
+      <p className="label-track absolute bottom-7 right-6 text-[9px] text-muted-foreground/70">
         dados simulados
       </p>
     </div>
