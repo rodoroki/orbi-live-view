@@ -10,13 +10,6 @@ const nav = [
   { label: "Explorar", to: "/explorar" },
 ] as const;
 
-const rail = [
-  { label: "Mapa", to: "/", icon: Globe2 },
-  { label: "Eventos", to: "/eventos", icon: Activity },
-  { label: "Timeline", to: "/timeline", icon: Clock },
-  { label: "Sobre o ORBI", to: "/sobre", icon: Info },
-] as const;
-
 export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-screen bg-void text-foreground">
