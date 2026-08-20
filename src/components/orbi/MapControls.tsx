@@ -30,7 +30,7 @@ export function ToolRail() {
 
 export function ZoomControls() {
   return (
-    <div className="surface-panel absolute right-6 top-1/2 z-10 flex -translate-y-1/2 flex-col rounded-full p-1.5">
+    <div className="surface-panel absolute bottom-24 right-6 z-10 flex flex-col rounded-full p-1.5">
       {[Plus, Minus].map((Icon, i) => (
         <button
           key={i}
