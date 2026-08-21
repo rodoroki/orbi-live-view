@@ -5,13 +5,18 @@ import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
 const EARTH_NIGHT = "https://unpkg.com/three-globe/example/img/earth-night.jpg";
 const EARTH_TOPO = "https://unpkg.com/three-globe/example/img/earth-topology.png";
 
+type GlobeApi = { zoom: (direction: 1 | -1) => void; reset: () => void };
+
 type Props = {
   events: OrbiEvent[];
   selected: OrbiEvent | null;
   onSelect: (event: OrbiEvent) => void;
+  onReady?: (api: GlobeApi) => void;
 };
 
-export default function GlobeView({ events, selected, onSelect }: Props) {
+const DEFAULT_VIEW = { lat: 8, lng: -40, altitude: 2.4 };
+
+export default function GlobeView({ events, selected, onSelect, onReady }: Props) {
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -38,8 +43,23 @@ export default function GlobeView({ events, selected, onSelect }: Props) {
     controls.autoRotate = true;
     controls.autoRotateSpeed = 0.25;
     controls.enableZoom = true;
-    globe.pointOfView({ lat: 8, lng: -40, altitude: 2.4 }, 0);
-  }, []);
+    globe.pointOfView(DEFAULT_VIEW, 0);
+
+    onReady?.({
+      zoom: (direction) => {
+        const pov = globe.pointOfView();
+        const altitude = Math.min(
+          4,
+          Math.max(0.35, pov.altitude * (direction === 1 ? 0.7 : 1.4)),
+        );
+        globe.pointOfView({ ...pov, altitude }, 600);
+      },
+      reset: () => {
+        (globe.controls() as unknown as { autoRotate: boolean }).autoRotate = true;
+        globe.pointOfView(DEFAULT_VIEW, 1200);
+      },
+    });
+  }, [onReady, size.width]);
 
   useEffect(() => {
     const globe = globeRef.current;
