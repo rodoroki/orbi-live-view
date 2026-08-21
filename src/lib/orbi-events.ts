@@ -22,12 +22,12 @@ export const CATEGORY_META: Record<
   EventCategory,
   { label: string; glyph: string; color: string }
 > = {
-  fire: { label: "Incêndios", glyph: "🔥", color: "oklch(0.72 0.13 55)" },
-  storm: { label: "Tempestades", glyph: "🌪", color: "oklch(0.74 0.08 250)" },
-  volcano: { label: "Vulcões", glyph: "🌋", color: "oklch(0.66 0.14 30)" },
-  quake: { label: "Terremotos", glyph: "🌎", color: "oklch(0.78 0.10 95)" },
-  ocean: { label: "Oceanos", glyph: "🌊", color: "oklch(0.74 0.10 205)" },
-  atmosphere: { label: "Atmosféricos", glyph: "☁", color: "oklch(0.80 0.03 220)" },
+  fire: { label: "Incêndios", glyph: "🔥", color: "#e08a4a" },
+  storm: { label: "Tempestades", glyph: "🌪", color: "#7fa8dd" },
+  volcano: { label: "Vulcões", glyph: "🌋", color: "#d1653f" },
+  quake: { label: "Terremotos", glyph: "🌎", color: "#d8c168" },
+  ocean: { label: "Oceanos", glyph: "🌊", color: "#5fb6c9" },
+  atmosphere: { label: "Atmosféricos", glyph: "☁", color: "#b9c6cc" },
 };
 
 /** Dados fictícios — substituídos por NASA EONET / NOAA / USGS no futuro. */
