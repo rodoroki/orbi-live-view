@@ -27,7 +27,7 @@ export const ptBR = {
     fire: "Incêndios",
     storm: "Tempestades",
     volcano: "Vulcões",
-    earthquake: "Terremotos",
+    quake: "Terremotos",
     ocean: "Oceanos",
     atmosphere: "Atmosféricos",
   },

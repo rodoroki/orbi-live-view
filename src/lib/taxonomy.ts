@@ -34,16 +34,17 @@ export type GeoEntity = z.infer<typeof GeoEntitySchema>;
 
 export const CATEGORIES: Category[] = [
   {
-    id: 'natural-events',
-    slug: 'natural-events',
+    id: 'quake',
+    slug: 'earthquakes',
     priority: 1,
     icon: 'activity',
     name: {
-      en: 'Natural Events',
-      'pt-BR': 'Eventos Naturais',
-      es: 'Eventos Naturales',
+      en: 'Earthquakes',
+      'pt-BR': 'Terremotos',
+      es: 'Terremotos',
     },
   },
+
   {
     id: 'weather',
     slug: 'weather',

@@ -27,7 +27,7 @@ export const en = {
     fire: "Fire",
     storm: "Storms",
     volcano: "Volcanoes",
-    earthquake: "Earthquakes",
+    quake: "Earthquakes",
     ocean: "Oceans",
     atmosphere: "Atmospheric",
   },
