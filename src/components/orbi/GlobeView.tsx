@@ -87,7 +87,7 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
           pointsData={events}
           pointLat="lat"
           pointLng="lng"
-          pointColor={(d) => CATEGORY_META[(d as OrbiEvent).category].color}
+          pointColor={(d: object) => CATEGORY_META[(d as OrbiEvent).category].color}
           pointAltitude={(d) =>
             (d as OrbiEvent).id === selected?.id ? 0.12 : 0.045
           }
