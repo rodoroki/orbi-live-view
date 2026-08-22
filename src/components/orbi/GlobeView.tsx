@@ -88,15 +88,15 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
           pointLat="lat"
           pointLng="lng"
           pointColor={(d: object) => CATEGORY_META[(d as OrbiEvent).category].color}
-          pointAltitude={(d) =>
+          pointAltitude={(d: object) =>
             (d as OrbiEvent).id === selected?.id ? 0.12 : 0.045
           }
-          pointRadius={(d) => ((d as OrbiEvent).id === selected?.id ? 0.42 : 0.28)}
+          pointRadius={(d: object) => ((d as OrbiEvent).id === selected?.id ? 0.42 : 0.28)}
           pointsMerge={false}
-          pointLabel={(d) =>
+          pointLabel={(d: object) =>
             `${CATEGORY_META[(d as OrbiEvent).category].glyph} ${(d as OrbiEvent).place}`
           }
-          onPointClick={(d) => onSelect(d as OrbiEvent)}
+          onPointClick={(d: object) => onSelect(d as OrbiEvent)}
           ringsData={events.filter((e) => e.priority === 1)}
           ringLat="lat"
           ringLng="lng"
