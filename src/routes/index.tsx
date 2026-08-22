@@ -23,21 +23,26 @@ const GlobeView = lazy(() => import("@/components/orbi/GlobeView"));
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ORBI LIVE — Mapa planetário" },
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "ORBI LIVE — Earth Intelligence" },
       {
         name: "description",
         content:
-          "Observe o planeta em uma interface minimalista de inteligência planetária: globo 3D, eventos, atmosfera e oceanos em um único mapa.",
+          "ORBI LIVE is a planetary intelligence platform for real-time observation of Earth events, atmosphere, and oceans.",
       },
-      { property: "og:title", content: "ORBI LIVE — Mapa planetário" },
+      { property: "og:title", content: "ORBI LIVE — Earth Intelligence" },
       {
         property: "og:description",
-        content: "Uma janela sofisticada para observar a Terra.",
+        content: "A sophisticated window for observing the planet.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
 });
+
 
 const ALL_CATEGORIES = Object.keys(CATEGORY_META) as EventCategory[];
 
