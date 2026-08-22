@@ -100,7 +100,7 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
           ringsData={events.filter((e) => e.priority === 1)}
           ringLat="lat"
           ringLng="lng"
-          ringColor={(d) => () => CATEGORY_META[(d as OrbiEvent).category].color}
+          ringColor={(d: object) => () => CATEGORY_META[(d as OrbiEvent).category].color}
           ringMaxRadius={4}
           ringPropagationSpeed={1.4}
           ringRepeatPeriod={1400}
