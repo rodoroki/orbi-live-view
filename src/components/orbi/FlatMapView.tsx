@@ -1,4 +1,6 @@
 import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
+import { useTranslation } from "@/lib/i18n";
+
 
 const EARTH_NIGHT = "https://unpkg.com/three-globe/example/img/earth-night.jpg";
 
@@ -14,6 +16,8 @@ function project(lat: number, lng: number) {
 }
 
 export default function FlatMapView({ events, selected, onSelect }: Props) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex h-full w-full items-center justify-center overflow-hidden">
       <div
@@ -41,7 +45,7 @@ export default function FlatMapView({ events, selected, onSelect }: Props) {
               key={event.id}
               type="button"
               onClick={() => onSelect(event)}
-              aria-label={`${meta.label} · ${event.place}`}
+              aria-label={`${t.categories[event.category as keyof typeof t.categories] || meta.label} · ${event.place}`}
               className="absolute -translate-x-1/2 -translate-y-1/2"
               style={{ left: `${pos.left}%`, top: `${pos.top}%` }}
             >

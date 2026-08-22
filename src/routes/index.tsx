@@ -15,31 +15,39 @@ import {
   type EventCategory,
   type OrbiEvent,
 } from "@/lib/orbi-events";
+import { useTranslation } from "@/lib/i18n";
+
 
 const GlobeView = lazy(() => import("@/components/orbi/GlobeView"));
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ORBI LIVE — Mapa planetário" },
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "ORBI LIVE — Earth Intelligence" },
       {
         name: "description",
         content:
-          "Observe o planeta em uma interface minimalista de inteligência planetária: globo 3D, eventos, atmosfera e oceanos em um único mapa.",
+          "ORBI LIVE is a planetary intelligence platform for real-time observation of Earth events, atmosphere, and oceans.",
       },
-      { property: "og:title", content: "ORBI LIVE — Mapa planetário" },
+      { property: "og:title", content: "ORBI LIVE — Earth Intelligence" },
       {
         property: "og:description",
-        content: "Uma janela sofisticada para observar a Terra.",
+        content: "A sophisticated window for observing the planet.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
 });
 
+
 const ALL_CATEGORIES = Object.keys(CATEGORY_META) as EventCategory[];
 
 function Index() {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<"flat" | "globe">("globe");
   const [selected, setSelected] = useState<OrbiEvent | null>(null);
   const [panelOpen, setPanelOpen] = useState(true);
@@ -49,6 +57,7 @@ function Index() {
   const globeApi = useRef<{ zoom: (d: 1 | -1) => void; reset: () => void } | null>(
     null,
   );
+
 
   const events = useMemo(
     () => ORBI_EVENTS.filter((e) => active.includes(e.category)),
@@ -133,8 +142,9 @@ function Index() {
       )}
 
       <p className="label-track pointer-events-none absolute bottom-7 left-1/2 hidden -translate-x-1/2 translate-y-10 text-[9px] text-muted-foreground/60 xl:block">
-        dados simulados
+        {t.common.simulatedData}
       </p>
+
     </div>
   );
 }
