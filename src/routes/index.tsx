@@ -15,6 +15,8 @@ import {
   type EventCategory,
   type OrbiEvent,
 } from "@/lib/orbi-events";
+import { useTranslation } from "@/lib/i18n";
+
 
 const GlobeView = lazy(() => import("@/components/orbi/GlobeView"));
 
@@ -40,6 +42,7 @@ export const Route = createFileRoute("/")({
 const ALL_CATEGORIES = Object.keys(CATEGORY_META) as EventCategory[];
 
 function Index() {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<"flat" | "globe">("globe");
   const [selected, setSelected] = useState<OrbiEvent | null>(null);
   const [panelOpen, setPanelOpen] = useState(true);
@@ -49,6 +52,7 @@ function Index() {
   const globeApi = useRef<{ zoom: (d: 1 | -1) => void; reset: () => void } | null>(
     null,
   );
+
 
   const events = useMemo(
     () => ORBI_EVENTS.filter((e) => active.includes(e.category)),
@@ -133,8 +137,9 @@ function Index() {
       )}
 
       <p className="label-track pointer-events-none absolute bottom-7 left-1/2 hidden -translate-x-1/2 translate-y-10 text-[9px] text-muted-foreground/60 xl:block">
-        dados simulados
+        {t.common.simulatedData}
       </p>
+
     </div>
   );
 }
