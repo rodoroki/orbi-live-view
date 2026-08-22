@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "../components/orbi/AppShell";
+import { I18nProvider } from "../lib/i18n";
 
 function NotFoundComponent() {
   return (
@@ -109,7 +110,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
   }),
   shellComponent: RootShell,
-  component: RootComponent,
+  component: RootComponentWrapper,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
@@ -125,6 +126,14 @@ function RootShell({ children }: { children: ReactNode }) {
         <Scripts />
       </body>
     </html>
+  );
+}
+
+function RootComponentWrapper() {
+  return (
+    <I18nProvider>
+      <RootComponent />
+    </I18nProvider>
   );
 }
 
