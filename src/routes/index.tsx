@@ -9,6 +9,7 @@ import {
   ViewToggle,
 } from "@/components/orbi/MapControls";
 import FlatMapView from "@/components/orbi/FlatMapView";
+import EventsPanel from "@/components/orbi/EventsPanel";
 import {
   CATEGORY_META,
   ORBI_EVENTS,
@@ -52,6 +53,7 @@ function Index() {
   const [selected, setSelected] = useState<OrbiEvent | null>(null);
   const [panelOpen, setPanelOpen] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [eventsOpen, setEventsOpen] = useState(true);
   const [active, setActive] = useState<EventCategory[]>(ALL_CATEGORIES);
   const [flatScale, setFlatScale] = useState(1);
   const globeApi = useRef<{ zoom: (d: 1 | -1) => void; reset: () => void } | null>(
@@ -121,8 +123,18 @@ function Index() {
         onReset={handleReset}
         onToggleFilters={() => setFiltersOpen((v) => !v)}
         filtersOpen={filtersOpen}
+        onToggleEvents={() => setEventsOpen((v) => !v)}
+        eventsOpen={eventsOpen}
       />
       <ViewToggle mode={mode} onChange={setMode} />
+      {eventsOpen && (
+        <EventsPanel
+          events={events}
+          selected={selected}
+          onSelect={handleSelect}
+          onClose={() => setEventsOpen(false)}
+        />
+      )}
       {filtersOpen && (
         <CategoryFilters
           active={active}

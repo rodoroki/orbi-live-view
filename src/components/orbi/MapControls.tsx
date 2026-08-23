@@ -9,6 +9,7 @@ import {
   Crosshair,
   Layers,
   SlidersHorizontal,
+  List,
   X,
 } from "lucide-react";
 import { CATEGORY_META, type EventCategory, type OrbiEvent } from "@/lib/orbi-events";
