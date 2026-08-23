@@ -7,6 +7,8 @@ export const es = {
     search: "Buscar",
     explore: "Explorar",
     about: "Sobre",
+    all: "Todos",
+    close: "Cerrar",
   },
   nav: {
     planet: "Planeta",
@@ -31,6 +33,38 @@ export const es = {
     ocean: "Océanos",
     atmosphere: "Atmosféricos",
   },
+  events: {
+    panelTitle: "Eventos ahora",
+    recent: "Eventos recientes",
+    searchPlaceholder: "Buscar evento o fenómeno",
+    region: "Región",
+    severity: "Severidad",
+    period: "Período",
+    noResults: "Ningún evento coincide con estos filtros.",
+    openPanel: "Abrir panel de eventos",
+    closePanel: "Cerrar panel de eventos",
+    resultCount: "resultados",
+  },
+  severity: {
+    critical: "Crítico",
+    high: "Alto",
+    moderate: "Moderado",
+    low: "Bajo",
+  },
+  regions: {
+    americas: "Américas",
+    europe: "Europa",
+    africa: "África",
+    asia: "Asia",
+    oceania: "Oceanía",
+    oceans: "Océanos",
+  },
+  periods: {
+    "24h": "24h",
+    "7d": "7d",
+    "30d": "30d",
+    all: "Todos",
+  },
   eventDetails: {
     details: "Detalles",
     sources: "Fuentes",
@@ -39,5 +73,5 @@ export const es = {
     location: "Ubicación",
     time: "Hora",
     magnitude: "Magnitud",
-  }
+  },
 };

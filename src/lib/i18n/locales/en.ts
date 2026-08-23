@@ -7,6 +7,8 @@ export const en = {
     search: "Search",
     explore: "Explore",
     about: "About",
+    all: "All",
+    close: "Close",
   },
   nav: {
     planet: "Planet",
@@ -24,12 +26,44 @@ export const en = {
     reset: "Reset View",
   },
   categories: {
-    fire: "Fire",
+    fire: "Fires",
     storm: "Storms",
     volcano: "Volcanoes",
     quake: "Earthquakes",
     ocean: "Oceans",
     atmosphere: "Atmospheric",
+  },
+  events: {
+    panelTitle: "Events now",
+    recent: "Recent events",
+    searchPlaceholder: "Search event or phenomenon",
+    region: "Region",
+    severity: "Severity",
+    period: "Period",
+    noResults: "No events match these filters.",
+    openPanel: "Open events panel",
+    closePanel: "Close events panel",
+    resultCount: "results",
+  },
+  severity: {
+    critical: "Critical",
+    high: "High",
+    moderate: "Moderate",
+    low: "Low",
+  },
+  regions: {
+    americas: "Americas",
+    europe: "Europe",
+    africa: "Africa",
+    asia: "Asia",
+    oceania: "Oceania",
+    oceans: "Oceans",
+  },
+  periods: {
+    "24h": "24h",
+    "7d": "7d",
+    "30d": "30d",
+    all: "All",
   },
   eventDetails: {
     details: "Details",
@@ -39,5 +73,5 @@ export const en = {
     location: "Location",
     time: "Time",
     magnitude: "Magnitude",
-  }
+  },
 };
