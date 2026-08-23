@@ -50,16 +50,31 @@ export function MapTools({
   onReset,
   onToggleFilters,
   filtersOpen,
+  onToggleEvents,
+  eventsOpen,
 }: {
   onZoom: (direction: 1 | -1) => void;
   onReset: () => void;
   onToggleFilters: () => void;
   filtersOpen: boolean;
+  onToggleEvents?: () => void;
+  eventsOpen?: boolean;
 }) {
   const { t } = useTranslation();
 
   return (
     <div className="surface-panel absolute bottom-24 right-6 z-10 flex flex-col rounded-full p-1.5">
+      {onToggleEvents && (
+        <button
+          type="button"
+          aria-label={eventsOpen ? t.events.closePanel : t.events.openPanel}
+          aria-pressed={eventsOpen}
+          className={`${iconBtn} ${eventsOpen ? "text-primary" : ""}`}
+          onClick={onToggleEvents}
+        >
+          <List className="h-4 w-4" strokeWidth={1.4} />
+        </button>
+      )}
       <button type="button" aria-label={t.map.zoomIn} className={iconBtn} onClick={() => onZoom(1)}>
         <Plus className="h-4 w-4" strokeWidth={1.4} />
       </button>
@@ -69,6 +84,7 @@ export function MapTools({
       <button type="button" aria-label={t.map.reset} className={iconBtn} onClick={onReset}>
         <Crosshair className="h-4 w-4" strokeWidth={1.4} />
       </button>
+
       <button type="button" aria-label={t.map.layers} className={iconBtn} onClick={onToggleFilters}>
         <Layers className="h-4 w-4" strokeWidth={1.4} />
       </button>
