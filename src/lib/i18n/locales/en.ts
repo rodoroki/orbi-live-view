@@ -43,7 +43,7 @@ export const en = {
     noResults: "No events match these filters.",
     openPanel: "Open events panel",
     closePanel: "Close events panel",
-    resultCount: "results",
+    resultCount: "{{count}} results",
   },
   severity: {
     critical: "Critical",
@@ -73,5 +73,20 @@ export const en = {
     location: "Location",
     time: "Time",
     magnitude: "Magnitude",
+  },
+  layers: {
+    title: "Layers",
+    base: "Base",
+    events: "Events",
+    atmosphere: "Atmosphere",
+    ocean: "Ocean",
+  },
+  errors: {
+    notFoundTitle: "Page not found",
+    notFoundBody: "The page you're looking for doesn't exist or has been moved.",
+    goHome: "Go home",
+    errorTitle: "This page didn't load",
+    errorBody: "Something went wrong on our end. You can try refreshing or head back home.",
+    tryAgain: "Try again",
   },
 };

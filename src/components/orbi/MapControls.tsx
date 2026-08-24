@@ -51,6 +51,8 @@ export function MapTools({
   onReset,
   onToggleFilters,
   filtersOpen,
+  onToggleLayers,
+  layersOpen,
   onToggleEvents,
   eventsOpen,
 }: {
@@ -58,6 +60,8 @@ export function MapTools({
   onReset: () => void;
   onToggleFilters: () => void;
   filtersOpen: boolean;
+  onToggleLayers: () => void;
+  layersOpen: boolean;
   onToggleEvents?: () => void;
   eventsOpen?: boolean;
 }) {
@@ -86,12 +90,20 @@ export function MapTools({
         <Crosshair className="h-4 w-4" strokeWidth={1.4} />
       </button>
 
-      <button type="button" aria-label={t.map.layers} className={iconBtn} onClick={onToggleFilters}>
+      <button
+        type="button"
+        aria-label={t.map.layers}
+        title={t.map.layers}
+        aria-pressed={layersOpen}
+        className={`${iconBtn} ${layersOpen ? "text-primary" : ""}`}
+        onClick={onToggleLayers}
+      >
         <Layers className="h-4 w-4" strokeWidth={1.4} />
       </button>
       <button
         type="button"
         aria-label={t.map.filters}
+        title={t.map.filters}
         aria-pressed={filtersOpen}
         className={`${iconBtn} ${filtersOpen ? "text-primary" : ""}`}
         onClick={onToggleFilters}
@@ -239,6 +251,56 @@ function Row({ label, value }: { label: string; value: string }) {
     <div className="flex items-baseline justify-between gap-4">
       <span className="label-track text-muted-foreground">{label}</span>
       <span className="text-right font-mono text-xs text-foreground">{value}</span>
+    </div>
+  );
+}
+
+export type MapLayer = "base" | "events" | "atmosphere" | "ocean";
+
+export const MAP_LAYERS: MapLayer[] = ["base", "events", "atmosphere", "ocean"];
+
+export function LayersPanel({
+  active,
+  onToggle,
+}: {
+  active: MapLayer[];
+  onToggle: (layer: MapLayer) => void;
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="surface-panel absolute bottom-24 right-24 z-10 w-48 rounded-md p-3 animate-fade-in">
+      <p className="label-track px-1 pb-2 text-muted-foreground">{t.layers.title}</p>
+      <div className="flex flex-col">
+        {MAP_LAYERS.map((layer) => {
+          const on = active.includes(layer);
+          return (
+            <button
+              key={layer}
+              type="button"
+              role="switch"
+              aria-checked={on}
+              onClick={() => onToggle(layer)}
+              className={`flex items-center justify-between gap-3 rounded-sm px-1.5 py-1.5 transition-colors hover:bg-accent ${
+                on ? "text-foreground" : "text-muted-foreground/50"
+              }`}
+            >
+              <span className="label-track">{t.layers[layer]}</span>
+              <span
+                className={`relative h-3.5 w-6 rounded-full border transition-colors ${
+                  on ? "border-primary/60 bg-primary/25" : "border-border bg-transparent"
+                }`}
+              >
+                <span
+                  className={`absolute top-1/2 h-2 w-2 -translate-y-1/2 rounded-full transition-all ${
+                    on ? "left-3 bg-primary" : "left-0.5 bg-muted-foreground/60"
+                  }`}
+                />
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

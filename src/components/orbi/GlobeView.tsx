@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import Globe, { type GlobeMethods } from "react-globe.gl";
 import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
 
-const EARTH_NIGHT = "https://unpkg.com/three-globe/example/img/earth-night.jpg";
-const EARTH_TOPO = "https://unpkg.com/three-globe/example/img/earth-topology.png";
+const EARTH_NIGHT = "/textures/earth-night.jpg";
+const EARTH_TOPO = "/textures/earth-topology.png";
 
 type GlobeApi = { zoom: (direction: 1 | -1) => void; reset: () => void };
 
@@ -20,6 +20,9 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
+  const initialized = useRef(false);
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -34,7 +37,8 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
 
   useEffect(() => {
     const globe = globeRef.current;
-    if (!globe) return;
+    if (!globe || initialized.current) return;
+    initialized.current = true;
     const controls = globe.controls() as unknown as {
       autoRotate: boolean;
       autoRotateSpeed: number;
@@ -45,7 +49,7 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
     controls.enableZoom = true;
     globe.pointOfView(DEFAULT_VIEW, 0);
 
-    onReady?.({
+    onReadyRef.current?.({
       zoom: (direction) => {
         const pov = globe.pointOfView();
         const altitude = Math.min(
@@ -59,7 +63,8 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
         globe.pointOfView(DEFAULT_VIEW, 1200);
       },
     });
-  }, [onReady, size.width]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [size.width > 0]);
 
   useEffect(() => {
     const globe = globeRef.current;
@@ -100,7 +105,7 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
           ringsData={events.filter((e) => e.priority === 1)}
           ringLat="lat"
           ringLng="lng"
-          ringColor={(d: object) => () => CATEGORY_META[(d as OrbiEvent).category].color}
+          ringColor={(d: object) => CATEGORY_META[(d as OrbiEvent).category].color}
           ringMaxRadius={4}
           ringPropagationSpeed={1.4}
           ringRepeatPeriod={1400}

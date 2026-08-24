@@ -4,6 +4,9 @@ import { ClientOnly } from "@tanstack/react-router";
 import {
   CategoryFilters,
   ContextCard,
+  LayersPanel,
+  MAP_LAYERS,
+  type MapLayer,
   MapTools,
   ToolRail,
   ViewToggle,
@@ -53,6 +56,8 @@ function Index() {
   const [selected, setSelected] = useState<OrbiEvent | null>(null);
   const [panelOpen, setPanelOpen] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [layersOpen, setLayersOpen] = useState(false);
+  const [layers, setLayers] = useState<MapLayer[]>(MAP_LAYERS);
   const [eventsOpen, setEventsOpen] = useState(true);
   const [active, setActive] = useState<EventCategory[]>(ALL_CATEGORIES);
   const [flatScale, setFlatScale] = useState(1);
@@ -62,8 +67,18 @@ function Index() {
 
 
   const events = useMemo(
-    () => ORBI_EVENTS.filter((e) => active.includes(e.category)),
-    [active],
+    () =>
+      layers.includes("events")
+        ? ORBI_EVENTS.filter((e) => active.includes(e.category))
+        : [],
+    [active, layers],
+  );
+
+  const handleGlobeReady = useCallback(
+    (api: { zoom: (d: 1 | -1) => void; reset: () => void }) => {
+      globeApi.current = api;
+    },
+    [],
   );
 
   const handleSelect = useCallback((event: OrbiEvent) => {
@@ -101,9 +116,7 @@ function Index() {
                 events={events}
                 selected={selected}
                 onSelect={handleSelect}
-                onReady={(api) => {
-                  globeApi.current = api;
-                }}
+                onReady={handleGlobeReady}
               />
             </Suspense>
           </ClientOnly>
@@ -123,6 +136,8 @@ function Index() {
         onReset={handleReset}
         onToggleFilters={() => setFiltersOpen((v) => !v)}
         filtersOpen={filtersOpen}
+        onToggleLayers={() => setLayersOpen((v) => !v)}
+        layersOpen={layersOpen}
         onToggleEvents={() => setEventsOpen((v) => !v)}
         eventsOpen={eventsOpen}
       />
@@ -133,6 +148,16 @@ function Index() {
           selected={selected}
           onSelect={handleSelect}
           onClose={() => setEventsOpen(false)}
+        />
+      )}
+      {layersOpen && (
+        <LayersPanel
+          active={layers}
+          onToggle={(l) =>
+            setLayers((prev) =>
+              prev.includes(l) ? prev.filter((x) => x !== l) : [...prev, l],
+            )
+          }
         />
       )}
       {filtersOpen && (

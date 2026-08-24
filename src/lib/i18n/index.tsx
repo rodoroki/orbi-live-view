@@ -20,9 +20,25 @@ const translations: Record<Locale, Translations> = {
   es,
 };
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
+export type { Locale };
+
+/** Resolve locale: usuário (localStorage) > navegador/Accept-Language > en */
+export function resolveLocale(candidate?: string | null): Locale {
+  if (!candidate) return 'en';
+  if (candidate.startsWith('pt')) return 'pt-BR';
+  if (candidate.startsWith('es')) return 'es';
+  return 'en';
+}
+
+export function I18nProvider({
+  children,
+  initialLocale = 'en',
+}: {
+  children: React.ReactNode;
+  initialLocale?: Locale;
+}) {
   const [locale, setLocale] = useState<Locale>(() => {
-    if (typeof window === 'undefined') return 'en';
+    if (typeof window === 'undefined') return initialLocale;
     const saved = localStorage.getItem('orbi-locale') as Locale;
     if (saved && translations[saved]) return saved;
     
@@ -47,6 +63,13 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     <I18nContext.Provider value={value}>
       {children}
     </I18nContext.Provider>
+  );
+}
+
+/** Interpolação simples: format("{{count}} results", { count: 3 }) */
+export function format(template: string, vars: Record<string, string | number>) {
+  return template.replace(/\{\{(\w+)\}\}/g, (_, k) =>
+    vars[k] !== undefined ? String(vars[k]) : `{{${k}}}`,
   );
 }
 
