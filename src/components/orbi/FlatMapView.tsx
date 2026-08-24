@@ -2,7 +2,7 @@ import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
 import { useTranslation } from "@/lib/i18n";
 
 
-const EARTH_NIGHT = "https://unpkg.com/three-globe/example/img/earth-night.jpg";
+const EARTH_NIGHT = "/textures/earth-night.jpg";
 
 type Props = {
   events: OrbiEvent[];

@@ -13,7 +13,7 @@ import {
   type OrbiPeriod,
   type OrbiRegion,
 } from "@/lib/orbi-events";
-import { useTranslation } from "@/lib/i18n";
+import { format, useTranslation } from "@/lib/i18n";
 
 const SEVERITIES: EventSeverity[] = ["critical", "high", "moderate", "low"];
 
@@ -138,7 +138,7 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
       <div className="mt-5 flex items-baseline justify-between border-t border-border/60 px-5 pt-4">
         <p className="label-track text-muted-foreground">{t.events.recent}</p>
         <span className="font-mono text-[10px] text-muted-foreground/70">
-          {filtered.length}
+          {format(t.events.resultCount, { count: filtered.length })}
         </span>
       </div>
 

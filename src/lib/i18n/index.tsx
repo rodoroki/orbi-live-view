@@ -50,6 +50,13 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** Interpolação simples: format("{{count}} results", { count: 3 }) */
+export function format(template: string, vars: Record<string, string | number>) {
+  return template.replace(/\{\{(\w+)\}\}/g, (_, k) =>
+    vars[k] !== undefined ? String(vars[k]) : `{{${k}}}`,
+  );
+}
+
 export function useTranslation() {
   const context = useContext(I18nContext);
   if (!context) {
