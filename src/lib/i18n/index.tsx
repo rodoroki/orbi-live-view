@@ -20,9 +20,25 @@ const translations: Record<Locale, Translations> = {
   es,
 };
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
+export type { Locale };
+
+/** Resolve locale: usuário (localStorage) > navegador/Accept-Language > en */
+export function resolveLocale(candidate?: string | null): Locale {
+  if (!candidate) return 'en';
+  if (candidate.startsWith('pt')) return 'pt-BR';
+  if (candidate.startsWith('es')) return 'es';
+  return 'en';
+}
+
+export function I18nProvider({
+  children,
+  initialLocale = 'en',
+}: {
+  children: React.ReactNode;
+  initialLocale?: Locale;
+}) {
   const [locale, setLocale] = useState<Locale>(() => {
-    if (typeof window === 'undefined') return 'en';
+    if (typeof window === 'undefined') return initialLocale;
     const saved = localStorage.getItem('orbi-locale') as Locale;
     if (saved && translations[saved]) return saved;
     
