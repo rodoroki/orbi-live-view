@@ -43,7 +43,7 @@ export const es = {
     noResults: "Ningún evento coincide con estos filtros.",
     openPanel: "Abrir panel de eventos",
     closePanel: "Cerrar panel de eventos",
-    resultCount: "resultados",
+    resultCount: "{{count}} resultados",
   },
   severity: {
     critical: "Crítico",
@@ -73,5 +73,20 @@ export const es = {
     location: "Ubicación",
     time: "Hora",
     magnitude: "Magnitud",
+  },
+  layers: {
+    title: "Capas",
+    base: "Base",
+    events: "Eventos",
+    atmosphere: "Atmósfera",
+    ocean: "Océano",
+  },
+  errors: {
+    notFoundTitle: "Página no encontrada",
+    notFoundBody: "La página que buscas no existe o fue movida.",
+    goHome: "Ir al inicio",
+    errorTitle: "Esta página no cargó",
+    errorBody: "Algo salió mal de nuestro lado. Prueba a actualizar o volver al inicio.",
+    tryAgain: "Intentar de nuevo",
   },
 };
