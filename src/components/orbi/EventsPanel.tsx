@@ -54,7 +54,7 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
   }, [events, query, category, region, severity, period, t]);
 
   return (
-    <aside className="surface-panel absolute inset-x-3 bottom-20 top-16 z-20 flex flex-col overflow-hidden rounded-md animate-sheet-up md:inset-x-auto md:bottom-24 md:left-20 md:top-20 md:z-10 md:w-[300px] md:animate-rise">
+    <aside className="surface-panel absolute inset-x-3 bottom-20 z-20 flex max-h-[58vh] flex-col overflow-hidden rounded-md animate-sheet-up md:inset-x-auto md:bottom-24 md:left-20 md:top-20 md:z-10 md:max-h-none md:w-[300px] md:animate-rise">
       <div className="flex items-start justify-between px-5 pt-5">
         <p className="label-track text-primary">{t.events.panelTitle}</p>
         <button

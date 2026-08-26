@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { ClientOnly } from "@tanstack/react-router";
 import {
@@ -75,6 +75,14 @@ function Index() {
         : [],
     [active, layers],
   );
+
+  // no mobile o mapa abre limpo; os painéis são acionados sob demanda
+  useEffect(() => {
+    if (isMobile) {
+      setEventsOpen(false);
+      setPanelOpen(false);
+    }
+  }, [isMobile]);
 
   const handleGlobeReady = useCallback(
     (api: { zoom: (d: 1 | -1) => void; reset: () => void }) => {
