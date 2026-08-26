@@ -177,7 +177,7 @@ function Index() {
           }
         />
       )}
-      {panelOpen && (
+      {panelOpen && !(isMobile && eventsOpen) && (
         <ContextCard
           event={selected}
           total={events.length}
