@@ -20,6 +20,7 @@ import {
   type OrbiEvent,
 } from "@/lib/orbi-events";
 import { useTranslation } from "@/lib/i18n";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 
 const GlobeView = lazy(() => import("@/components/orbi/GlobeView"));
@@ -52,6 +53,7 @@ const ALL_CATEGORIES = Object.keys(CATEGORY_META) as EventCategory[];
 
 function Index() {
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
   const [mode, setMode] = useState<"flat" | "globe">("globe");
   const [selected, setSelected] = useState<OrbiEvent | null>(null);
   const [panelOpen, setPanelOpen] = useState(true);
@@ -81,10 +83,15 @@ function Index() {
     [],
   );
 
-  const handleSelect = useCallback((event: OrbiEvent) => {
-    setSelected(event);
-    setPanelOpen(true);
-  }, []);
+  const handleSelect = useCallback(
+    (event: OrbiEvent) => {
+      setSelected(event);
+      setPanelOpen(true);
+      // no mobile o painel de eventos vira card deslizante: fecha ao selecionar
+      if (isMobile) setEventsOpen(false);
+    },
+    [isMobile],
+  );
 
   const handleZoom = (direction: 1 | -1) => {
     if (mode === "globe") globeApi.current?.zoom(direction);

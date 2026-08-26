@@ -54,14 +54,14 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
   }, [events, query, category, region, severity, period, t]);
 
   return (
-    <aside className="surface-panel absolute bottom-24 left-20 top-20 z-10 hidden w-[300px] flex-col overflow-hidden rounded-md animate-fade-in md:flex">
+    <aside className="surface-panel absolute inset-x-3 bottom-20 top-16 z-20 flex flex-col overflow-hidden rounded-md animate-sheet-up md:inset-x-auto md:bottom-24 md:left-20 md:top-20 md:z-10 md:w-[300px] md:animate-rise">
       <div className="flex items-start justify-between px-5 pt-5">
         <p className="label-track text-primary">{t.events.panelTitle}</p>
         <button
           type="button"
           onClick={onClose}
           aria-label={t.events.closePanel}
-          className="text-muted-foreground transition-colors hover:text-foreground"
+          className="focus-ring -m-2 rounded-sm p-2 text-muted-foreground transition-colors duration-200 hover:text-foreground"
         >
           <X className="h-3.5 w-3.5" strokeWidth={1.4} />
         </button>
@@ -74,7 +74,7 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
             key={key}
             type="button"
             onClick={() => setCategory((c) => (c === key ? "all" : key))}
-            className={`flex items-baseline justify-between gap-2 border-b border-border/40 py-1 text-left transition-colors ${
+            className={`focus-ring flex items-baseline justify-between gap-2 border-b border-border/40 py-1 text-left transition-colors duration-200 ${
               category === key ? "text-foreground" : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -146,7 +146,7 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
         {filtered.length === 0 ? (
           <p className="py-6 text-xs text-muted-foreground/70">{t.events.noResults}</p>
         ) : (
-          <ul className="flex flex-col">
+          <ul className="-mx-2 flex flex-col">
             {filtered.map((event) => {
               const sev = SEVERITY_META[event.severity];
               const active = selected?.id === event.id;
@@ -155,8 +155,10 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
                   <button
                     type="button"
                     onClick={() => onSelect(event)}
-                    className={`w-full border-b border-border/40 py-3 text-left transition-colors ${
-                      active ? "text-foreground" : "hover:bg-accent/40"
+                    className={`focus-ring w-full border-b border-border/40 px-2 py-3 text-left transition-colors duration-200 ${
+                      active
+                        ? "bg-accent/50 text-foreground"
+                        : "text-foreground/90 hover:bg-accent/30"
                     }`}
                   >
                     <div className="flex items-start gap-2.5">
@@ -219,7 +221,7 @@ function FilterRow({
             key={option.key}
             type="button"
             onClick={() => onChange(option.key)}
-            className={`label-track rounded-full px-2 py-[3px] text-[8px] transition-colors ${
+            className={`label-track focus-ring rounded-full px-2 py-[3px] text-[8px] transition-colors duration-200 ${
               value === option.key
                 ? "bg-accent text-primary"
                 : "text-muted-foreground hover:text-foreground"
