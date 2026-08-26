@@ -26,7 +26,7 @@ export function ToolRail() {
   ] as const;
 
   return (
-    <div className="surface-panel absolute left-6 top-1/2 z-10 flex -translate-y-1/2 flex-col rounded-full p-1.5">
+    <div className="surface-panel absolute left-6 top-1/2 z-10 hidden -translate-y-1/2 flex-col rounded-full p-1.5 md:flex">
       {tools.map((t) => (
         <Link
           key={t.to}
@@ -34,7 +34,7 @@ export function ToolRail() {
           title={t.label}
           aria-label={t.label}
           activeOptions={{ exact: t.to === "/" }}
-          className="flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground data-[status=active]:text-primary"
+          className="focus-ring flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground active:scale-95 data-[status=active]:text-primary"
         >
           <t.icon className="h-4 w-4" strokeWidth={1.4} />
         </Link>
@@ -44,7 +44,7 @@ export function ToolRail() {
 }
 
 const iconBtn =
-  "flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground";
+  "focus-ring flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-all duration-200 hover:bg-accent hover:text-foreground active:scale-95 md:h-10 md:w-10";
 
 export function MapTools({
   onZoom,
@@ -68,7 +68,7 @@ export function MapTools({
   const { t } = useTranslation();
 
   return (
-    <div className="surface-panel absolute bottom-24 right-6 z-10 flex flex-col rounded-full p-1.5">
+    <div className="surface-panel absolute bottom-20 right-3 z-10 flex flex-col rounded-full p-1.5 md:bottom-24 md:right-6">
       {onToggleEvents && (
         <button
           type="button"
@@ -124,11 +124,11 @@ export function ViewToggle({
   const { t } = useTranslation();
 
   return (
-    <div className="surface-panel absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full p-1.5">
+    <div className="surface-panel absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full p-1 md:bottom-6 md:p-1.5">
       <button
         type="button"
         onClick={() => onChange("flat")}
-        className={`label-track rounded-full px-4 py-2 transition-colors ${
+        className={`label-track focus-ring rounded-full px-3.5 py-1.5 text-[10px] transition-colors duration-200 md:px-4 md:py-2 ${
           mode === "flat"
             ? "bg-accent text-primary"
             : "text-muted-foreground hover:text-foreground"
@@ -139,7 +139,7 @@ export function ViewToggle({
       <button
         type="button"
         onClick={() => onChange("globe")}
-        className={`label-track rounded-full px-4 py-2 transition-colors ${
+        className={`label-track focus-ring rounded-full px-3.5 py-1.5 text-[10px] transition-colors duration-200 md:px-4 md:py-2 ${
           mode === "globe"
             ? "bg-accent text-primary"
             : "text-muted-foreground hover:text-foreground"
@@ -161,7 +161,7 @@ export function CategoryFilters({
   const { t } = useTranslation();
 
   return (
-    <div className="surface-panel absolute bottom-6 left-6 z-10 flex flex-col gap-1 rounded-md p-2 animate-fade-in">
+    <div className="surface-panel absolute inset-x-3 bottom-20 z-10 grid grid-cols-2 gap-1 rounded-md p-2 animate-sheet-up md:inset-x-auto md:bottom-6 md:left-6 md:flex md:flex-col md:animate-rise">
       {(Object.keys(CATEGORY_META) as EventCategory[]).map((key) => {
         const meta = CATEGORY_META[key];
         const on = active.includes(key);
@@ -170,7 +170,7 @@ export function CategoryFilters({
             key={key}
             type="button"
             onClick={() => onToggle(key)}
-            className={`flex items-center gap-2.5 rounded-sm px-2.5 py-1.5 transition-colors ${
+            className={`focus-ring flex items-center gap-2.5 rounded-sm px-2.5 py-1.5 transition-colors duration-200 ${
               on ? "text-foreground" : "text-muted-foreground/50"
             } hover:bg-accent`}
           >
@@ -201,7 +201,7 @@ export function ContextCard({
   const { t } = useTranslation();
 
   return (
-    <div className="surface-panel absolute right-6 top-24 z-10 w-72 rounded-md p-5 animate-fade-in">
+    <div className="surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-4 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-72 md:p-5 md:animate-rise">
       <div className="flex items-start justify-between">
         <div>
           <p className="label-track text-primary">
@@ -269,7 +269,7 @@ export function LayersPanel({
   const { t } = useTranslation();
 
   return (
-    <div className="surface-panel absolute bottom-24 right-24 z-10 w-48 rounded-md p-3 animate-fade-in">
+    <div className="surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-3 animate-sheet-up md:inset-x-auto md:bottom-24 md:right-24 md:w-48 md:animate-rise">
       <p className="label-track px-1 pb-2 text-muted-foreground">{t.layers.title}</p>
       <div className="flex flex-col">
         {MAP_LAYERS.map((layer) => {
@@ -281,7 +281,7 @@ export function LayersPanel({
               role="switch"
               aria-checked={on}
               onClick={() => onToggle(layer)}
-              className={`flex items-center justify-between gap-3 rounded-sm px-1.5 py-1.5 transition-colors hover:bg-accent ${
+              className={`focus-ring flex items-center justify-between gap-3 rounded-sm px-1.5 py-1.5 transition-colors duration-200 hover:bg-accent ${
                 on ? "text-foreground" : "text-muted-foreground/50"
               }`}
             >
