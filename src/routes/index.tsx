@@ -13,6 +13,9 @@ import {
 } from "@/components/orbi/MapControls";
 import FlatMapView from "@/components/orbi/FlatMapView";
 import EventsPanel from "@/components/orbi/EventsPanel";
+import TimelineBar from "@/components/orbi/TimelineBar";
+import ConditionsPanel from "@/components/orbi/ConditionsPanel";
+import WeatherMapOverlay from "@/components/orbi/WeatherMapOverlay";
 import {
   CATEGORY_META,
   ORBI_EVENTS,
@@ -61,6 +64,8 @@ function Index() {
   const [layersOpen, setLayersOpen] = useState(false);
   const [layers, setLayers] = useState<MapLayer[]>(MAP_LAYERS);
   const [eventsOpen, setEventsOpen] = useState(true);
+  const [conditionsOpen, setConditionsOpen] = useState(false);
+  const [weatherMapOpen, setWeatherMapOpen] = useState(false);
   const [active, setActive] = useState<EventCategory[]>(ALL_CATEGORIES);
   const [flatScale, setFlatScale] = useState(1);
   const globeApi = useRef<{ zoom: (d: 1 | -1) => void; reset: () => void } | null>(
@@ -155,7 +160,20 @@ function Index() {
         layersOpen={layersOpen}
         onToggleEvents={() => setEventsOpen((v) => !v)}
         eventsOpen={eventsOpen}
+        onToggleConditions={() => {
+          setConditionsOpen((v) => !v);
+          setPanelOpen(false);
+        }}
+        conditionsOpen={conditionsOpen}
       />
+      <TimelineBar />
+      {conditionsOpen && (
+        <ConditionsPanel
+          onClose={() => setConditionsOpen(false)}
+          onOpenWeatherMap={() => setWeatherMapOpen(true)}
+        />
+      )}
+      {weatherMapOpen && <WeatherMapOverlay onClose={() => setWeatherMapOpen(false)} />}
       <ViewToggle mode={mode} onChange={setMode} />
       {eventsOpen && (
         <EventsPanel
@@ -185,7 +203,7 @@ function Index() {
           }
         />
       )}
-      {panelOpen && !(isMobile && eventsOpen) && (
+      {panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
         <ContextCard
           event={selected}
           total={events.length}
