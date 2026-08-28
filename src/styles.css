@@ -248,3 +248,22 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+.orbi-range::-webkit-slider-thumb {
+  appearance: none;
+  height: 0.625rem;
+  width: 0.625rem;
+  border-radius: 9999px;
+  background: var(--primary);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 18%, transparent);
+  cursor: grab;
+}
+
+.orbi-range::-moz-range-thumb {
+  height: 0.625rem;
+  width: 0.625rem;
+  border: none;
+  border-radius: 9999px;
+  background: var(--primary);
+  cursor: grab;
+}
