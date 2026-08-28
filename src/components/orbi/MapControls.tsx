@@ -10,6 +10,7 @@ import {
   Layers,
   SlidersHorizontal,
   List,
+  Wind,
   X,
 } from "lucide-react";
 import { CATEGORY_META, type EventCategory, type OrbiEvent } from "@/lib/orbi-events";
