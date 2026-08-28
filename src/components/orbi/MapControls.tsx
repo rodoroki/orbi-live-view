@@ -55,6 +55,8 @@ export function MapTools({
   layersOpen,
   onToggleEvents,
   eventsOpen,
+  onToggleConditions,
+  conditionsOpen,
 }: {
   onZoom: (direction: 1 | -1) => void;
   onReset: () => void;
@@ -64,11 +66,25 @@ export function MapTools({
   layersOpen: boolean;
   onToggleEvents?: () => void;
   eventsOpen?: boolean;
+  onToggleConditions?: () => void;
+  conditionsOpen?: boolean;
 }) {
   const { t } = useTranslation();
 
   return (
     <div className="surface-panel absolute bottom-20 right-3 z-10 flex flex-col rounded-full p-1.5 md:bottom-24 md:right-6">
+      {onToggleConditions && (
+        <button
+          type="button"
+          aria-label={conditionsOpen ? t.conditions.close : t.conditions.open}
+          title={t.conditions.title}
+          aria-pressed={conditionsOpen}
+          className={`${iconBtn} ${conditionsOpen ? "text-primary" : ""}`}
+          onClick={onToggleConditions}
+        >
+          <Wind className="h-4 w-4" strokeWidth={1.4} />
+        </button>
+      )}
       {onToggleEvents && (
         <button
           type="button"
