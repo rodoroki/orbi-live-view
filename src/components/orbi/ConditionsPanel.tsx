@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X, Map as MapIcon } from "lucide-react";
 import { ATMOSPHERE_METRICS, OCEAN_METRICS, type Metric } from "@/lib/conditions";
+import { useWindyForecast } from "@/lib/windy";
 import { useTranslation } from "@/lib/i18n";
 
 function Sparkline({ points }: { points: number[] }) {
@@ -35,13 +36,21 @@ function MetricRow({ metric, label }: { metric: Metric; label: string }) {
 export default function ConditionsPanel({
   onClose,
   onOpenWeatherMap,
+  coords,
 }: {
   onClose: () => void;
   onOpenWeatherMap: () => void;
+  coords: { lat: number; lng: number } | null;
 }) {
   const { t } = useTranslation();
   const [tab, setTab] = useState<"atmosphere" | "ocean">("atmosphere");
-  const metrics = tab === "atmosphere" ? ATMOSPHERE_METRICS : OCEAN_METRICS;
+  const { data: liveMetrics, isSuccess } = useWindyForecast(
+    coords?.lat ?? null,
+    coords?.lng ?? null,
+  );
+  const isLive = tab === "atmosphere" && isSuccess && !!liveMetrics;
+  const metrics =
+    tab === "atmosphere" ? (liveMetrics ?? ATMOSPHERE_METRICS) : OCEAN_METRICS;
 
   return (
     <div className="surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-4 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-80 md:p-5 md:animate-rise">
@@ -94,7 +103,7 @@ export default function ConditionsPanel({
       </button>
 
       <p className="label-track mt-4 border-t border-border pt-3 text-[9px] text-muted-foreground/70">
-        {t.common.simulatedData}
+        {isLive ? `${t.common.live} · WINDY GFS` : t.common.simulatedData}
       </p>
     </div>
   );

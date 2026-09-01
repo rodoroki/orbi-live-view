@@ -171,6 +171,11 @@ function Index() {
         <ConditionsPanel
           onClose={() => setConditionsOpen(false)}
           onOpenWeatherMap={() => setWeatherMapOpen(true)}
+          coords={
+            selected
+              ? { lat: selected.lat, lng: selected.lng }
+              : { lat: -15.8, lng: -47.9 }
+          }
         />
       )}
       {weatherMapOpen && <WeatherMapOverlay onClose={() => setWeatherMapOpen(false)} />}
