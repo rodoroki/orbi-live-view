@@ -24,7 +24,7 @@ export default function TimelineBar() {
       : `${hour > 0 ? "+" : "−"}${Math.abs(hour)} h`;
 
   return (
-    <div className="surface-panel absolute bottom-20 left-1/2 z-10 hidden w-[min(680px,72vw)] -translate-x-1/2 items-center gap-4 rounded-full px-4 py-2.5 animate-rise md:flex">
+    <div className="surface-panel absolute bottom-20 left-1/2 z-10 hidden w-[min(520px,46vw)] -translate-x-1/2 items-center gap-4 rounded-full px-4 py-2.5 animate-rise md:flex">
       <button
         type="button"
         aria-label={playing ? t.timeline.pause : t.timeline.play}
