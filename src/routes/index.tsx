@@ -74,12 +74,17 @@ function Index() {
   );
 
 
+  // Fonte real (NASA EONET) com fallback para os dados simulados.
+  const { data: liveEvents } = useEonetEvents({ days: 20, limit: 250 });
+  const isLive = !!liveEvents && liveEvents.length > 0;
+  const source = isLive ? liveEvents : ORBI_EVENTS;
+
   const events = useMemo(
     () =>
       layers.includes("events")
-        ? ORBI_EVENTS.filter((e) => active.includes(e.category))
+        ? source.filter((e) => active.includes(e.category))
         : [],
-    [active, layers],
+    [active, layers, source],
   );
 
   // no mobile o mapa abre limpo; os painéis são acionados sob demanda
