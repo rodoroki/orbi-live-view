@@ -32,6 +32,11 @@ export type EonetEvent = {
 
 export type EonetResponse = { events: EonetEvent[] };
 
+/** OrbiEvent com metadata estreitado para string — serializável via RPC. */
+export type SerializableOrbiEvent = Omit<OrbiEvent, "metadata"> & {
+  metadata: Record<string, string>;
+};
+
 /** categoria EONET -> { category, phenomenon } na taxonomia ORBI */
 const EONET_CATEGORY_MAP: Record<string, { category: string; phenomenon: string }> = {
   wildfires: { category: "fire", phenomenon: "wildfire" },
@@ -159,7 +164,7 @@ function placeName(title: string, lat: number, lng: number): string {
   return `${lat.toFixed(1)}°, ${lng.toFixed(1)}°`;
 }
 
-export function eonetEventToOrbiEvent(event: EonetEvent): OrbiEvent | null {
+export function eonetEventToOrbiEvent(event: EonetEvent): SerializableOrbiEvent | null {
   const point = latestPoint(event.geometry ?? []);
   if (!point) return null;
 
@@ -211,9 +216,9 @@ export function eonetEventToOrbiEvent(event: EonetEvent): OrbiEvent | null {
   };
 }
 
-export function eonetResponseToOrbiEvents(response: EonetResponse): OrbiEvent[] {
+export function eonetResponseToOrbiEvents(response: EonetResponse): SerializableOrbiEvent[] {
   return (response.events ?? [])
     .map(eonetEventToOrbiEvent)
-    .filter((e): e is OrbiEvent => e !== null)
+    .filter((e): e is SerializableOrbiEvent => e !== null)
     .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 }

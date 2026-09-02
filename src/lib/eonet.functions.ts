@@ -4,8 +4,8 @@ import {
   EONET_API,
   eonetResponseToOrbiEvents,
   type EonetResponse,
+  type SerializableOrbiEvent,
 } from "@/lib/data/adapters/eonet";
-import type { OrbiEvent } from "@/lib/schemas";
 
 /**
  * NASA EONET v3 — https://eonet.gsfc.nasa.gov/docs/v3
@@ -23,7 +23,7 @@ export const getEonetEvents = createServerFn({ method: "GET" })
       })
       .parse(data ?? {}),
   )
-  .handler(async ({ data }): Promise<{ events: OrbiEvent[]; error: string | null }> => {
+  .handler(async ({ data }): Promise<{ events: SerializableOrbiEvent[]; error: string | null }> => {
     const params = new URLSearchParams({
       days: String(data.days),
       limit: String(data.limit),
