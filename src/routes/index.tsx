@@ -223,7 +223,7 @@ function Index() {
       )}
 
       <p className="label-track pointer-events-none absolute bottom-7 left-1/2 hidden -translate-x-1/2 translate-y-10 text-[9px] text-muted-foreground/60 xl:block">
-        {t.common.simulatedData}
+        {isLive ? t.common.liveData : t.common.simulatedData}
       </p>
 
     </div>
