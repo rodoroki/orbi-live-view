@@ -2,10 +2,55 @@ import { useEffect, useRef, useState } from "react";
 import Globe, { type GlobeMethods } from "react-globe.gl";
 import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
 
-const EARTH_NIGHT = "/textures/earth-night.jpg";
-const EARTH_TOPO = "/textures/earth-topology.png";
+/**
+ * ORBI LIVE WORLD — Globe v2
+ *
+ * Arquitetura em camadas:
+ * - Earth Base (textura noturna)
+ * - Terrain / Relief (bump map)
+ * - Observation Layer (pontos + anéis de prioridade)
+ * - Atmospheric Layer (preparada para Windy — não renderiza ainda)
+ * - Camera / Zoom
+ *
+ * A base cartográfica é independente dos dados de observação:
+ * NASA/Windy entram como camadas, não como "o mapa inteiro".
+ */
 
-type GlobeApi = { zoom: (direction: 1 | -1) => void; reset: () => void };
+// -----------------------------------------------------------------------------
+// EARTH BASE
+// -----------------------------------------------------------------------------
+
+const EARTH_BASE = "/textures/earth-night.jpg";
+const EARTH_RELIEF = "/textures/earth-topology.png";
+const ATMOSPHERE_COLOR = "#4fd6c2";
+const ATMOSPHERE_ALTITUDE = 0.18;
+
+// -----------------------------------------------------------------------------
+// CAMERA
+// -----------------------------------------------------------------------------
+
+const DEFAULT_VIEW = { lat: 8, lng: -40, altitude: 2.4 };
+
+const MIN_ALTITUDE = 0.35;
+const MAX_ALTITUDE = 4.0;
+
+const ZOOM_IN_FACTOR = 0.68;
+const ZOOM_OUT_FACTOR = 1.42;
+
+const CAMERA_ANIMATION_MS = 700;
+const RESET_ANIMATION_MS = 1200;
+const SELECT_ANIMATION_MS = 1200;
+const SELECT_ALTITUDE = 0.85;
+const AUTO_ROTATE_SPEED = 0.18;
+
+// -----------------------------------------------------------------------------
+// TYPES
+// -----------------------------------------------------------------------------
+
+type GlobeApi = {
+  zoom: (direction: 1 | -1) => void;
+  reset: () => void;
+};
 
 type Props = {
   events: OrbiEvent[];
@@ -14,7 +59,32 @@ type Props = {
   onReady?: (api: GlobeApi) => void;
 };
 
-const DEFAULT_VIEW = { lat: 8, lng: -40, altitude: 2.4 };
+type Controls = {
+  autoRotate: boolean;
+  autoRotateSpeed: number;
+  enableZoom: boolean;
+  enablePan: boolean;
+};
+
+// -----------------------------------------------------------------------------
+// HELPERS
+// -----------------------------------------------------------------------------
+
+function clampAltitude(value: number) {
+  return Math.min(MAX_ALTITUDE, Math.max(MIN_ALTITUDE, value));
+}
+
+function categoryColor(event: OrbiEvent) {
+  return CATEGORY_META[event.category]?.color ?? "#ffffff";
+}
+
+function categoryGlyph(event: OrbiEvent) {
+  return CATEGORY_META[event.category]?.glyph ?? "•";
+}
+
+// -----------------------------------------------------------------------------
+// COMPONENT
+// -----------------------------------------------------------------------------
 
 export default function GlobeView({ events, selected, onSelect, onReady }: Props) {
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
@@ -23,6 +93,10 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;
   const initialized = useRef(false);
+
+  // ---------------------------------------------------------------------------
+  // RESPONSIVE SIZE
+  // ---------------------------------------------------------------------------
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -35,47 +109,59 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
     return () => ro.disconnect();
   }, []);
 
+  // ---------------------------------------------------------------------------
+  // GLOBE INITIALIZATION + PUBLIC API
+  // ---------------------------------------------------------------------------
+
   useEffect(() => {
     const globe = globeRef.current;
-    if (!globe || initialized.current) return;
+    if (!globe || initialized.current || size.width === 0) return;
     initialized.current = true;
-    const controls = globe.controls() as unknown as {
-      autoRotate: boolean;
-      autoRotateSpeed: number;
-      enableZoom: boolean;
-    };
+
+    const controls = globe.controls() as unknown as Controls;
     controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.25;
+    controls.autoRotateSpeed = AUTO_ROTATE_SPEED;
     controls.enableZoom = true;
+    controls.enablePan = false;
+
     globe.pointOfView(DEFAULT_VIEW, 0);
 
     onReadyRef.current?.({
       zoom: (direction) => {
         const pov = globe.pointOfView();
-        const altitude = Math.min(
-          4,
-          Math.max(0.35, pov.altitude * (direction === 1 ? 0.7 : 1.4)),
+        const factor = direction === 1 ? ZOOM_IN_FACTOR : ZOOM_OUT_FACTOR;
+        globe.pointOfView(
+          { lat: pov.lat, lng: pov.lng, altitude: clampAltitude(pov.altitude * factor) },
+          CAMERA_ANIMATION_MS,
         );
-        globe.pointOfView({ ...pov, altitude }, 600);
       },
       reset: () => {
-        (globe.controls() as unknown as { autoRotate: boolean }).autoRotate = true;
-        globe.pointOfView(DEFAULT_VIEW, 1200);
+        (globe.controls() as unknown as Controls).autoRotate = true;
+        globe.pointOfView(DEFAULT_VIEW, RESET_ANIMATION_MS);
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [size.width > 0]);
 
+  // ---------------------------------------------------------------------------
+  // SELECTED OBSERVATION — aproxima suavemente e pausa a rotação
+  // ---------------------------------------------------------------------------
+
   useEffect(() => {
     const globe = globeRef.current;
     if (!globe || !selected) return;
-    const controls = globe.controls() as unknown as { autoRotate: boolean };
-    controls.autoRotate = false;
+    (globe.controls() as unknown as Controls).autoRotate = false;
     globe.pointOfView(
-      { lat: selected.lat, lng: selected.lng, altitude: 1.1 },
-      1400,
+      { lat: selected.lat, lng: selected.lng, altitude: SELECT_ALTITUDE },
+      SELECT_ANIMATION_MS,
     );
   }, [selected]);
+
+  // ---------------------------------------------------------------------------
+  // RENDER
+  // ---------------------------------------------------------------------------
+
+  const priorityEvents = events.filter((e) => e.priority === 1);
 
   return (
     <div ref={wrapRef} className="h-full w-full">
@@ -85,32 +171,44 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
           width={size.width}
           height={size.height}
           backgroundColor="rgba(0,0,0,0)"
-          globeImageUrl={EARTH_NIGHT}
-          bumpImageUrl={EARTH_TOPO}
-          atmosphereColor="#4fd6c2"
-          atmosphereAltitude={0.18}
+          // Earth Base + Terrain
+          globeImageUrl={EARTH_BASE}
+          bumpImageUrl={EARTH_RELIEF}
+          // Atmosphere
+          atmosphereColor={ATMOSPHERE_COLOR}
+          atmosphereAltitude={ATMOSPHERE_ALTITUDE}
+          // Observation Layer — pontos
           pointsData={events}
           pointLat="lat"
           pointLng="lng"
-          pointColor={(d: object) => CATEGORY_META[(d as OrbiEvent).category].color}
+          pointColor={(d: object) => categoryColor(d as OrbiEvent)}
           pointAltitude={(d: object) =>
-            (d as OrbiEvent).id === selected?.id ? 0.12 : 0.045
+            (d as OrbiEvent).id === selected?.id ? 0.13 : 0.045
           }
-          pointRadius={(d: object) => ((d as OrbiEvent).id === selected?.id ? 0.42 : 0.28)}
+          pointRadius={(d: object) =>
+            (d as OrbiEvent).id === selected?.id ? 0.42 : 0.25
+          }
           pointsMerge={false}
           pointLabel={(d: object) =>
-            `${CATEGORY_META[(d as OrbiEvent).category].glyph} ${(d as OrbiEvent).place}`
+            `${categoryGlyph(d as OrbiEvent)} ${(d as OrbiEvent).place}`
           }
           onPointClick={(d: object) => onSelect(d as OrbiEvent)}
-          ringsData={events.filter((e) => e.priority === 1)}
+          // Observation Layer — anéis de prioridade
+          ringsData={priorityEvents}
           ringLat="lat"
           ringLng="lng"
-          ringColor={(d: object) => CATEGORY_META[(d as OrbiEvent).category].color}
-          ringMaxRadius={4}
-          ringPropagationSpeed={1.4}
-          ringRepeatPeriod={1400}
+          ringColor={(d: object) => categoryColor(d as OrbiEvent)}
+          ringMaxRadius={3.5}
+          ringPropagationSpeed={1.2}
+          ringRepeatPeriod={1600}
         />
       )}
+
+      {/* Futuras camadas (não renderizam ainda):
+          - AtmosphericLayer (Windy)
+          - OceanLayer
+          - WebcamLayer
+          Existem conceitualmente para impedir acoplamento direto ao GlobeView. */}
     </div>
   );
 }
