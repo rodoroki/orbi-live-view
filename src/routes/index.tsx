@@ -23,6 +23,7 @@ import {
   type OrbiEvent,
 } from "@/lib/orbi-events";
 import { useTranslation } from "@/lib/i18n";
+import { useEonetEvents } from "@/lib/eonet";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 
@@ -73,12 +74,17 @@ function Index() {
   );
 
 
+  // Fonte real (NASA EONET) com fallback para os dados simulados.
+  const { data: liveEvents } = useEonetEvents({ days: 20, limit: 250 });
+  const isLive = !!liveEvents && liveEvents.length > 0;
+  const source = isLive ? liveEvents : ORBI_EVENTS;
+
   const events = useMemo(
     () =>
       layers.includes("events")
-        ? ORBI_EVENTS.filter((e) => active.includes(e.category))
+        ? source.filter((e) => active.includes(e.category))
         : [],
-    [active, layers],
+    [active, layers, source],
   );
 
   // no mobile o mapa abre limpo; os painéis são acionados sob demanda
@@ -217,7 +223,7 @@ function Index() {
       )}
 
       <p className="label-track pointer-events-none absolute bottom-7 left-1/2 hidden -translate-x-1/2 translate-y-10 text-[9px] text-muted-foreground/60 xl:block">
-        {t.common.simulatedData}
+        {isLive ? t.common.liveData : t.common.simulatedData}
       </p>
 
     </div>

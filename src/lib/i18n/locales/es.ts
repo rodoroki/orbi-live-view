@@ -4,6 +4,7 @@ export const es = {
     map: "Mapa",
     globe: "Globo",
     simulatedData: "datos simulados",
+    liveData: "datos en vivo · NASA EONET",
     search: "Buscar",
     explore: "Explorar",
     about: "Sobre",

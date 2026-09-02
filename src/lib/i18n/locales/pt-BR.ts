@@ -4,6 +4,7 @@ export const ptBR = {
     map: "Mapa",
     globe: "Globo",
     simulatedData: "dados simulados",
+    liveData: "dados ao vivo · NASA EONET",
     search: "Buscar",
     explore: "Explorar",
     about: "Sobre",
