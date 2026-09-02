@@ -23,6 +23,7 @@ import {
   type OrbiEvent,
 } from "@/lib/orbi-events";
 import { useTranslation } from "@/lib/i18n";
+import { useEonetEvents } from "@/lib/eonet";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 
