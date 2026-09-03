@@ -86,6 +86,93 @@ function categoryGlyph(event: OrbiEvent) {
 }
 
 // -----------------------------------------------------------------------------
+// SUN — posição sub-solar aproximada (lat/lng) e conversão para vetor 3D
+// -----------------------------------------------------------------------------
+
+function subSolarPoint(date: Date) {
+  const yearStart = Date.UTC(date.getUTCFullYear(), 0, 0);
+  const dayOfYear = Math.floor((date.getTime() - yearStart) / 86_400_000);
+  // declinação solar (aprox. de Cooper)
+  const declination =
+    -23.44 * Math.cos(((2 * Math.PI) / 365) * (dayOfYear + 10));
+  // longitude sub-solar: 0° às 12:00 UTC, 15°/hora
+  const utcHours = date.getUTCHours() + date.getUTCMinutes() / 60;
+  const longitude = 180 - utcHours * 15;
+  return { lat: declination, lng: longitude };
+}
+
+// mesma convenção de coordenadas do three-globe (polar2Cartesian)
+function latLngToVector3(lat: number, lng: number) {
+  const phi = (lat * Math.PI) / 180;
+  const theta = (lng * Math.PI) / 180;
+  return new THREE.Vector3(
+    Math.cos(phi) * Math.sin(theta),
+    Math.sin(phi),
+    Math.cos(phi) * Math.cos(theta),
+  );
+}
+
+// -----------------------------------------------------------------------------
+// DAY/NIGHT SHADER — mistura texturas de dia e noite pelo ângulo sol/superfície
+// -----------------------------------------------------------------------------
+
+const DAY_NIGHT_VERTEX = /* glsl */ `
+  varying vec3 vNormal;
+  varying vec2 vUv;
+  void main() {
+    // normal em espaço de mundo (o globo não se move — a câmera orbita)
+    vNormal = normalize(mat3(modelMatrix) * normal);
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const DAY_NIGHT_FRAGMENT = /* glsl */ `
+  uniform sampler2D dayTexture;
+  uniform sampler2D nightTexture;
+  uniform vec3 sunDirection;
+  varying vec3 vNormal;
+  varying vec2 vUv;
+  void main() {
+    vec3 dayColor = texture2D(dayTexture, vUv).rgb;
+    // realça as luzes urbanas no lado noturno
+    vec3 nightColor = texture2D(nightTexture, vUv).rgb * 1.35;
+    float cosine = dot(normalize(vNormal), normalize(sunDirection));
+    // penumbra suave no terminador (crepúsculo)
+    float mixAmount = smoothstep(-0.15, 0.25, cosine);
+    vec3 color = mix(nightColor, dayColor, mixAmount);
+    gl_FragColor = vec4(color, 1.0);
+  }
+`;
+
+function createDayNightMaterial(): THREE.ShaderMaterial {
+  const loader = new THREE.TextureLoader();
+  const dayTexture = loader.load(EARTH_DAY);
+  const nightTexture = loader.load(EARTH_NIGHT);
+  dayTexture.colorSpace = THREE.SRGBColorSpace;
+  nightTexture.colorSpace = THREE.SRGBColorSpace;
+  dayTexture.anisotropy = 8;
+  nightTexture.anisotropy = 8;
+
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      dayTexture: { value: dayTexture },
+      nightTexture: { value: nightTexture },
+      sunDirection: { value: new THREE.Vector3(1, 0, 0) },
+    },
+    vertexShader: DAY_NIGHT_VERTEX,
+    fragmentShader: DAY_NIGHT_FRAGMENT,
+  });
+}
+
+function updateSunDirection(material: THREE.ShaderMaterial) {
+  const { lat, lng } = subSolarPoint(new Date());
+  (material.uniforms.sunDirection.value as THREE.Vector3).copy(
+    latLngToVector3(lat, lng),
+  );
+}
+
+// -----------------------------------------------------------------------------
 // COMPONENT
 // -----------------------------------------------------------------------------
 
