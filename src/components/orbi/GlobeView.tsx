@@ -167,7 +167,7 @@ function createDayNightMaterial(): THREE.ShaderMaterial {
 
 function updateSunDirection(material: THREE.ShaderMaterial) {
   const { lat, lng } = subSolarPoint(new Date());
-  (material.uniforms.sunDirection.value as THREE.Vector3).copy(
+  (material.uniforms["sunDirection"]!.value as THREE.Vector3).copy(
     latLngToVector3(lat, lng),
   );
 }
@@ -214,13 +214,8 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
     controls.enableZoom = true;
     controls.enablePan = false;
 
-    // Earth Base — material dia/noite com terminador solar em tempo real.
-    const material = createDayNightMaterial();
-    updateSunDirection(material);
-    (
-      globe as unknown as { globeMaterial: (m: THREE.ShaderMaterial) => void }
-    ).globeMaterial(material);
-    const sunTimer = setInterval(() => updateSunDirection(material), SUN_UPDATE_MS);
+    // Earth Base — material dia/noite (prop globeMaterial); sol atualizado
+    // pelo efeito dedicado abaixo.
 
     globe.pointOfView(DEFAULT_VIEW, 0);
 
