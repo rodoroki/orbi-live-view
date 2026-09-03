@@ -184,6 +184,20 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
   onReadyRef.current = onReady;
   const initialized = useRef(false);
 
+  // Earth Base — material dia/noite com terminador solar em tempo real.
+  // Criado uma única vez e passado via prop globeMaterial.
+  const [material] = useState(() => createDayNightMaterial());
+
+  // ---------------------------------------------------------------------------
+  // SUN — recalcula a posição sub-solar periodicamente
+  // ---------------------------------------------------------------------------
+
+  useEffect(() => {
+    updateSunDirection(material);
+    const timer = setInterval(() => updateSunDirection(material), SUN_UPDATE_MS);
+    return () => clearInterval(timer);
+  }, [material]);
+
   // ---------------------------------------------------------------------------
   // RESPONSIVE SIZE
   // ---------------------------------------------------------------------------
@@ -213,9 +227,6 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
     controls.autoRotateSpeed = AUTO_ROTATE_SPEED;
     controls.enableZoom = true;
     controls.enablePan = false;
-
-    // Earth Base — material dia/noite (prop globeMaterial); sol atualizado
-    // pelo efeito dedicado abaixo.
 
     globe.pointOfView(DEFAULT_VIEW, 0);
 
