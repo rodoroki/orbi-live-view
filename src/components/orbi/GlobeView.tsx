@@ -244,8 +244,6 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
         globe.pointOfView(DEFAULT_VIEW, RESET_ANIMATION_MS);
       },
     });
-
-    return () => clearInterval(sunTimer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [size.width > 0]);
 
@@ -278,8 +276,8 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
           height={size.height}
           rendererConfig={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
           backgroundColor="rgba(0,0,0,0)"
-          // Earth Base — texturas dia/noite aplicadas via material customizado
-          // (createDayNightMaterial no efeito de inicialização)
+          // Earth Base — dia/noite com terminador solar em tempo real
+          globeMaterial={material}
           // Atmosphere
           atmosphereColor={ATMOSPHERE_COLOR}
           atmosphereAltitude={ATMOSPHERE_ALTITUDE}
