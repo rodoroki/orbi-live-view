@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
 import Globe, { type GlobeMethods } from "react-globe.gl";
 import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
 
@@ -17,13 +18,15 @@ import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
  */
 
 // -----------------------------------------------------------------------------
-// EARTH BASE
+// EARTH BASE — ciclo dia/noite com terminador solar em tempo real
 // -----------------------------------------------------------------------------
 
-const EARTH_BASE = "/textures/earth-night.jpg";
-const EARTH_RELIEF = "/textures/earth-topology.png";
+const EARTH_DAY = "/textures/earth-day.jpg";
+const EARTH_NIGHT = "/textures/earth-night.jpg";
 const ATMOSPHERE_COLOR = "#4fd6c2";
 const ATMOSPHERE_ALTITUDE = 0.18;
+
+const SUN_UPDATE_MS = 60_000; // recalcula a posição do sol a cada minuto
 
 // -----------------------------------------------------------------------------
 // CAMERA
