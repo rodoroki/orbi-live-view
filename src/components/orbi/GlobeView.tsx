@@ -125,8 +125,10 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
     controls.enablePan = false;
 
     // Realce sutil do relevo — mantém a estética noturna sem achatar o globo.
-    const material = globe.globeMaterial() as unknown as { bumpScale?: number };
-    if (typeof material.bumpScale === "number") material.bumpScale = 8;
+    const material = (
+      globe as unknown as { globeMaterial?: () => { bumpScale?: number } }
+    ).globeMaterial?.();
+    if (material && typeof material.bumpScale === "number") material.bumpScale = 8;
 
     globe.pointOfView(DEFAULT_VIEW, 0);
 
