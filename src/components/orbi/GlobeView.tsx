@@ -124,6 +124,12 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
     controls.enableZoom = true;
     controls.enablePan = false;
 
+    // Realce sutil do relevo — mantém a estética noturna sem achatar o globo.
+    const material = (
+      globe as unknown as { globeMaterial?: () => { bumpScale?: number } }
+    ).globeMaterial?.();
+    if (material && typeof material.bumpScale === "number") material.bumpScale = 8;
+
     globe.pointOfView(DEFAULT_VIEW, 0);
 
     onReadyRef.current?.({
@@ -170,6 +176,7 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
           ref={globeRef}
           width={size.width}
           height={size.height}
+          rendererConfig={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
           backgroundColor="rgba(0,0,0,0)"
           // Earth Base + Terrain
           globeImageUrl={EARTH_BASE}
