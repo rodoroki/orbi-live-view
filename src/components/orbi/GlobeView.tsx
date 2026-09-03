@@ -214,11 +214,13 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
     controls.enableZoom = true;
     controls.enablePan = false;
 
-    // Realce sutil do relevo — mantém a estética noturna sem achatar o globo.
-    const material = (
-      globe as unknown as { globeMaterial?: () => { bumpScale?: number } }
-    ).globeMaterial?.();
-    if (material && typeof material.bumpScale === "number") material.bumpScale = 8;
+    // Earth Base — material dia/noite com terminador solar em tempo real.
+    const material = createDayNightMaterial();
+    updateSunDirection(material);
+    (
+      globe as unknown as { globeMaterial: (m: THREE.ShaderMaterial) => void }
+    ).globeMaterial(material);
+    const sunTimer = setInterval(() => updateSunDirection(material), SUN_UPDATE_MS);
 
     globe.pointOfView(DEFAULT_VIEW, 0);
 
