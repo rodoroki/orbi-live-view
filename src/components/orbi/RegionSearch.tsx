@@ -53,7 +53,7 @@ export default function RegionSearch({
       ref={boxRef}
       className="absolute left-1/2 top-20 z-30 w-[min(92vw,26rem)] -translate-x-1/2 md:top-24 md:left-[calc(50%+7rem)] xl:left-1/2"
     >
-      <div className="surface-panel flex items-center gap-2 rounded-full px-3 py-2">
+      <div className="surface-panel flex items-center gap-2 rounded-full py-2 pl-3 pr-1.5">
         <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" strokeWidth={1.4} />
         <input
           value={query}
@@ -62,6 +62,12 @@ export default function RegionSearch({
             setOpen(true);
           }}
           onFocus={() => setOpen(true)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setOpen(true);
+              if ((results ?? []).length > 0) pick(results![0]);
+            }
+          }}
           placeholder={t.search.placeholder}
           aria-label={t.search.title}
           className="w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70"
@@ -69,7 +75,7 @@ export default function RegionSearch({
         {current && !query && (
           <span className="label-track shrink-0 text-[9px] text-primary">{current.name}</span>
         )}
-        {query ? (
+        {query && (
           <button
             type="button"
             aria-label={t.common.close}
@@ -78,18 +84,29 @@ export default function RegionSearch({
           >
             <X className="h-3.5 w-3.5" strokeWidth={1.4} />
           </button>
-        ) : (
-          <button
-            type="button"
-            aria-label={t.search.myLocation}
-            title={t.search.myLocation}
-            onClick={locate}
-            className="focus-ring text-muted-foreground hover:text-primary"
-          >
-            <LocateFixed className="h-3.5 w-3.5" strokeWidth={1.4} />
-          </button>
         )}
+        <button
+          type="button"
+          aria-label={t.search.myLocation}
+          title={t.search.myLocation}
+          onClick={locate}
+          className="focus-ring text-muted-foreground hover:text-primary"
+        >
+          <LocateFixed className="h-3.5 w-3.5" strokeWidth={1.4} />
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(true);
+            if ((results ?? []).length > 0) pick(results![0]);
+          }}
+          disabled={query.trim().length < 2}
+          className="focus-ring label-track shrink-0 rounded-full bg-primary/15 px-3 py-1.5 text-[9px] text-primary transition-colors hover:bg-primary/25 disabled:opacity-40"
+        >
+          {t.common.search}
+        </button>
       </div>
+
 
       {open && query.trim().length >= 2 && (
         <div className="surface-panel mt-2 max-h-72 overflow-y-auto rounded-md p-1 animate-rise">
