@@ -188,15 +188,23 @@ export function ViewToggle({
 export function CategoryFilters({
   active,
   onToggle,
+  onClose,
 }: {
   active: EventCategory[];
   onToggle: (category: EventCategory) => void;
+  onClose?: () => void;
 }) {
   const { t } = useTranslation();
 
   return (
-    <div className="surface-panel absolute inset-x-3 bottom-20 z-10 grid grid-cols-2 gap-1 rounded-md p-2 animate-sheet-up md:inset-x-auto md:bottom-6 md:left-6 md:flex md:flex-col md:animate-rise">
+    <div className="surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-2 animate-sheet-up md:inset-x-auto md:bottom-6 md:left-6 md:w-48 md:animate-rise">
+      <div className="flex items-center justify-between px-1 pb-2">
+        <p className="label-track text-muted-foreground">{t.map.filters}</p>
+        {onClose && <PanelClose onClose={onClose} />}
+      </div>
+      <div className="grid grid-cols-2 gap-1 md:flex md:flex-col">
       {(Object.keys(CATEGORY_META) as EventCategory[]).map((key) => {
+
         const meta = CATEGORY_META[key];
         const on = active.includes(key);
         return (
@@ -219,9 +227,26 @@ export function CategoryFilters({
           </button>
         );
       })}
+      </div>
     </div>
   );
 }
+
+function PanelClose({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation();
+  return (
+    <button
+      type="button"
+      onClick={onClose}
+      aria-label={t.common.close}
+      title={t.common.close}
+      className="focus-ring -m-1.5 rounded-sm p-1.5 text-muted-foreground transition-colors duration-200 hover:text-foreground"
+    >
+      <X className="h-3.5 w-3.5" strokeWidth={1.4} />
+    </button>
+  );
+}
+
 
 export function ContextCard({
   event,
@@ -296,15 +321,21 @@ export const MAP_LAYERS: MapLayer[] = ["base", "events", "atmosphere", "ocean"];
 export function LayersPanel({
   active,
   onToggle,
+  onClose,
 }: {
   active: MapLayer[];
   onToggle: (layer: MapLayer) => void;
+  onClose?: () => void;
 }) {
   const { t } = useTranslation();
 
   return (
     <div className="surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-3 animate-sheet-up md:inset-x-auto md:bottom-24 md:right-24 md:w-48 md:animate-rise">
-      <p className="label-track px-1 pb-2 text-muted-foreground">{t.layers.title}</p>
+      <div className="flex items-center justify-between px-1 pb-2">
+        <p className="label-track text-muted-foreground">{t.layers.title}</p>
+        {onClose && <PanelClose onClose={onClose} />}
+      </div>
+
       <div className="flex flex-col">
         {MAP_LAYERS.map((layer) => {
           const on = active.includes(layer);

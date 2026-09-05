@@ -51,7 +51,7 @@ export default function RegionSearch({
   return (
     <div
       ref={boxRef}
-      className="absolute left-1/2 top-20 z-20 w-[min(92vw,26rem)] -translate-x-1/2 md:top-24"
+      className="absolute left-1/2 top-20 z-30 w-[min(92vw,26rem)] -translate-x-1/2 md:top-24 md:left-[calc(50%+7rem)] xl:left-1/2"
     >
       <div className="surface-panel flex items-center gap-2 rounded-full px-3 py-2">
         <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" strokeWidth={1.4} />
