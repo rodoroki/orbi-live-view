@@ -96,13 +96,7 @@ function Index() {
     [active, layers, source],
   );
 
-  // no mobile o mapa abre limpo; os painéis são acionados sob demanda
-  useEffect(() => {
-    if (isMobile) {
-      setEventsOpen(false);
-      setPanelOpen(false);
-    }
-  }, [isMobile]);
+  // painel de contexto reabre automaticamente ao selecionar um evento
 
   const handleGlobeReady = useCallback(
     (api: {
