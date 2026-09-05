@@ -15,6 +15,7 @@ import {
 import { format, useTranslation } from "@/lib/i18n";
 
 const SEVERITIES: EventSeverity[] = ["critical", "high", "moderate", "low"];
+const ALL_CATEGORIES = Object.keys(CATEGORY_META) as EventCategory[];
 
 type Props = {
   events: OrbiEvent[];
