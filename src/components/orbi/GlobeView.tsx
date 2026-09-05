@@ -57,7 +57,7 @@ const AUTO_ROTATE_SPEED = 0.18;
 // ampliada) por tiles slippy-map: imagery de satélite + camada de referência
 // com limites de estados/municípios e nomes de cidades.
 //
-const DETAIL_ALTITUDE = 0.75;
+const DETAIL_ALTITUDE = 9;
 const TILE_SPAN = 2; // (2*span+1)^2 tiles ao redor do centro
 const TILE_MIN_Z = 3;
 const TILE_MAX_Z = 9;
