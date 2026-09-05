@@ -39,6 +39,7 @@ export const ptBR = {
     recent: "Eventos recentes",
     searchPlaceholder: "Buscar evento ou fenômeno",
     region: "Região",
+    category: "Categoria",
     severity: "Severidade",
     period: "Período",
     noResults: "Nenhum evento corresponde a estes filtros.",

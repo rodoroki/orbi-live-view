@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import {
-  CATEGORY_COUNTS,
   CATEGORY_META,
   PERIODS,
   PERIOD_MINUTES,
@@ -16,6 +15,7 @@ import {
 import { format, useTranslation } from "@/lib/i18n";
 
 const SEVERITIES: EventSeverity[] = ["critical", "high", "moderate", "low"];
+const ALL_CATEGORIES = Object.keys(CATEGORY_META) as EventCategory[];
 
 type Props = {
   events: OrbiEvent[];
@@ -67,29 +67,6 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
         </button>
       </div>
 
-      {/* counts */}
-      <div className="mt-4 grid shrink-0 grid-cols-2 gap-x-4 gap-y-1.5 px-5">
-        {(Object.keys(CATEGORY_COUNTS) as EventCategory[]).map((key) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setCategory((c) => (c === key ? "all" : key))}
-            className={`focus-ring flex items-baseline justify-between gap-2 border-b border-border/40 py-1 text-left transition-colors duration-200 ${
-              category === key ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <span className="flex items-center gap-1.5">
-              <span
-                className="h-1.5 w-1.5 rounded-full"
-                style={{ backgroundColor: CATEGORY_META[key].color }}
-              />
-              <span className="label-track text-[9px]">{t.categories[key]}</span>
-            </span>
-            <span className="font-mono text-xs">{CATEGORY_COUNTS[key]}</span>
-          </button>
-        ))}
-      </div>
-
       {/* search */}
       <div className="mt-5 shrink-0 px-5">
         <div className="flex items-center gap-2 rounded-sm border border-border/60 bg-background/40 px-2.5 py-2">
@@ -105,6 +82,19 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
 
       {/* filters */}
       <div className="mt-4 flex shrink-0 flex-col gap-3 px-5">
+        <FilterRow
+          label={t.events.category}
+          options={[
+            { key: "all", label: t.common.all },
+            ...ALL_CATEGORIES.map((c) => ({
+              key: c,
+              label: t.categories[c],
+              dot: CATEGORY_META[c].color,
+            })),
+          ]}
+          value={category}
+          onChange={(v) => setCategory(v as EventCategory | "all")}
+        />
         <FilterRow
           label={t.events.period}
           options={PERIODS.map((p) => ({
@@ -174,18 +164,15 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
                         <p className="truncate text-[11px] text-muted-foreground">
                           {event.place}
                         </p>
-                        <div className="mt-1.5 flex items-center gap-2">
-                          <span
-                            className="label-track text-[8px]"
-                            style={{ color: sev.color }}
-                          >
+                        <div className="mt-1.5 flex items-center gap-2 text-[11px]">
+                          <span style={{ color: sev.color }}>
                             {t.severity[event.severity]}
                           </span>
-                          <span className="text-muted-foreground/30">·</span>
-                          <span className="label-track text-[8px] text-muted-foreground">
+                          <span className="h-2.5 w-px bg-border" />
+                          <span className="text-muted-foreground">
                             {t.categories[event.category]}
                           </span>
-                          <span className="ml-auto font-mono text-[10px] text-muted-foreground/70">
+                          <span className="ml-auto text-muted-foreground/70">
                             {event.updated}
                           </span>
                         </div>
@@ -209,25 +196,31 @@ function FilterRow({
   onChange,
 }: {
   label: string;
-  options: { key: string; label: string }[];
+  options: { key: string; label: string; dot?: string }[];
   value: string;
   onChange: (value: string) => void;
 }) {
   return (
     <div>
-      <p className="label-track text-[8px] text-muted-foreground/70">{label}</p>
-      <div className="mt-1.5 flex flex-wrap gap-1">
+      <p className="label-track text-[10px] text-muted-foreground/80">{label}</p>
+      <div className="mt-1.5 flex flex-wrap gap-1.5">
         {options.map((option) => (
           <button
             key={option.key}
             type="button"
             onClick={() => onChange(option.key)}
-            className={`label-track focus-ring rounded-full px-2 py-[3px] text-[8px] transition-colors duration-200 ${
+            className={`focus-ring flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] transition-colors duration-200 ${
               value === option.key
-                ? "bg-accent text-primary"
+                ? "bg-accent text-foreground"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
+            {option.dot && (
+              <span
+                className="h-1.5 w-1.5 shrink-0 rounded-full"
+                style={{ backgroundColor: option.dot }}
+              />
+            )}
             {option.label}
           </button>
         ))}

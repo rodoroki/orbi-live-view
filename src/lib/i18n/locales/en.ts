@@ -39,6 +39,7 @@ export const en = {
     recent: "Recent events",
     searchPlaceholder: "Search event or phenomenon",
     region: "Region",
+    category: "Category",
     severity: "Severity",
     period: "Period",
     noResults: "No events match these filters.",
