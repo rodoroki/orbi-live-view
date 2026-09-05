@@ -164,7 +164,7 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
                         <p className="truncate text-[11px] text-muted-foreground">
                           {event.place}
                         </p>
-                        <div className="mt-1.5 flex items-center gap-2">
+                        <div className="mt-1.5 flex items-center gap-2 text-[11px]">
                           <span style={{ color: sev.color }}>
                             {t.severity[event.severity]}
                           </span>
