@@ -83,6 +83,19 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
       {/* filters */}
       <div className="mt-4 flex shrink-0 flex-col gap-3 px-5">
         <FilterRow
+          label={t.events.category}
+          options={[
+            { key: "all", label: t.common.all },
+            ...ALL_CATEGORIES.map((c) => ({
+              key: c,
+              label: t.categories[c],
+              dot: CATEGORY_META[c].color,
+            })),
+          ]}
+          value={category}
+          onChange={(v) => setCategory(v as EventCategory | "all")}
+        />
+        <FilterRow
           label={t.events.period}
           options={PERIODS.map((p) => ({
             key: p,
