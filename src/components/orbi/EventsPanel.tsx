@@ -199,7 +199,7 @@ function FilterRow({
   onChange,
 }: {
   label: string;
-  options: { key: string; label: string }[];
+  options: { key: string; label: string; dot?: string }[];
   value: string;
   onChange: (value: string) => void;
 }) {
