@@ -409,7 +409,7 @@ export default function GlobeView({
       const globe = globeRef.current;
       if (!globe) return;
       const pov = globe.pointOfView();
-      if (typeof window !== "undefined") (window as unknown as Record<string, unknown>)["__orbiPov"] = pov;
+      if (typeof window !== "undefined") (window as unknown as Record<string, unknown>)["__orbiPov"] = { ...pov, tiles: tileKeyRef.current };
       if (pov.altitude > DETAIL_ALTITUDE) {
         if (tileKeyRef.current !== "") {
           tileKeyRef.current = "";
