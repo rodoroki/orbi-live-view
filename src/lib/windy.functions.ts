@@ -192,7 +192,7 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
 
     const url =
       `https://api.windy.com/webcams/api/v3/webcams?nearby=${data.lat},${data.lng},${data.radiusKm}` +
-      `&limit=12&include=images,location&categories=&sortBy=distance`;
+      `&limit=12&include=images,location`;
 
     const res = await fetch(url, { headers: { "x-windy-api-key": apiKey } });
     if (!res.ok) throw new Error(`Windy webcams failed: ${res.status}`);
