@@ -205,19 +205,25 @@ function FilterRow({
 }) {
   return (
     <div>
-      <p className="label-track text-[8px] text-muted-foreground/70">{label}</p>
-      <div className="mt-1.5 flex flex-wrap gap-1">
+      <p className="label-track text-[10px] text-muted-foreground/80">{label}</p>
+      <div className="mt-1.5 flex flex-wrap gap-1.5">
         {options.map((option) => (
           <button
             key={option.key}
             type="button"
             onClick={() => onChange(option.key)}
-            className={`label-track focus-ring rounded-full px-2 py-[3px] text-[8px] transition-colors duration-200 ${
+            className={`focus-ring flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] transition-colors duration-200 ${
               value === option.key
-                ? "bg-accent text-primary"
+                ? "bg-accent text-foreground"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
+            {option.dot && (
+              <span
+                className="h-1.5 w-1.5 shrink-0 rounded-full"
+                style={{ backgroundColor: option.dot }}
+              />
+            )}
             {option.label}
           </button>
         ))}
