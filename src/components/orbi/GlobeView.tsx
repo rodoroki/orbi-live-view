@@ -111,8 +111,31 @@ function categoryColor(event: OrbiEvent) {
   return CATEGORY_META[event.category]?.color ?? "#ffffff";
 }
 
-function categoryGlyph(event: OrbiEvent) {
-  return CATEGORY_META[event.category]?.glyph ?? "•";
+type EventMarker = OrbiEvent & { active: boolean };
+
+function createEventPill(event: EventMarker, onSelect: (event: OrbiEvent) => void) {
+  const pill = document.createElement("button");
+  pill.type = "button";
+  pill.className = event.active
+    ? "group flex max-w-36 cursor-pointer items-center gap-1.5 rounded-full border border-primary/70 bg-background/95 px-2 py-1 text-foreground shadow-lg backdrop-blur-md transition-transform hover:scale-105"
+    : "group flex max-w-36 cursor-pointer items-center gap-1.5 rounded-full border border-border/70 bg-background/80 px-2 py-1 text-foreground/90 shadow-lg backdrop-blur-md transition-transform hover:scale-105";
+  pill.setAttribute("aria-label", `${CATEGORY_META[event.category].label} · ${event.place}`);
+
+  const signal = document.createElement("span");
+  signal.className = "block h-1.5 w-1.5 shrink-0 rounded-full";
+  signal.style.backgroundColor = categoryColor(event);
+  signal.style.boxShadow = `0 0 ${event.active ? 14 : 8}px ${categoryColor(event)}`;
+
+  const label = document.createElement("span");
+  label.className = "truncate text-[10px] font-medium leading-none";
+  label.textContent = event.place;
+
+  pill.append(signal, label);
+  pill.addEventListener("click", (clickEvent) => {
+    clickEvent.stopPropagation();
+    onSelect(event);
+  });
+  return pill;
 }
 
 // -----------------------------------------------------------------------------
@@ -561,6 +584,10 @@ export default function GlobeView({
   const signals = events
     .filter((e) => e.priority === 1 && e.detectedMinutesAgo <= 1440)
     .slice(0, 8);
+  const eventMarkers: EventMarker[] = events.map((event) => ({
+    ...event,
+    active: event.id === selected?.id,
+  }));
   const focusRings: { lat: number; lng: number; category?: string }[] = focus
     ? [...signals, { lat: focus.lat, lng: focus.lng }]
     : signals;
@@ -620,22 +647,12 @@ export default function GlobeView({
             const l = d as CountryLabel;
             onPickRegion?.({ lat: l.lat, lng: l.lng, name: l.name });
           }}
-          // Observation Layer — pontos
-          pointsData={events}
-          pointLat="lat"
-          pointLng="lng"
-          pointColor={(d: object) => categoryColor(d as OrbiEvent)}
-          pointAltitude={(d: object) =>
-            (d as OrbiEvent).id === selected?.id ? 0.09 : 0.02
-          }
-          pointRadius={(d: object) =>
-            (d as OrbiEvent).id === selected?.id ? 0.3 : 0.12
-          }
-          pointsMerge={false}
-          pointLabel={(d: object) =>
-            `${categoryGlyph(d as OrbiEvent)} ${(d as OrbiEvent).place}`
-          }
-          onPointClick={(d: object) => onSelect(d as OrbiEvent)}
+          // Observation Layer — pastilhas identificáveis e interativas
+          htmlElementsData={eventMarkers}
+          htmlLat="lat"
+          htmlLng="lng"
+          htmlAltitude={(d: object) => ((d as EventMarker).active ? 0.035 : 0.018)}
+          htmlElement={(d: object) => createEventPill(d as EventMarker, onSelect)}
           // Observation Layer — sinais: um pulso discreto, com pausa
           ringsData={focusRings}
           ringLat="lat"
