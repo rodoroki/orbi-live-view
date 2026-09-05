@@ -91,6 +91,18 @@ export function mapWindyToMetrics(json: WindyResponse): Metric[] {
       ),
     );
   }
+  const precip = pick(json["past3hprecip-surface"]);
+  if (precip != null) {
+    // metros acumulados em 3 h → mm/h
+    const mmPerHour = (precip * 1000) / 3;
+    metrics.push(
+      makeMetric(
+        "precipitation",
+        `${mmPerHour.toFixed(1).replace(".", ",")} mm/h`,
+        toSeries(json["past3hprecip-surface"]),
+      ),
+    );
+  }
   const rh = pick(json["rh-surface"]);
   if (rh != null) {
     metrics.push(
