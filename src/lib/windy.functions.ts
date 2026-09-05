@@ -14,6 +14,7 @@ type WindyResponse = {
   "lclouds-surface"?: number[];
   "mclouds-surface"?: number[];
   "hclouds-surface"?: number[];
+  "past3hprecip-surface"?: number[];
 };
 
 const MS_TO_KNOTS = 1.94384;
@@ -87,6 +88,18 @@ export function mapWindyToMetrics(json: WindyResponse): Metric[] {
         "pressure",
         `${Math.round(pressure / 100)} hPa`,
         toSeries(json["pressure-surface"]),
+      ),
+    );
+  }
+  const precip = pick(json["past3hprecip-surface"]);
+  if (precip != null) {
+    // metros acumulados em 3 h → mm/h
+    const mmPerHour = (precip * 1000) / 3;
+    metrics.push(
+      makeMetric(
+        "precipitation",
+        `${mmPerHour.toFixed(1).replace(".", ",")} mm/h`,
+        toSeries(json["past3hprecip-surface"]),
       ),
     );
   }

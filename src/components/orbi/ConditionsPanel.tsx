@@ -49,8 +49,13 @@ export default function ConditionsPanel({
     coords?.lng ?? null,
   );
   const isLive = tab === "atmosphere" && isSuccess && !!liveMetrics;
+  // mantém as 8 linhas atmosféricas, substituindo pelas medidas ao vivo quando existem
   const metrics =
-    tab === "atmosphere" ? (liveMetrics ?? ATMOSPHERE_METRICS) : OCEAN_METRICS;
+    tab === "ocean"
+      ? OCEAN_METRICS
+      : ATMOSPHERE_METRICS.map(
+          (m) => liveMetrics?.find((live) => live.key === m.key) ?? m,
+        );
 
   return (
     <div className="surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-4 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-80 md:p-5 md:animate-rise">
