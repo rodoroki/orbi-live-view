@@ -54,8 +54,8 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
   }, [events, query, category, region, severity, period, t]);
 
   return (
-    <aside className="surface-panel absolute inset-x-3 bottom-20 z-20 flex max-h-[58vh] flex-col overflow-hidden rounded-md animate-sheet-up md:inset-x-auto md:bottom-24 md:left-20 md:top-20 md:z-10 md:max-h-none md:w-[300px] md:animate-rise">
-      <div className="flex items-start justify-between px-5 pt-5">
+    <aside className="surface-panel absolute inset-x-3 bottom-20 z-20 flex max-h-[72vh] flex-col overflow-hidden rounded-md animate-sheet-up md:inset-x-auto md:bottom-24 md:left-20 md:top-20 md:z-10 md:max-h-none md:w-[300px] md:animate-rise">
+      <div className="flex shrink-0 items-start justify-between px-5 pt-5">
         <p className="label-track text-primary">{t.events.panelTitle}</p>
         <button
           type="button"
@@ -68,7 +68,7 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
       </div>
 
       {/* counts */}
-      <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1.5 px-5">
+      <div className="mt-4 grid shrink-0 grid-cols-2 gap-x-4 gap-y-1.5 px-5">
         {(Object.keys(CATEGORY_COUNTS) as EventCategory[]).map((key) => (
           <button
             key={key}
@@ -91,7 +91,7 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
       </div>
 
       {/* search */}
-      <div className="mt-5 px-5">
+      <div className="mt-5 shrink-0 px-5">
         <div className="flex items-center gap-2 rounded-sm border border-border/60 bg-background/40 px-2.5 py-2">
           <Search className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.4} />
           <input
@@ -104,7 +104,7 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
       </div>
 
       {/* filters */}
-      <div className="mt-4 flex flex-col gap-3 px-5">
+      <div className="mt-4 flex shrink-0 flex-col gap-3 px-5">
         <FilterRow
           label={t.events.period}
           options={PERIODS.map((p) => ({
@@ -135,14 +135,15 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
       </div>
 
       {/* list */}
-      <div className="mt-5 flex items-baseline justify-between border-t border-border/60 px-5 pt-4">
+      <div className="mt-5 flex shrink-0 items-baseline justify-between border-t border-border/60 px-5 pt-4">
+
         <p className="label-track text-muted-foreground">{t.events.recent}</p>
         <span className="font-mono text-[10px] text-muted-foreground/70">
           {format(t.events.resultCount, { count: filtered.length })}
         </span>
       </div>
 
-      <div className="mt-1 flex-1 overflow-y-auto px-5 pb-5">
+      <div className="mt-1 min-h-[10rem] flex-1 overflow-y-auto px-5 pb-5">
         {filtered.length === 0 ? (
           <p className="py-6 text-xs text-muted-foreground/70">{t.events.noResults}</p>
         ) : (

@@ -1,6 +1,7 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ClientOnly } from "@tanstack/react-router";
+
 import {
   CategoryFilters,
   ContextCard,
@@ -239,6 +240,7 @@ function Index() {
       {layersOpen && (
         <LayersPanel
           active={layers}
+          onClose={() => setLayersOpen(false)}
           onToggle={(l) =>
             setLayers((prev) =>
               prev.includes(l) ? prev.filter((x) => x !== l) : [...prev, l],
@@ -249,6 +251,7 @@ function Index() {
       {filtersOpen && (
         <CategoryFilters
           active={active}
+          onClose={() => setFiltersOpen(false)}
           onToggle={(c) =>
             setActive((prev) =>
               prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c],
@@ -256,6 +259,7 @@ function Index() {
           }
         />
       )}
+
       {panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
         <ContextCard
           event={selected}
@@ -268,9 +272,25 @@ function Index() {
         {isLive ? t.common.liveData : t.common.simulatedData}
       </p>
 
+      {/* Crédito de fonte — discreto, porém visível: credibilidade da informação */}
+      <Link
+        to="/sobre"
+        className="focus-ring absolute bottom-5 left-4 z-10 hidden items-center gap-2 rounded-full border border-border/50 bg-background/40 px-3 py-1.5 backdrop-blur transition-colors duration-200 hover:border-primary/40 md:flex"
+      >
+        <span className="relative flex h-1.5 w-1.5">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/70" />
+          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+        </span>
+        <span className="label-track text-[9px] text-foreground/80">NASA EONET</span>
+        <span className="text-muted-foreground/30">·</span>
+        <span className="label-track text-[9px] text-muted-foreground/70">
+          Windy · Esri · USGS
+        </span>
+      </Link>
     </div>
   );
 }
+
 
 function StageFallback() {
   return (

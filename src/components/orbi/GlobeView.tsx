@@ -37,7 +37,7 @@ const SUN_UPDATE_MS = 60_000; // recalcula a posição do sol a cada minuto
 
 const DEFAULT_VIEW = { lat: 8, lng: -40, altitude: 2.4 };
 
-const MIN_ALTITUDE = 0.35;
+const MIN_ALTITUDE = 0.05;
 const MAX_ALTITUDE = 4.0;
 
 const ZOOM_IN_FACTOR = 0.68;
@@ -48,6 +48,25 @@ const RESET_ANIMATION_MS = 1200;
 const SELECT_ANIMATION_MS = 1200;
 const SELECT_ALTITUDE = 0.85;
 const AUTO_ROTATE_SPEED = 0.18;
+
+// -----------------------------------------------------------------------------
+// DETAIL TILES — imagery de alta resolução + fronteiras/cidades ao aproximar
+// -----------------------------------------------------------------------------
+//
+// Abaixo de DETAIL_ALTITUDE trocamos a textura global (baixa resolução quando
+// ampliada) por tiles slippy-map: imagery de satélite + camada de referência
+// com limites de estados/municípios e nomes de cidades.
+//
+const DETAIL_ALTITUDE = 0.75;
+const TILE_SPAN = 2; // (2*span+1)^2 tiles ao redor do centro
+const TILE_MIN_Z = 3;
+const TILE_MAX_Z = 9;
+
+const IMAGERY_URL =
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile";
+const REFERENCE_URL =
+  "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile";
+
 
 // -----------------------------------------------------------------------------
 // TYPES
@@ -93,6 +112,126 @@ function categoryColor(event: OrbiEvent) {
 function categoryGlyph(event: OrbiEvent) {
   return CATEGORY_META[event.category]?.glyph ?? "•";
 }
+
+// -----------------------------------------------------------------------------
+// TILE MATH — slippy map (Web Mercator) → retângulos lat/lng no globo
+// -----------------------------------------------------------------------------
+
+type DetailTile = {
+  key: string;
+  lat: number;
+  lng: number;
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+  z: number;
+};
+
+function tileToLng(x: number, z: number) {
+  return (x / 2 ** z) * 360 - 180;
+}
+
+function tileToLat(y: number, z: number) {
+  const n = Math.PI - (2 * Math.PI * y) / 2 ** z;
+  return (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
+}
+
+function zoomForAltitude(altitude: number) {
+  const z = Math.round(Math.log2(2.2 / Math.max(altitude, 0.02))) + 1;
+  return Math.min(TILE_MAX_Z, Math.max(TILE_MIN_Z, z));
+}
+
+function tilesAround(lat: number, lng: number, z: number): DetailTile[] {
+  const n = 2 ** z;
+  const latRad = (Math.max(-85, Math.min(85, lat)) * Math.PI) / 180;
+  const cx = Math.floor(((lng + 180) / 360) * n);
+  const cy = Math.floor(
+    ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n,
+  );
+
+  const tiles: DetailTile[] = [];
+  for (let dx = -TILE_SPAN; dx <= TILE_SPAN; dx++) {
+    for (let dy = -TILE_SPAN; dy <= TILE_SPAN; dy++) {
+      const y = cy + dy;
+      if (y < 0 || y >= n) continue;
+      const x = ((cx + dx) % n + n) % n;
+      const lngL = tileToLng(cx + dx, z);
+      const lngR = tileToLng(cx + dx + 1, z);
+      const latT = tileToLat(y, z);
+      const latB = tileToLat(y + 1, z);
+      tiles.push({
+        key: `${z}/${x}/${y}`,
+        x,
+        y,
+        z,
+        lng: (lngL + lngR) / 2,
+        lat: (latT + latB) / 2,
+        width: lngR - lngL,
+        height: latT - latB,
+      });
+    }
+  }
+  return tiles;
+}
+
+// Material do tile: imagery de satélite + camada de referência
+// (fronteiras de estados/municípios e nomes de cidades) por cima.
+const TILE_VERTEX = /* glsl */ `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const TILE_FRAGMENT = /* glsl */ `
+  uniform sampler2D imagery;
+  uniform sampler2D reference;
+  uniform float opacity;
+  varying vec2 vUv;
+  void main() {
+    vec3 base = texture2D(imagery, vUv).rgb;
+    vec4 ref = texture2D(reference, vUv);
+    vec3 color = mix(base, ref.rgb, ref.a * 0.9);
+    gl_FragColor = vec4(color, opacity);
+  }
+`;
+
+const tileMaterialCache = new Map<string, THREE.ShaderMaterial>();
+
+function getTileMaterial(tile: DetailTile) {
+  const cached = tileMaterialCache.get(tile.key);
+  if (cached) return cached;
+
+  const loader = new THREE.TextureLoader();
+  loader.setCrossOrigin("anonymous");
+  const path = `/${tile.z}/${tile.y}/${tile.x}`;
+  const imagery = loader.load(`${IMAGERY_URL}${path}`);
+  const reference = loader.load(`${REFERENCE_URL}${path}`);
+  imagery.colorSpace = THREE.SRGBColorSpace;
+  reference.colorSpace = THREE.SRGBColorSpace;
+  imagery.anisotropy = 8;
+
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      imagery: { value: imagery },
+      reference: { value: reference },
+      opacity: { value: 1 },
+    },
+    vertexShader: TILE_VERTEX,
+    fragmentShader: TILE_FRAGMENT,
+    transparent: true,
+  });
+
+  tileMaterialCache.set(tile.key, material);
+  if (tileMaterialCache.size > 400) {
+    const oldest = tileMaterialCache.keys().next().value;
+    if (oldest) tileMaterialCache.delete(oldest);
+  }
+  return material;
+}
+
 
 // -----------------------------------------------------------------------------
 // SUN — posição sub-solar aproximada (lat/lng) e conversão para vetor 3D
@@ -258,6 +397,38 @@ export default function GlobeView({
   }, [showRegions, labels.length]);
 
   // ---------------------------------------------------------------------------
+  // DETAIL TILES — acompanha a câmera e carrega imagery + referência
+  // ---------------------------------------------------------------------------
+
+  const [tiles, setTiles] = useState<DetailTile[]>([]);
+  const tileKeyRef = useRef("");
+
+  useEffect(() => {
+    if (size.width === 0) return;
+    const timer = setInterval(() => {
+      const globe = globeRef.current;
+      if (!globe) return;
+      const pov = globe.pointOfView();
+      if (typeof window !== "undefined") (window as unknown as Record<string, unknown>)["__orbiPov"] = pov;
+      if (pov.altitude > DETAIL_ALTITUDE) {
+        if (tileKeyRef.current !== "") {
+          tileKeyRef.current = "";
+          setTiles([]);
+        }
+        return;
+      }
+      const z = zoomForAltitude(pov.altitude);
+      const next = tilesAround(pov.lat, pov.lng, z);
+      const key = next[0] ? `${z}:${next[0].key}` : "";
+      if (key !== tileKeyRef.current) {
+        tileKeyRef.current = key;
+        setTiles(next);
+      }
+    }, 350);
+    return () => clearInterval(timer);
+  }, [size.width]);
+
+  // ---------------------------------------------------------------------------
   // RESPONSIVE SIZE
   // ---------------------------------------------------------------------------
 
@@ -271,6 +442,7 @@ export default function GlobeView({
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+
 
   // ---------------------------------------------------------------------------
   // GLOBE INITIALIZATION + PUBLIC API
@@ -360,6 +532,16 @@ export default function GlobeView({
           // Atmosphere
           atmosphereColor={ATMOSPHERE_COLOR}
           atmosphereAltitude={ATMOSPHERE_ALTITUDE}
+          // Detail Layer — imagery de alta resolução + estados/cidades ao aproximar
+          tilesData={tiles}
+          tileLat="lat"
+          tileLng="lng"
+          tileWidth="width"
+          tileHeight="height"
+          tileAltitude={0.003}
+          tileMaterial={(d: object) => getTileMaterial(d as DetailTile)}
+          tilesTransitionDuration={250}
+
           // Region Layer — fronteiras e nomes
           polygonsData={showRegions ? countries.features : []}
           polygonAltitude={0.006}
