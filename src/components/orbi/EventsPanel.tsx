@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import {
-  CATEGORY_COUNTS,
   CATEGORY_META,
   PERIODS,
   PERIOD_MINUTES,
