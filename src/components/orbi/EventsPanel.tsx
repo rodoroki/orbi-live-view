@@ -67,29 +67,6 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
         </button>
       </div>
 
-      {/* counts */}
-      <div className="mt-4 grid shrink-0 grid-cols-2 gap-x-4 gap-y-1.5 px-5">
-        {(Object.keys(CATEGORY_COUNTS) as EventCategory[]).map((key) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setCategory((c) => (c === key ? "all" : key))}
-            className={`focus-ring flex items-baseline justify-between gap-2 border-b border-border/40 py-1 text-left transition-colors duration-200 ${
-              category === key ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <span className="flex items-center gap-1.5">
-              <span
-                className="h-1.5 w-1.5 rounded-full"
-                style={{ backgroundColor: CATEGORY_META[key].color }}
-              />
-              <span className="label-track text-[9px]">{t.categories[key]}</span>
-            </span>
-            <span className="font-mono text-xs">{CATEGORY_COUNTS[key]}</span>
-          </button>
-        ))}
-      </div>
-
       {/* search */}
       <div className="mt-5 shrink-0 px-5">
         <div className="flex items-center gap-2 rounded-sm border border-border/60 bg-background/40 px-2.5 py-2">
