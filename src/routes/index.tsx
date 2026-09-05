@@ -174,14 +174,6 @@ function Index() {
 
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ background: "var(--gradient-void)" }}>
-      <div
-        className="pointer-events-none absolute inset-0 opacity-50"
-        style={{
-          backgroundImage:
-            "linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px)",
-          backgroundSize: "84px 84px",
-        }}
-      />
 
       <div className="absolute inset-0">
         {mode === "globe" ? (
