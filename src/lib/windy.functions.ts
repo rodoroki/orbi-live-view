@@ -14,6 +14,7 @@ type WindyResponse = {
   "lclouds-surface"?: number[];
   "mclouds-surface"?: number[];
   "hclouds-surface"?: number[];
+  "past3hprecip-surface"?: number[];
 };
 
 const MS_TO_KNOTS = 1.94384;
