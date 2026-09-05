@@ -57,7 +57,7 @@ const AUTO_ROTATE_SPEED = 0.18;
 // ampliada) por tiles slippy-map: imagery de satélite + camada de referência
 // com limites de estados/municípios e nomes de cidades.
 //
-const DETAIL_ALTITUDE = 9;
+const DETAIL_ALTITUDE = 1.1;
 const TILE_SPAN = 2; // (2*span+1)^2 tiles ao redor do centro
 const TILE_MIN_Z = 3;
 const TILE_MAX_Z = 9;
@@ -409,7 +409,6 @@ export default function GlobeView({
       const globe = globeRef.current;
       if (!globe) return;
       const pov = globe.pointOfView();
-      if (typeof window !== "undefined") (window as unknown as Record<string, unknown>)["__orbiPov"] = { ...pov, tiles: tileKeyRef.current };
       if (pov.altitude > DETAIL_ALTITUDE) {
         if (tileKeyRef.current !== "") {
           tileKeyRef.current = "";
