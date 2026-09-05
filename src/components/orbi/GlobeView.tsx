@@ -199,10 +199,13 @@ const TILE_FRAGMENT = /* glsl */ `
   varying vec2 vUv;
   void main() {
     vec3 base = texture2D(imagery, vUv).rgb;
+    // leve realce para manter legibilidade sobre a base noturna
+    base = pow(base, vec3(0.88)) * 1.22;
     vec4 ref = texture2D(reference, vUv);
     vec3 color = mix(base, ref.rgb, ref.a * 0.9);
-    gl_FragColor = vec4(color, opacity);
+    gl_FragColor = vec4(min(color, vec3(1.0)), opacity);
   }
+
 `;
 
 const tileMaterialCache = new Map<string, THREE.ShaderMaterial>();
