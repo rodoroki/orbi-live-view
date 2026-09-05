@@ -172,7 +172,7 @@ export const getWindyPointForecast = createServerFn({ method: "GET" })
   });
 
 /**
- * Integração Windy — Webcams API v2.
+ * Integração Windy — Webcams API v3.
  * Lista webcams próximas de uma coordenada.
  * Documentação: https://api.windy.com/webcams/docs
  */
@@ -182,7 +182,7 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
       .object({
         lat: z.number().min(-90).max(90),
         lng: z.number().min(-180).max(180),
-        radiusKm: z.number().min(10).max(250).default(100),
+        radiusKm: z.number().min(10).max(250).default(150),
       })
       .parse(data),
   )
@@ -190,27 +190,27 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
     const apiKey = process.env["WINDY_WEBCAMS_API_KEY"];
     if (!apiKey) throw new Error("WINDY_WEBCAMS_API_KEY missing");
 
-    const res = await fetch(
-      `https://api.windy.com/api/webcams/v2/list/nearby=${data.lat},${data.lng},${data.radiusKm}?key=${apiKey}`,
-    );
+    const url =
+      `https://api.windy.com/webcams/api/v3/webcams?nearby=${data.lat},${data.lng},${data.radiusKm}` +
+      `&limit=12&include=images,location&categories=&sortBy=distance`;
 
+    const res = await fetch(url, { headers: { "x-windy-api-key": apiKey } });
     if (!res.ok) throw new Error(`Windy webcams failed: ${res.status}`);
+
     const json = (await res.json()) as {
-      result?: {
-        webcams?: {
-          id?: string | number;
-          title?: string;
-          image?: { current?: { preview?: string } };
-          location?: { latitude?: number; longitude?: number };
-        }[];
-      };
+      webcams?: {
+        webcamId?: number | string;
+        title?: string;
+        images?: { current?: { preview?: string; thumbnail?: string } };
+        location?: { latitude?: number; longitude?: number; city?: string };
+      }[];
     };
 
-    const webcams: WindyWebcam[] = (json.result?.webcams ?? [])
+    const webcams: WindyWebcam[] = (json.webcams ?? [])
       .map((w) => ({
-        id: String(w.id ?? ""),
-        title: w.title ?? "Webcam",
-        imageUrl: w.image?.current?.preview ?? null,
+        id: String(w.webcamId ?? ""),
+        title: w.title ?? w.location?.city ?? "Webcam",
+        imageUrl: w.images?.current?.preview ?? w.images?.current?.thumbnail ?? null,
         lat: w.location?.latitude ?? data.lat,
         lng: w.location?.longitude ?? data.lng,
       }))
@@ -218,3 +218,4 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
 
     return { webcams };
   });
+

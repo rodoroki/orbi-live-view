@@ -1,15 +1,43 @@
 import { useState } from "react";
 import { X } from "lucide-react";
-import { WEATHER_LAYERS } from "@/lib/conditions";
+import { WEATHER_LAYERS, type MetricKey } from "@/lib/conditions";
 import { useTranslation } from "@/lib/i18n";
 
+/** Camadas do painel → overlays do mapa Windy */
+const WINDY_OVERLAY: Record<string, string> = {
+  wind: "wind",
+  temperature: "temp",
+  precipitation: "rain",
+  pressure: "pressure",
+  waves: "waves",
+  swell: "swell1",
+  cloud: "clouds",
+  humidity: "rh",
+};
+
 /**
- * Superfície reservada ao futuro provedor de mapas meteorológicos (Windy).
- * Nenhuma integração externa nesta etapa — apenas a experiência visual.
+ * Mapa meteorológico ao vivo — Windy embed (camadas globais animadas).
  */
-export default function WeatherMapOverlay({ onClose }: { onClose: () => void }) {
-  const { t } = useTranslation();
-  const [layer, setLayer] = useState(WEATHER_LAYERS[0]);
+export default function WeatherMapOverlay({
+  onClose,
+  coords,
+}: {
+  onClose: () => void;
+  coords: { lat: number; lng: number } | null;
+}) {
+  const { t, locale } = useTranslation();
+  const [layer, setLayer] = useState<MetricKey>(WEATHER_LAYERS[0]!);
+
+  const lat = coords?.lat ?? -15.8;
+  const lng = coords?.lng ?? -47.9;
+  const overlay = WINDY_OVERLAY[layer] ?? "wind";
+  const lang = locale === "pt-BR" ? "pt" : locale;
+  const src =
+    `https://embed.windy.com/embed2.html?lat=${lat.toFixed(3)}&lon=${lng.toFixed(3)}` +
+    `&detailLat=${lat.toFixed(3)}&detailLon=${lng.toFixed(3)}&width=100%25&height=100%25` +
+    `&zoom=5&level=surface&overlay=${overlay}&product=ecmwf&menu=&message=true&marker=true` +
+    `&calendar=now&pressure=&type=map&location=coordinates&detail=true` +
+    `&metricWind=default&metricTemp=default&radarRange=-1&lang=${lang}`;
 
   return (
     <div className="absolute inset-0 z-30 flex items-center justify-center p-3 md:p-8">
@@ -54,28 +82,19 @@ export default function WeatherMapOverlay({ onClose }: { onClose: () => void }) 
         </div>
 
         <div className="relative mt-4 flex-1 overflow-hidden rounded-md border border-border">
-          <div
-            className="absolute inset-0 opacity-60"
-            style={{
-              backgroundImage: "url(/textures/earth-night.jpg)",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
+          <iframe
+            key={`${overlay}-${lat.toFixed(2)}-${lng.toFixed(2)}`}
+            title={t.conditions.weatherMapTitle}
+            src={src}
+            className="h-full w-full"
+            loading="lazy"
+            frameBorder={0}
           />
-          <div
-            className="pointer-events-none absolute inset-0 opacity-40"
-            style={{
-              backgroundImage:
-                "linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px)",
-              backgroundSize: "72px 72px",
-            }}
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <p className="label-track max-w-sm text-center text-[9px] leading-loose text-muted-foreground">
-              {t.conditions.weatherMapBody}
-            </p>
-          </div>
         </div>
+
+        <p className="label-track mt-3 text-[9px] text-muted-foreground/70">
+          {t.common.live} · WINDY
+        </p>
       </div>
     </div>
   );
