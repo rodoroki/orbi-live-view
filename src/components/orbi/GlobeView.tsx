@@ -37,8 +37,9 @@ const SUN_UPDATE_MS = 60_000; // recalcula a posição do sol a cada minuto
 
 const DEFAULT_VIEW = { lat: 8, lng: -40, altitude: 2.4 };
 
-const MIN_ALTITUDE = 0.05;
+const MIN_ALTITUDE = 0.012;
 const MAX_ALTITUDE = 4.0;
+
 
 const ZOOM_IN_FACTOR = 0.68;
 const ZOOM_OUT_FACTOR = 1.42;
@@ -57,10 +58,11 @@ const AUTO_ROTATE_SPEED = 0.18;
 // ampliada) por tiles slippy-map: imagery de satélite + camada de referência
 // com limites de estados/municípios e nomes de cidades.
 //
-const DETAIL_ALTITUDE = 1.1;
-const TILE_SPAN = 2; // (2*span+1)^2 tiles ao redor do centro
-const TILE_MIN_Z = 3;
-const TILE_MAX_Z = 9;
+const DETAIL_ALTITUDE = 1.3;
+const TILE_SPAN = 3; // (2*span+1)^2 tiles ao redor do centro
+const TILE_MIN_Z = 4;
+const TILE_MAX_Z = 13;
+
 
 const IMAGERY_URL =
   "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile";
@@ -138,9 +140,14 @@ function tileToLat(y: number, z: number) {
 }
 
 function zoomForAltitude(altitude: number) {
-  const z = Math.round(Math.log2(2.2 / Math.max(altitude, 0.02))) + 1;
+  // largura angular aproximada do campo de visão (graus) para a altitude atual,
+  // com a altitude expressa em raios terrestres.
+  const visibleDeg = Math.max(0.05, 57.3 * altitude);
+  // queremos ~5 tiles cobrindo a largura visível
+  const z = Math.round(Math.log2((360 * 5) / visibleDeg));
   return Math.min(TILE_MAX_Z, Math.max(TILE_MIN_Z, z));
 }
+
 
 function tilesAround(lat: number, lng: number, z: number): DetailTile[] {
   const n = 2 ** z;
@@ -192,10 +199,13 @@ const TILE_FRAGMENT = /* glsl */ `
   varying vec2 vUv;
   void main() {
     vec3 base = texture2D(imagery, vUv).rgb;
+    // leve realce para manter legibilidade sobre a base noturna
+    base = pow(base, vec3(0.88)) * 1.22;
     vec4 ref = texture2D(reference, vUv);
     vec3 color = mix(base, ref.rgb, ref.a * 0.9);
-    gl_FragColor = vec4(color, opacity);
+    gl_FragColor = vec4(min(color, vec3(1.0)), opacity);
   }
+
 `;
 
 const tileMaterialCache = new Map<string, THREE.ShaderMaterial>();
@@ -539,10 +549,10 @@ export default function GlobeView({
           tileHeight="height"
           tileAltitude={0.003}
           tileMaterial={(d: object) => getTileMaterial(d as DetailTile)}
-          tilesTransitionDuration={250}
+          tilesTransitionDuration={0}
 
           // Region Layer — fronteiras e nomes
-          polygonsData={showRegions ? countries.features : []}
+          polygonsData={showRegions && tiles.length === 0 ? countries.features : []}
           polygonAltitude={0.006}
           polygonCapColor={() => "rgba(0,0,0,0)"}
           polygonSideColor={() => "rgba(0,0,0,0)"}
@@ -558,7 +568,7 @@ export default function GlobeView({
           }}
           polygonsTransitionDuration={0}
           // Region Layer — rótulos
-          labelsData={showRegions ? labels.filter((l) => l.size > 2) : []}
+          labelsData={showRegions && tiles.length === 0 ? labels.filter((l) => l.size > 2) : []}
           labelLat="lat"
           labelLng="lng"
           labelText="name"
