@@ -146,7 +146,8 @@ export const getWindyPointForecast = createServerFn({ method: "GET" })
         lat: data.lat,
         lon: data.lng,
         model: "gfs",
-        parameters: ["temp", "wind", "rh", "pressure", "lclouds", "mclouds", "hclouds", "gust", "ptype"],
+        // "gust" não é suportado pelo modelo GFS na Point Forecast API
+        parameters: ["temp", "wind", "rh", "pressure", "precip", "lclouds", "mclouds", "hclouds", "ptype"],
         levels: ["surface"],
         key: apiKey,
       }),
