@@ -23,8 +23,11 @@ import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
 
 const EARTH_DAY = "/textures/earth-day.jpg";
 const EARTH_NIGHT = "/textures/earth-night.jpg";
-const ATMOSPHERE_COLOR = "#4fd6c2";
-const ATMOSPHERE_ALTITUDE = 0.18;
+const ATMOSPHERE_COLOR = "#63b3ff";
+const ATMOSPHERE_ALTITUDE = 0.22;
+
+const BORDER_COLOR = "rgba(120, 200, 220, 0.32)";
+const LABEL_COLOR = "rgba(198, 226, 236, 0.72)";
 
 const SUN_UPDATE_MS = 60_000; // recalcula a posição do sol a cada minuto
 
@@ -53,6 +56,7 @@ const AUTO_ROTATE_SPEED = 0.18;
 type GlobeApi = {
   zoom: (direction: 1 | -1) => void;
   reset: () => void;
+  flyTo: (lat: number, lng: number, altitude?: number) => void;
 };
 
 type Props = {
@@ -60,6 +64,11 @@ type Props = {
   selected: OrbiEvent | null;
   onSelect: (event: OrbiEvent) => void;
   onReady?: (api: GlobeApi) => void;
+  /** ponto focado pela busca de região */
+  focus?: { lat: number; lng: number; name: string } | null;
+  /** exibe fronteiras e nomes de países */
+  showRegions?: boolean;
+  onPickRegion?: (place: { lat: number; lng: number; name: string }) => void;
 };
 
 type Controls = {
@@ -134,14 +143,29 @@ const DAY_NIGHT_FRAGMENT = /* glsl */ `
   varying vec3 vNormal;
   varying vec2 vUv;
   void main() {
-    vec3 dayColor = texture2D(dayTexture, vUv).rgb;
-    // realça as luzes urbanas no lado noturno
-    vec3 nightColor = texture2D(nightTexture, vUv).rgb * 1.35;
+    // --- LADO DIA: mais claro e com oceanos mais azuis (Terra vista do espaço)
+    vec3 day = texture2D(dayTexture, vUv).rgb;
+    day = pow(day, vec3(0.82)) * 1.45;
+    float ocean = clamp((day.b - day.r) * 2.2, 0.0, 1.0);
+    day = mix(day, day * vec3(0.62, 0.95, 1.5), ocean * 0.75);
+    day = min(day, vec3(1.0));
+
+    // --- LADO NOITE: luzes urbanas bem mais vivas sobre um azul profundo
+    vec3 raw = texture2D(nightTexture, vUv).rgb;
+    float lum = dot(raw, vec3(0.299, 0.587, 0.114));
+    vec3 lights = pow(raw, vec3(0.75)) * 3.2 * vec3(1.0, 0.84, 0.55) * smoothstep(0.02, 0.35, lum);
+    vec3 nightBase = vec3(0.035, 0.075, 0.13) + raw * 0.6;
+    vec3 night = nightBase + lights;
+
     float cosine = dot(normalize(vNormal), normalize(sunDirection));
-    // penumbra suave no terminador (crepúsculo)
-    float mixAmount = smoothstep(-0.15, 0.25, cosine);
-    vec3 color = mix(nightColor, dayColor, mixAmount);
-    gl_FragColor = vec4(color, 1.0);
+    float mixAmount = smoothstep(-0.22, 0.32, cosine);
+    vec3 color = mix(night, day, mixAmount);
+
+    // brilho azulado no crepúsculo
+    float twilight = 1.0 - abs(cosine * 4.0);
+    color += vec3(0.06, 0.14, 0.26) * clamp(twilight, 0.0, 1.0) * 0.9;
+
+    gl_FragColor = vec4(min(color, vec3(1.0)), 1.0);
   }
 `;
 
@@ -176,7 +200,17 @@ function updateSunDirection(material: THREE.ShaderMaterial) {
 // COMPONENT
 // -----------------------------------------------------------------------------
 
-export default function GlobeView({ events, selected, onSelect, onReady }: Props) {
+type CountryLabel = { name: string; continent: string; lat: number; lng: number; size: number };
+
+export default function GlobeView({
+  events,
+  selected,
+  onSelect,
+  onReady,
+  focus,
+  showRegions = true,
+  onPickRegion,
+}: Props) {
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -197,6 +231,31 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
     const timer = setInterval(() => updateSunDirection(material), SUN_UPDATE_MS);
     return () => clearInterval(timer);
   }, [material]);
+
+  // ---------------------------------------------------------------------------
+  // REGIONS — fronteiras de países e rótulos
+  // ---------------------------------------------------------------------------
+
+  const [countries, setCountries] = useState<{ features: object[] }>({ features: [] });
+  const [labels, setLabels] = useState<CountryLabel[]>([]);
+
+  useEffect(() => {
+    if (!showRegions || labels.length > 0) return;
+    let alive = true;
+    Promise.all([
+      fetch("/geo/countries.geo.json").then((r) => r.json()),
+      fetch("/geo/country-labels.json").then((r) => r.json()),
+    ])
+      .then(([geo, lbl]) => {
+        if (!alive) return;
+        setCountries(geo as { features: object[] });
+        setLabels(lbl as CountryLabel[]);
+      })
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, [showRegions, labels.length]);
 
   // ---------------------------------------------------------------------------
   // RESPONSIVE SIZE
@@ -243,6 +302,10 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
         (globe.controls() as unknown as Controls).autoRotate = true;
         globe.pointOfView(DEFAULT_VIEW, RESET_ANIMATION_MS);
       },
+      flyTo: (lat, lng, altitude = SELECT_ALTITUDE) => {
+        (globe.controls() as unknown as Controls).autoRotate = false;
+        globe.pointOfView({ lat, lng, altitude: clampAltitude(altitude) }, SELECT_ANIMATION_MS);
+      },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [size.width > 0]);
@@ -261,11 +324,27 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
     );
   }, [selected]);
 
+  // FOCUS — ponto escolhido na busca de região
+  // ---------------------------------------------------------------------------
+
+  useEffect(() => {
+    const globe = globeRef.current;
+    if (!globe || !focus) return;
+    (globe.controls() as unknown as Controls).autoRotate = false;
+    globe.pointOfView(
+      { lat: focus.lat, lng: focus.lng, altitude: 1.2 },
+      SELECT_ANIMATION_MS,
+    );
+  }, [focus]);
+
   // ---------------------------------------------------------------------------
   // RENDER
   // ---------------------------------------------------------------------------
 
   const priorityEvents = events.filter((e) => e.priority === 1);
+  const focusRings: { lat: number; lng: number; category?: string }[] = focus
+    ? [...priorityEvents, { lat: focus.lat, lng: focus.lng }]
+    : priorityEvents;
 
   return (
     <div ref={wrapRef} className="h-full w-full">
@@ -281,6 +360,36 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
           // Atmosphere
           atmosphereColor={ATMOSPHERE_COLOR}
           atmosphereAltitude={ATMOSPHERE_ALTITUDE}
+          // Region Layer — fronteiras e nomes
+          polygonsData={showRegions ? countries.features : []}
+          polygonAltitude={0.006}
+          polygonCapColor={() => "rgba(0,0,0,0)"}
+          polygonSideColor={() => "rgba(0,0,0,0)"}
+          polygonStrokeColor={() => BORDER_COLOR}
+          polygonLabel={(d: object) =>
+            `<span style="font-size:11px">${((d as { properties?: { name?: string } }).properties?.name ?? "")}</span>`
+          }
+          onPolygonClick={(d: object) => {
+            const props = (d as { properties?: { name?: string } }).properties;
+            const label = labels.find((l) => l.name === props?.name);
+            if (label && onPickRegion)
+              onPickRegion({ lat: label.lat, lng: label.lng, name: label.name });
+          }}
+          polygonsTransitionDuration={0}
+          // Region Layer — rótulos
+          labelsData={showRegions ? labels.filter((l) => l.size > 2) : []}
+          labelLat="lat"
+          labelLng="lng"
+          labelText="name"
+          labelSize={(d: object) => Math.min(1.1, 0.32 + Math.log10((d as CountryLabel).size + 1) * 0.35)}
+          labelDotRadius={0}
+          labelColor={() => LABEL_COLOR}
+          labelResolution={2}
+          labelAltitude={0.008}
+          onLabelClick={(d: object) => {
+            const l = d as CountryLabel;
+            onPickRegion?.({ lat: l.lat, lng: l.lng, name: l.name });
+          }}
           // Observation Layer — pontos
           pointsData={events}
           pointLat="lat"
@@ -298,10 +407,12 @@ export default function GlobeView({ events, selected, onSelect, onReady }: Props
           }
           onPointClick={(d: object) => onSelect(d as OrbiEvent)}
           // Observation Layer — anéis de prioridade
-          ringsData={priorityEvents}
+          ringsData={focusRings}
           ringLat="lat"
           ringLng="lng"
-          ringColor={(d: object) => categoryColor(d as OrbiEvent)}
+          ringColor={(d: object) =>
+            (d as OrbiEvent).category ? categoryColor(d as OrbiEvent) : "#63b3ff"
+          }
           ringMaxRadius={3.5}
           ringPropagationSpeed={1.2}
           ringRepeatPeriod={1600}

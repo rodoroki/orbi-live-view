@@ -122,4 +122,17 @@ export const en = {
     errorBody: "Something went wrong on our end. You can try refreshing or head back home.",
     tryAgain: "Try again",
   },
+  search: {
+    title: "Search region",
+    placeholder: "Continent, country, state or city",
+    noResults: "No region found.",
+    myLocation: "My location",
+  },
+  webcams: {
+    title: "Live cameras",
+    open: "Open live cameras",
+    close: "Close cameras",
+    loading: "Looking for nearby cameras…",
+    empty: "No cameras in this area.",
+  },
 };

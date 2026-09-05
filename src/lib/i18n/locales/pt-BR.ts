@@ -122,4 +122,17 @@ export const ptBR = {
     errorBody: "Algo deu errado por aqui. Tente atualizar ou voltar ao início.",
     tryAgain: "Tentar novamente",
   },
+  search: {
+    title: "Buscar região",
+    placeholder: "Continente, país, estado ou cidade",
+    noResults: "Nenhuma região encontrada.",
+    myLocation: "Minha localização",
+  },
+  webcams: {
+    title: "Câmeras ao vivo",
+    open: "Abrir câmeras ao vivo",
+    close: "Fechar câmeras",
+    loading: "Procurando câmeras próximas…",
+    empty: "Nenhuma câmera nesta região.",
+  },
 };

@@ -11,6 +11,7 @@ import {
   SlidersHorizontal,
   List,
   Wind,
+  Camera,
   X,
 } from "lucide-react";
 import { CATEGORY_META, type EventCategory, type OrbiEvent } from "@/lib/orbi-events";
@@ -58,6 +59,8 @@ export function MapTools({
   eventsOpen,
   onToggleConditions,
   conditionsOpen,
+  onToggleWebcams,
+  webcamsOpen,
 }: {
   onZoom: (direction: 1 | -1) => void;
   onReset: () => void;
@@ -69,6 +72,8 @@ export function MapTools({
   eventsOpen?: boolean;
   onToggleConditions?: () => void;
   conditionsOpen?: boolean;
+  onToggleWebcams?: () => void;
+  webcamsOpen?: boolean;
 }) {
   const { t } = useTranslation();
 
@@ -84,6 +89,18 @@ export function MapTools({
           onClick={onToggleConditions}
         >
           <Wind className="h-4 w-4" strokeWidth={1.4} />
+        </button>
+      )}
+      {onToggleWebcams && (
+        <button
+          type="button"
+          aria-label={webcamsOpen ? t.webcams.close : t.webcams.open}
+          title={t.webcams.title}
+          aria-pressed={webcamsOpen}
+          className={`${iconBtn} ${webcamsOpen ? "text-primary" : ""}`}
+          onClick={onToggleWebcams}
+        >
+          <Camera className="h-4 w-4" strokeWidth={1.4} />
         </button>
       )}
       {onToggleEvents && (

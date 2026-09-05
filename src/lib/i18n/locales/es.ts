@@ -122,4 +122,17 @@ export const es = {
     errorBody: "Algo salió mal de nuestro lado. Prueba a actualizar o volver al inicio.",
     tryAgain: "Intentar de nuevo",
   },
+  search: {
+    title: "Buscar región",
+    placeholder: "Continente, país, estado o ciudad",
+    noResults: "No se encontró ninguna región.",
+    myLocation: "Mi ubicación",
+  },
+  webcams: {
+    title: "Cámaras en vivo",
+    open: "Abrir cámaras en vivo",
+    close: "Cerrar cámaras",
+    loading: "Buscando cámaras cercanas…",
+    empty: "No hay cámaras en esta zona.",
+  },
 };

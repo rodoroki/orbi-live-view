@@ -16,6 +16,9 @@ import EventsPanel from "@/components/orbi/EventsPanel";
 import TimelineBar from "@/components/orbi/TimelineBar";
 import ConditionsPanel from "@/components/orbi/ConditionsPanel";
 import WeatherMapOverlay from "@/components/orbi/WeatherMapOverlay";
+import RegionSearch from "@/components/orbi/RegionSearch";
+import WebcamsPanel from "@/components/orbi/WebcamsPanel";
+import type { GeoPlace } from "@/lib/geo-search";
 import {
   CATEGORY_META,
   ORBI_EVENTS,
@@ -67,11 +70,15 @@ function Index() {
   const [eventsOpen, setEventsOpen] = useState(true);
   const [conditionsOpen, setConditionsOpen] = useState(false);
   const [weatherMapOpen, setWeatherMapOpen] = useState(false);
+  const [webcamsOpen, setWebcamsOpen] = useState(false);
+  const [place, setPlace] = useState<GeoPlace | null>(null);
   const [active, setActive] = useState<EventCategory[]>(ALL_CATEGORIES);
   const [flatScale, setFlatScale] = useState(1);
-  const globeApi = useRef<{ zoom: (d: 1 | -1) => void; reset: () => void } | null>(
-    null,
-  );
+  const globeApi = useRef<{
+    zoom: (d: 1 | -1) => void;
+    reset: () => void;
+    flyTo: (lat: number, lng: number, altitude?: number) => void;
+  } | null>(null);
 
 
   // Fonte real (NASA EONET) com fallback para os dados simulados.
@@ -96,7 +103,11 @@ function Index() {
   }, [isMobile]);
 
   const handleGlobeReady = useCallback(
-    (api: { zoom: (d: 1 | -1) => void; reset: () => void }) => {
+    (api: {
+      zoom: (d: 1 | -1) => void;
+      reset: () => void;
+      flyTo: (lat: number, lng: number, altitude?: number) => void;
+    }) => {
       globeApi.current = api;
     },
     [],
@@ -112,6 +123,20 @@ function Index() {
     [isMobile],
   );
 
+  // ponto de observação ativo: região buscada > evento selecionado > Brasília
+  const coords = place
+    ? { lat: place.lat, lng: place.lng }
+    : selected
+      ? { lat: selected.lat, lng: selected.lng }
+      : { lat: -15.8, lng: -47.9 };
+
+  const handlePickPlace = useCallback((next: GeoPlace) => {
+    setPlace(next);
+    setSelected(null);
+    setConditionsOpen(true);
+    globeApi.current?.flyTo(next.lat, next.lng, next.kind === "continent" ? 1.9 : 0.9);
+  }, []);
+
   const handleZoom = (direction: 1 | -1) => {
     if (mode === "globe") globeApi.current?.zoom(direction);
     else setFlatScale((s) => Math.min(3, Math.max(1, s + direction * 0.25)));
@@ -119,6 +144,7 @@ function Index() {
 
   const handleReset = () => {
     setSelected(null);
+    setPlace(null);
     if (mode === "globe") globeApi.current?.reset();
     else setFlatScale(1);
   };
@@ -143,6 +169,18 @@ function Index() {
                 selected={selected}
                 onSelect={handleSelect}
                 onReady={handleGlobeReady}
+                focus={place ? { lat: place.lat, lng: place.lng, name: place.name } : null}
+                showRegions={layers.includes("base")}
+                onPickRegion={(r) =>
+                  handlePickPlace({
+                    id: `region-${r.name}`,
+                    name: r.name,
+                    detail: "",
+                    lat: r.lat,
+                    lng: r.lng,
+                    kind: "country",
+                  })
+                }
               />
             </Suspense>
           </ClientOnly>
@@ -157,6 +195,7 @@ function Index() {
       </div>
 
       <ToolRail />
+      <RegionSearch onPick={handlePickPlace} current={place} />
       <MapTools
         onZoom={handleZoom}
         onReset={handleReset}
@@ -171,20 +210,23 @@ function Index() {
           setPanelOpen(false);
         }}
         conditionsOpen={conditionsOpen}
+        onToggleWebcams={() => setWebcamsOpen((v) => !v)}
+        webcamsOpen={webcamsOpen}
       />
       <TimelineBar />
       {conditionsOpen && (
         <ConditionsPanel
           onClose={() => setConditionsOpen(false)}
           onOpenWeatherMap={() => setWeatherMapOpen(true)}
-          coords={
-            selected
-              ? { lat: selected.lat, lng: selected.lng }
-              : { lat: -15.8, lng: -47.9 }
-          }
+          coords={coords}
         />
       )}
-      {weatherMapOpen && <WeatherMapOverlay onClose={() => setWeatherMapOpen(false)} />}
+      {weatherMapOpen && (
+        <WeatherMapOverlay onClose={() => setWeatherMapOpen(false)} coords={coords} />
+      )}
+      {webcamsOpen && (
+        <WebcamsPanel coords={coords} onClose={() => setWebcamsOpen(false)} />
+      )}
       <ViewToggle mode={mode} onChange={setMode} />
       {eventsOpen && (
         <EventsPanel
