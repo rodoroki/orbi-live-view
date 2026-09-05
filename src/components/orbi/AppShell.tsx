@@ -21,12 +21,14 @@ export function AppShell({ children }: { children: ReactNode }) {
           <OrbiMark />
           <span className="flex min-w-0 flex-col leading-none">
             <span className="font-display truncate text-[13px] font-medium tracking-[0.28em] text-foreground md:text-[15px] md:tracking-[0.3em]">
-              ORBI LIVE
+              ORBI LIVE{" "}
+              <span className="font-light text-primary/80">WORLD</span>
             </span>
             <span className="label-track mt-1 hidden text-[9px] text-muted-foreground sm:block">
               Earth Intelligence
             </span>
           </span>
+
         </Link>
 
         <nav className="pointer-events-auto hidden flex-1 items-center gap-8 lg:flex">
