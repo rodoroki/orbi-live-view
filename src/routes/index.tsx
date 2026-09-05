@@ -14,6 +14,7 @@ import {
 } from "@/components/orbi/MapControls";
 import FlatMapView from "@/components/orbi/FlatMapView";
 import EventsPanel from "@/components/orbi/EventsPanel";
+import DiscoveryCard from "@/components/orbi/DiscoveryCard";
 import TimelineBar from "@/components/orbi/TimelineBar";
 import ConditionsPanel from "@/components/orbi/ConditionsPanel";
 import WeatherMapOverlay from "@/components/orbi/WeatherMapOverlay";
@@ -64,11 +65,11 @@ function Index() {
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<"flat" | "globe">("globe");
   const [selected, setSelected] = useState<OrbiEvent | null>(null);
-  const [panelOpen, setPanelOpen] = useState(true);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [layersOpen, setLayersOpen] = useState(false);
   const [layers, setLayers] = useState<MapLayer[]>(MAP_LAYERS);
-  const [eventsOpen, setEventsOpen] = useState(true);
+  const [eventsOpen, setEventsOpen] = useState(false);
   const [conditionsOpen, setConditionsOpen] = useState(false);
   const [weatherMapOpen, setWeatherMapOpen] = useState(false);
   const [webcamsOpen, setWebcamsOpen] = useState(false);
@@ -138,6 +139,27 @@ function Index() {
     globeApi.current?.flyTo(next.lat, next.lng, next.kind === "continent" ? 1.9 : 0.9);
   }, []);
 
+  // A interface recua quando o usuário apenas observa o planeta.
+  const [chrome, setChrome] = useState(true);
+  useEffect(() => {
+    let timer: number | undefined;
+    const wake = () => {
+      setChrome(true);
+      if (timer) window.clearTimeout(timer);
+      timer = window.setTimeout(() => setChrome(false), 7000);
+    };
+    wake();
+    window.addEventListener("pointermove", wake);
+    window.addEventListener("pointerdown", wake);
+    window.addEventListener("keydown", wake);
+    return () => {
+      if (timer) window.clearTimeout(timer);
+      window.removeEventListener("pointermove", wake);
+      window.removeEventListener("pointerdown", wake);
+      window.removeEventListener("keydown", wake);
+    };
+  }, []);
+
   const handleZoom = (direction: 1 | -1) => {
     if (mode === "globe") globeApi.current?.zoom(direction);
     else setFlatScale((s) => Math.min(3, Math.max(1, s + direction * 0.25)));
@@ -197,6 +219,11 @@ function Index() {
 
       <ToolRail />
       <RegionSearch onPick={handlePickPlace} current={place} />
+      <div
+        className={`transition-opacity duration-700 ${
+          chrome ? "opacity-100" : "opacity-0 hover:opacity-100"
+        }`}
+      >
       <MapTools
         onZoom={handleZoom}
         onReset={handleReset}
@@ -215,6 +242,8 @@ function Index() {
         webcamsOpen={webcamsOpen}
       />
       <TimelineBar />
+      <ViewToggle mode={mode} onChange={setMode} />
+      </div>
       {conditionsOpen && (
         <ConditionsPanel
           onClose={() => setConditionsOpen(false)}
@@ -228,7 +257,6 @@ function Index() {
       {webcamsOpen && (
         <WebcamsPanel coords={coords} onClose={() => setWebcamsOpen(false)} />
       )}
-      <ViewToggle mode={mode} onChange={setMode} />
       {eventsOpen && (
         <EventsPanel
           events={events}
@@ -260,9 +288,13 @@ function Index() {
         />
       )}
 
-      {panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
+      {selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
+        <DiscoveryCard event={selected} onClose={() => setPanelOpen(false)} />
+      )}
+
+      {!selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
         <ContextCard
-          event={selected}
+          event={null}
           total={events.length}
           onClose={() => setPanelOpen(false)}
         />
