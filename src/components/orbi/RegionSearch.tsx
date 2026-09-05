@@ -65,7 +65,8 @@ export default function RegionSearch({
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               setOpen(true);
-              if ((results ?? []).length > 0) pick(results![0]);
+              const firstResult = results?.[0];
+              if (firstResult) pick(firstResult);
             }
           }}
           placeholder={t.search.placeholder}
@@ -98,7 +99,8 @@ export default function RegionSearch({
           type="button"
           onClick={() => {
             setOpen(true);
-            if ((results ?? []).length > 0) pick(results![0]);
+            const firstResult = results?.[0];
+            if (firstResult) pick(firstResult);
           }}
           disabled={query.trim().length < 2}
           className="focus-ring label-track shrink-0 rounded-full bg-primary/15 px-3 py-1.5 text-[9px] text-primary transition-colors hover:bg-primary/25 disabled:opacity-40"

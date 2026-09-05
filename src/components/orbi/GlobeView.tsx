@@ -111,10 +111,6 @@ function categoryColor(event: OrbiEvent) {
   return CATEGORY_META[event.category]?.color ?? "#ffffff";
 }
 
-function categoryGlyph(event: OrbiEvent) {
-  return CATEGORY_META[event.category]?.glyph ?? "•";
-}
-
 type EventMarker = OrbiEvent & { active: boolean };
 
 function createEventPill(event: EventMarker, onSelect: (event: OrbiEvent) => void) {
