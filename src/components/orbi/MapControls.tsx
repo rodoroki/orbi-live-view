@@ -158,25 +158,37 @@ export function ViewToggle({
   const { t } = useTranslation();
 
   return (
-    <div className="surface-panel absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full p-1 md:bottom-6 md:p-1.5">
+    <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 md:bottom-6">
       <button
         type="button"
         onClick={() => onChange("flat")}
-        className={`label-track focus-ring rounded-full px-3.5 py-1.5 text-[10px] transition-colors duration-200 md:px-4 md:py-2 ${
-          mode === "flat"
-            ? "bg-accent text-primary"
-            : "text-muted-foreground hover:text-foreground"
+        className={`label-track focus-ring rounded-sm px-1 py-1 text-[10px] transition-colors duration-300 ${
+          mode === "flat" ? "text-primary" : "text-muted-foreground/60 hover:text-foreground"
         }`}
       >
         {t.common.map}
       </button>
+
+      <button
+        type="button"
+        aria-hidden
+        tabIndex={-1}
+        onClick={() => onChange(mode === "flat" ? "globe" : "flat")}
+        className="relative flex h-3 w-8 items-center"
+      >
+        <span className="h-px w-full bg-border" />
+        <span
+          className={`absolute top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary transition-all duration-500 ${
+            mode === "flat" ? "left-0" : "left-[calc(100%-0.375rem)]"
+          }`}
+        />
+      </button>
+
       <button
         type="button"
         onClick={() => onChange("globe")}
-        className={`label-track focus-ring rounded-full px-3.5 py-1.5 text-[10px] transition-colors duration-200 md:px-4 md:py-2 ${
-          mode === "globe"
-            ? "bg-accent text-primary"
-            : "text-muted-foreground hover:text-foreground"
+        className={`label-track focus-ring rounded-sm px-1 py-1 text-[10px] transition-colors duration-300 ${
+          mode === "globe" ? "text-primary" : "text-muted-foreground/60 hover:text-foreground"
         }`}
       >
         {t.common.globe}
@@ -184,6 +196,7 @@ export function ViewToggle({
     </div>
   );
 }
+
 
 export function CategoryFilters({
   active,

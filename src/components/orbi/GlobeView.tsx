@@ -519,13 +519,52 @@ export default function GlobeView({
   }, [focus]);
 
   // ---------------------------------------------------------------------------
+  // MOVIMENTO — a rotação pausa na interação e volta em silêncio
+  // ---------------------------------------------------------------------------
+
+  useEffect(() => {
+    if (size.width === 0) return;
+    const globe = globeRef.current;
+    if (!globe) return;
+    const controls = globe.controls() as unknown as Controls & {
+      addEventListener: (e: string, fn: () => void) => void;
+      removeEventListener: (e: string, fn: () => void) => void;
+    };
+    let idle: number | undefined;
+    const onStart = () => {
+      controls.autoRotate = false;
+      if (idle) window.clearTimeout(idle);
+    };
+    const onEnd = () => {
+      if (idle) window.clearTimeout(idle);
+      idle = window.setTimeout(() => {
+        controls.autoRotate = true;
+      }, 6000);
+    };
+    controls.addEventListener("start", onStart);
+    controls.addEventListener("end", onEnd);
+    return () => {
+      if (idle) window.clearTimeout(idle);
+      controls.removeEventListener("start", onStart);
+      controls.removeEventListener("end", onEnd);
+    };
+  }, [size.width]);
+
+  // ---------------------------------------------------------------------------
   // RENDER
   // ---------------------------------------------------------------------------
 
-  const priorityEvents = events.filter((e) => e.priority === 1);
+
+
+  // Sinais: apenas os acontecimentos relevantes e recentes pulsam.
+  // Menos marcadores, mais acontecimentos.
+  const signals = events
+    .filter((e) => e.priority === 1 && e.detectedMinutesAgo <= 1440)
+    .slice(0, 8);
   const focusRings: { lat: number; lng: number; category?: string }[] = focus
-    ? [...priorityEvents, { lat: focus.lat, lng: focus.lng }]
-    : priorityEvents;
+    ? [...signals, { lat: focus.lat, lng: focus.lng }]
+    : signals;
+
 
   return (
     <div ref={wrapRef} className="h-full w-full">
@@ -587,28 +626,30 @@ export default function GlobeView({
           pointLng="lng"
           pointColor={(d: object) => categoryColor(d as OrbiEvent)}
           pointAltitude={(d: object) =>
-            (d as OrbiEvent).id === selected?.id ? 0.13 : 0.045
+            (d as OrbiEvent).id === selected?.id ? 0.09 : 0.02
           }
           pointRadius={(d: object) =>
-            (d as OrbiEvent).id === selected?.id ? 0.42 : 0.25
+            (d as OrbiEvent).id === selected?.id ? 0.3 : 0.12
           }
           pointsMerge={false}
           pointLabel={(d: object) =>
             `${categoryGlyph(d as OrbiEvent)} ${(d as OrbiEvent).place}`
           }
           onPointClick={(d: object) => onSelect(d as OrbiEvent)}
-          // Observation Layer — anéis de prioridade
+          // Observation Layer — sinais: um pulso discreto, com pausa
           ringsData={focusRings}
           ringLat="lat"
           ringLng="lng"
           ringColor={(d: object) =>
             (d as OrbiEvent).category ? categoryColor(d as OrbiEvent) : "#63b3ff"
           }
-          ringMaxRadius={3.5}
-          ringPropagationSpeed={1.2}
-          ringRepeatPeriod={1600}
+          ringMaxRadius={2.2}
+          ringPropagationSpeed={0.7}
+          ringRepeatPeriod={3200}
+          ringAltitude={0.008}
         />
       )}
+
 
       {/* Futuras camadas (não renderizam ainda):
           - AtmosphericLayer (Windy)
