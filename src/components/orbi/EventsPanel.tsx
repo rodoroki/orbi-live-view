@@ -165,17 +165,14 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
                           {event.place}
                         </p>
                         <div className="mt-1.5 flex items-center gap-2">
-                          <span
-                            className="label-track text-[8px]"
-                            style={{ color: sev.color }}
-                          >
+                          <span style={{ color: sev.color }}>
                             {t.severity[event.severity]}
                           </span>
-                          <span className="text-muted-foreground/30">·</span>
-                          <span className="label-track text-[8px] text-muted-foreground">
+                          <span className="h-2.5 w-px bg-border" />
+                          <span className="text-muted-foreground">
                             {t.categories[event.category]}
                           </span>
-                          <span className="ml-auto font-mono text-[10px] text-muted-foreground/70">
+                          <span className="ml-auto text-muted-foreground/70">
                             {event.updated}
                           </span>
                         </div>
