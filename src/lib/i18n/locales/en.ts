@@ -84,6 +84,9 @@ export const en = {
     ocean: "Ocean",
   },
   timeline: {
+    live: "Live",
+    historical: "Historical",
+    forecast: "Forecast",
     title: "Timeline",
     now: "Now",
     play: "Play",
@@ -155,5 +158,13 @@ export const en = {
       ocean: "Unusual ocean activity",
       atmosphere: "Atmospheric anomaly",
     },
+  },
+  planet: {
+    youAreHere: "You are here",
+    observingYourRegion: "Observing your region",
+    nowOnPlanet: "Now on the planet",
+    calm: "The planet is calm in this window of time.",
+    sourceUnavailable: "Live source unavailable · showing reference data",
+    exploreEarth: "Explore the Earth",
   },
 };

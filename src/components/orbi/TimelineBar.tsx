@@ -7,42 +7,46 @@ const MAX = 48;
 
 /**
  * ORBI — exploração temporal.
- * Uma linha, um ponto, uma palavra. Sem números permanentes.
+ * Uma linha, um ponto, uma palavra. O tempo é uma dimensão do planeta:
+ * o estado (LIVE · HISTÓRICO · PREVISÃO) acompanha a posição do ponto.
  */
-export default function TimelineBar() {
+export default function TimelineBar({
+  hour,
+  onChange,
+}: {
+  hour: number;
+  onChange: (hour: number) => void;
+}) {
   const { t, locale } = useTranslation();
-  const [hour, setHour] = useState(0);
   const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     if (!playing) return;
     const id = window.setInterval(() => {
-      setHour((h) => (h >= MAX ? MIN : h + 1));
+      onChange(hour >= MAX ? MIN : hour + 1);
     }, 90);
     return () => window.clearInterval(id);
-  }, [playing]);
+  }, [playing, hour, onChange]);
 
   const relative = (() => {
     if (hour === 0) return t.timeline.now.toUpperCase();
     const abs = Math.abs(hour);
-    const unit = abs === 1 ? "h" : "h";
     if (hour < 0)
       return locale === "en"
-        ? `${abs}${unit} ago`
+        ? `${abs}h ago`
         : locale === "es"
-          ? `hace ${abs}${unit}`
-          : `há ${abs}${unit}`;
-    return locale === "en"
-      ? `in ${abs}${unit}`
-      : locale === "es"
-        ? `en ${abs}${unit}`
-        : `em ${abs}${unit}`;
+          ? `hace ${abs}h`
+          : `há ${abs}h`;
+    return locale === "en" ? `in ${abs}h` : locale === "es" ? `en ${abs}h` : `em ${abs}h`;
   })();
+
+  const mode =
+    hour === 0 ? t.timeline.live : hour < 0 ? t.timeline.historical : t.timeline.forecast;
 
   const pos = ((hour - MIN) / (MAX - MIN)) * 100;
 
   return (
-    <div className="absolute bottom-20 left-1/2 z-10 hidden w-[min(440px,40vw)] -translate-x-1/2 flex-col items-center animate-rise md:flex">
+    <div className="absolute bottom-20 left-1/2 z-10 flex w-[min(92vw,440px)] -translate-x-1/2 flex-col items-center animate-rise md:w-[min(440px,40vw)]">
       <div className="flex items-center gap-4">
         <button
           type="button"
@@ -61,13 +65,21 @@ export default function TimelineBar() {
           type="button"
           onClick={() => {
             setPlaying(false);
-            setHour(0);
+            onChange(0);
           }}
-          className={`label-track focus-ring rounded-sm px-1 text-[10px] transition-colors duration-300 ${
+          className={`label-track focus-ring flex items-center gap-2 rounded-sm px-1 text-[10px] transition-colors duration-300 ${
             hour === 0 ? "text-primary" : "text-foreground/80 hover:text-primary"
           }`}
         >
-          {relative}
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${
+              hour === 0 ? "bg-primary" : "bg-muted-foreground/60"
+            }`}
+            style={hour === 0 ? { animation: "orbi-pulse 2.6s ease-in-out infinite" } : undefined}
+          />
+          {mode.toUpperCase()}
+          <span className="text-muted-foreground/50">·</span>
+          <span className="text-muted-foreground/70">{relative}</span>
         </button>
       </div>
 
@@ -84,7 +96,10 @@ export default function TimelineBar() {
           step={1}
           value={hour}
           aria-label={t.timeline.title}
-          onChange={(e) => setHour(Number(e.target.value))}
+          onChange={(e) => {
+            setPlaying(false);
+            onChange(Number(e.target.value));
+          }}
           className="orbi-range absolute inset-x-0 -top-2.5 h-5 w-full cursor-pointer appearance-none bg-transparent opacity-0"
         />
       </div>

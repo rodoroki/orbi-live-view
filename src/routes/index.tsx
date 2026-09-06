@@ -20,6 +20,7 @@ import ConditionsPanel from "@/components/orbi/ConditionsPanel";
 import WeatherMapOverlay from "@/components/orbi/WeatherMapOverlay";
 import RegionSearch from "@/components/orbi/RegionSearch";
 import WebcamsPanel from "@/components/orbi/WebcamsPanel";
+import NowOnPlanet from "@/components/orbi/NowOnPlanet";
 import type { GeoPlace } from "@/lib/geo-search";
 import {
   CATEGORY_META,
@@ -29,6 +30,7 @@ import {
 } from "@/lib/orbi-events";
 import { useTranslation } from "@/lib/i18n";
 import { useEonetEvents } from "@/lib/eonet";
+import { useUserLocation } from "@/lib/user-location";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 
@@ -76,6 +78,7 @@ function Index() {
   const [place, setPlace] = useState<GeoPlace | null>(null);
   const [active, setActive] = useState<EventCategory[]>(ALL_CATEGORIES);
   const [flatScale, setFlatScale] = useState(1);
+  const [hour, setHour] = useState(0);
   const globeApi = useRef<{
     zoom: (d: 1 | -1) => void;
     reset: () => void;
@@ -83,18 +86,26 @@ function Index() {
   } | null>(null);
 
 
-  // Fonte real (NASA EONET) com fallback para os dados simulados.
+  // Fonte real (NASA EONET) com fallback claramente identificado.
   const { data: liveEvents } = useEonetEvents({ days: 20, limit: 250 });
   const isLive = !!liveEvents && liveEvents.length > 0;
   const source = isLive ? liveEvents : ORBI_EVENTS;
 
-  const events = useMemo(
-    () =>
-      layers.includes("events")
-        ? source.filter((e) => active.includes(e.category))
-        : [],
-    [active, layers, source],
-  );
+  // O tempo é uma dimensão: no passado só existe o que já havia sido detectado.
+  const events = useMemo(() => {
+    if (!layers.includes("events")) return [];
+    const filtered = source.filter((e) => active.includes(e.category));
+    if (hour >= 0) return filtered;
+    return filtered.filter((e) => e.detectedMinutesAgo >= Math.abs(hour) * 60);
+  }, [active, layers, source, hour]);
+
+  // Discovery prefere lugares com nome — coordenadas não contam história.
+  const highlights = useMemo(() => {
+    const named = events.filter((e) => !/^-?\d/.test(e.place));
+    return [...(named.length >= 3 ? named : events)]
+      .sort((a, b) => a.priority - b.priority || a.detectedMinutesAgo - b.detectedMinutesAgo)
+      .slice(0, 3);
+  }, [events]);
 
   // painel de contexto reabre automaticamente ao selecionar um evento
 
@@ -119,12 +130,25 @@ function Index() {
     [isMobile],
   );
 
-  // ponto de observação ativo: região buscada > evento selecionado > Brasília
+  // ponto de observação: região buscada > evento selecionado > sua localização
+  const { location: userLocation } = useUserLocation();
   const coords = place
     ? { lat: place.lat, lng: place.lng }
     : selected
       ? { lat: selected.lat, lng: selected.lng }
-      : { lat: -15.8, lng: -47.9 };
+      : (userLocation ?? { lat: -15.8, lng: -47.9 });
+
+  // Primeiro acesso: o planeta se aproxima discretamente da região do usuário.
+  const flownHome = useRef(false);
+  useEffect(() => {
+    if (!userLocation || flownHome.current) return;
+    flownHome.current = true;
+    const id = window.setTimeout(
+      () => globeApi.current?.flyTo(userLocation.lat, userLocation.lng, 1.6),
+      900,
+    );
+    return () => window.clearTimeout(id);
+  }, [userLocation]);
 
   const handlePickPlace = useCallback((next: GeoPlace) => {
     setPlace(next);
@@ -204,6 +228,14 @@ function Index() {
       </div>
 
       <ToolRail />
+      {!place && !selected && userLocation && (
+        <p className="label-track pointer-events-none absolute right-6 top-24 z-10 hidden text-[9px] text-muted-foreground/60 lg:block">
+          {t.planet.youAreHere}
+        </p>
+      )}
+      {!eventsOpen && !conditionsOpen && (
+        <NowOnPlanet events={highlights} onSelect={handleSelect} />
+      )}
       <RegionSearch onPick={handlePickPlace} current={place} />
       <div
         className={`transition-opacity duration-700 ${
@@ -227,7 +259,7 @@ function Index() {
         onToggleWebcams={() => setWebcamsOpen((v) => !v)}
         webcamsOpen={webcamsOpen}
       />
-      <TimelineBar />
+      <TimelineBar hour={hour} onChange={setHour} />
       <ViewToggle mode={mode} onChange={setMode} />
       </div>
       {conditionsOpen && (
@@ -287,8 +319,14 @@ function Index() {
       )}
 
       <p className="label-track pointer-events-none absolute bottom-7 left-1/2 hidden -translate-x-1/2 translate-y-10 text-[9px] text-muted-foreground/60 xl:block">
-        {isLive ? t.common.liveData : t.common.simulatedData}
+        {isLive ? t.common.liveData : t.planet.sourceUnavailable}
       </p>
+
+      {events.length === 0 && layers.includes("events") && (
+        <p className="pointer-events-none absolute left-1/2 top-1/2 z-10 w-[min(90vw,22rem)] -translate-x-1/2 -translate-y-1/2 text-center text-sm font-light text-muted-foreground/70">
+          {t.planet.calm}
+        </p>
+      )}
 
       {/* Crédito de fonte — discreto, porém visível: credibilidade da informação */}
       <Link
