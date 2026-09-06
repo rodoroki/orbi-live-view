@@ -99,10 +99,13 @@ function Index() {
     return filtered.filter((e) => e.detectedMinutesAgo >= Math.abs(hour) * 60);
   }, [active, layers, source, hour]);
 
-  const highlights = useMemo(
-    () => [...events].sort((a, b) => a.priority - b.priority).slice(0, 3),
-    [events],
-  );
+  // Discovery prefere lugares com nome — coordenadas não contam história.
+  const highlights = useMemo(() => {
+    const named = events.filter((e) => !/^-?\d/.test(e.place));
+    return [...(named.length >= 3 ? named : events)]
+      .sort((a, b) => a.priority - b.priority || a.detectedMinutesAgo - b.detectedMinutesAgo)
+      .slice(0, 3);
+  }, [events]);
 
   // painel de contexto reabre automaticamente ao selecionar um evento
 
