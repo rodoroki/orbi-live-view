@@ -30,6 +30,8 @@ import {
 } from "@/lib/orbi-events";
 import { useTranslation } from "@/lib/i18n";
 import { useEonetEvents } from "@/lib/eonet";
+import { useUsgsEarthquakes } from "@/lib/usgs";
+import { useNwsAlerts } from "@/lib/nws";
 import { useUserLocation } from "@/lib/user-location";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -87,9 +89,18 @@ function Index() {
 
 
   // Fonte real (NASA EONET) com fallback claramente identificado.
-  const { data: liveEvents } = useEonetEvents({ days: 20, limit: 250 });
-  const isLive = !!liveEvents && liveEvents.length > 0;
-  const source = isLive ? liveEvents : ORBI_EVENTS;
+  const { data: eonetEvents } = useEonetEvents({ days: 20, limit: 250 });
+  const { data: quakeEvents } = useUsgsEarthquakes({ days: 2, minMagnitude: 2.5, limit: 200 });
+  const { data: alertEvents } = useNwsAlerts({ severity: "severe", limit: 150 });
+
+  // Três fontes reais convivendo no mesmo modelo, sem duplicar ids.
+  const source = useMemo(() => {
+    const merged = [...(eonetEvents ?? []), ...(quakeEvents ?? []), ...(alertEvents ?? [])];
+    if (merged.length === 0) return ORBI_EVENTS;
+    const seen = new Set<string>();
+    return merged.filter((e) => (seen.has(e.id) ? false : (seen.add(e.id), true)));
+  }, [eonetEvents, quakeEvents, alertEvents]);
+  const isLive = source !== ORBI_EVENTS;
 
   // O tempo é uma dimensão: no passado só existe o que já havia sido detectado.
   const events = useMemo(() => {
@@ -340,7 +351,7 @@ function Index() {
         <span className="label-track text-[9px] text-foreground/80">NASA EONET</span>
         <span className="text-muted-foreground/30">·</span>
         <span className="label-track text-[9px] text-muted-foreground/70">
-          Windy · Esri · USGS
+          USGS · NOAA/NWS · Windy · Esri
         </span>
       </Link>
     </div>
