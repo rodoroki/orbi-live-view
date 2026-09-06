@@ -24,9 +24,10 @@ export const getNwsAlerts = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }): Promise<{ events: SerializableOrbiEvent[]; error: string | null }> => {
     const params = new URLSearchParams({ status: "actual" });
-    if (data.severity === "severe") params.append("severity", "Extreme"), params.append("severity", "Severe");
-    if (data.severity === "extreme") params.append("severity", "Extreme");
-    if (data.severity === "moderate") params.append("severity", "Moderate");
+    // A API aceita a lista de gravidades separada por vírgula (não repetida).
+    if (data.severity === "severe") params.set("severity", "Extreme,Severe");
+    if (data.severity === "extreme") params.set("severity", "Extreme");
+    if (data.severity === "moderate") params.set("severity", "Extreme,Severe,Moderate");
 
     try {
       const res = await fetch(`${NWS_API}/alerts/active?${params.toString()}`, {
