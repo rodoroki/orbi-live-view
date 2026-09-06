@@ -84,6 +84,9 @@ export const ptBR = {
     ocean: "Oceano",
   },
   timeline: {
+    live: "Ao vivo",
+    historical: "Histórico",
+    forecast: "Previsão",
     title: "Linha do tempo",
     now: "Agora",
     play: "Reproduzir",
@@ -155,5 +158,13 @@ export const ptBR = {
       ocean: "Atividade oceânica incomum",
       atmosphere: "Anomalia atmosférica",
     },
+  },
+  planet: {
+    youAreHere: "Você está aqui",
+    observingYourRegion: "Observando sua região",
+    nowOnPlanet: "Agora no planeta",
+    calm: "O planeta está calmo nesta janela de tempo.",
+    sourceUnavailable: "Fonte ao vivo indisponível · exibindo dados de referência",
+    exploreEarth: "Explore a Terra",
   },
 };

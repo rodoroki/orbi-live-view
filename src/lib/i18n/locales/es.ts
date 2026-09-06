@@ -84,6 +84,9 @@ export const es = {
     ocean: "Océano",
   },
   timeline: {
+    live: "En vivo",
+    historical: "Histórico",
+    forecast: "Pronóstico",
     title: "Línea de tiempo",
     now: "Ahora",
     play: "Reproducir",
@@ -155,5 +158,13 @@ export const es = {
       ocean: "Actividad oceánica inusual",
       atmosphere: "Anomalía atmosférica",
     },
+  },
+  planet: {
+    youAreHere: "Estás aquí",
+    observingYourRegion: "Observando tu región",
+    nowOnPlanet: "Ahora en el planeta",
+    calm: "El planeta está en calma en esta ventana de tiempo.",
+    sourceUnavailable: "Fuente en vivo no disponible · mostrando datos de referencia",
+    exploreEarth: "Explora la Tierra",
   },
 };
