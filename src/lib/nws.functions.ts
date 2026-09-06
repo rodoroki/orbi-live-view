@@ -23,10 +23,7 @@ export const getNwsAlerts = createServerFn({ method: "GET" })
       .parse(data ?? {}),
   )
   .handler(async ({ data }): Promise<{ events: SerializableOrbiEvent[]; error: string | null }> => {
-    const params = new URLSearchParams({
-      status: "actual",
-      limit: String(data.limit),
-    });
+    const params = new URLSearchParams({ status: "actual" });
     if (data.severity === "severe") params.append("severity", "Extreme"), params.append("severity", "Severe");
     if (data.severity === "extreme") params.append("severity", "Extreme");
     if (data.severity === "moderate") params.append("severity", "Moderate");
@@ -40,7 +37,7 @@ export const getNwsAlerts = createServerFn({ method: "GET" })
       });
       if (!res.ok) return { events: [], error: `NWS request failed (${res.status})` };
       const json = (await res.json()) as NwsAlertsResponse;
-      return { events: nwsAlertsToOrbiEvents(json), error: null };
+      return { events: nwsAlertsToOrbiEvents(json).slice(0, data.limit), error: null };
     } catch {
       return { events: [], error: "NWS unavailable" };
     }
