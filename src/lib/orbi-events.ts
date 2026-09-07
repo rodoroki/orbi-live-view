@@ -30,16 +30,6 @@ export const CATEGORY_META: Record<EventCategory, { label: string; glyph: string
     atmosphere: { label: "Atmosféricos", glyph: "☁", color: "#b9c6cc" },
   };
 
-/** Contagens fictícias — "eventos agora" por categoria. */
-export const CATEGORY_COUNTS: Record<EventCategory, number> = {
-  fire: 342,
-  storm: 27,
-  volcano: 18,
-  quake: 21,
-  ocean: 14,
-  atmosphere: 36,
-};
-
 export const SEVERITY_META: Record<EventSeverity, { label: string; color: string; rank: number }> =
   {
     critical: { label: "Crítico", color: "#d1653f", rank: 4 },
