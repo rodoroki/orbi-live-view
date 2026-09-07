@@ -20,19 +20,3 @@ export function SectionPage({
     </div>
   );
 }
-
-export function DemoList({ items }: { items: [string, string][] }) {
-  return (
-    <ul className="flex flex-col">
-      {items.map(([label, value]) => (
-        <li
-          key={label}
-          className="flex items-baseline justify-between border-t border-border py-4 last:border-b"
-        >
-          <span className="text-sm text-foreground">{label}</span>
-          <span className="font-mono text-xs text-muted-foreground">{value}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}

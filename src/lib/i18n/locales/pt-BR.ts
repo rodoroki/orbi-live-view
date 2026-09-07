@@ -183,7 +183,8 @@ export const ptBR = {
     observingYourRegion: "Observando sua região",
     nowOnPlanet: "Agora no planeta",
     calm: "O planeta está calmo nesta janela de tempo.",
-    sourceUnavailable: "Fonte ao vivo indisponível · exibindo dados de referência",
+    sourceUnavailable: "Fontes ao vivo indisponíveis · nada está a ser exibido",
+    noForecastWindow: "O ORBI não possui previsão científica. Nada é exibido à frente de agora.",
     exploreEarth: "Explore a Terra",
   },
 };

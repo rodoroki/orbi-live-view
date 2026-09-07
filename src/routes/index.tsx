@@ -22,7 +22,7 @@ import RegionSearch from "@/components/orbi/RegionSearch";
 import WebcamsPanel from "@/components/orbi/WebcamsPanel";
 import NowOnPlanet from "@/components/orbi/NowOnPlanet";
 import type { GeoPlace } from "@/lib/geo-search";
-import { CATEGORY_META, ORBI_EVENTS, type EventCategory, type OrbiEvent } from "@/lib/orbi-events";
+import { CATEGORY_META, type EventCategory, type OrbiEvent } from "@/lib/orbi-events";
 import { useTranslation } from "@/lib/i18n";
 import { useEonetEvents } from "@/lib/eonet";
 import { useUsgsEarthquakes } from "@/lib/usgs";
@@ -79,26 +79,28 @@ function Index() {
 
   const { location: userLocation } = useUserLocation();
 
-  // Fonte real (NASA EONET) com fallback claramente identificado.
-  const { data: eonetEvents } = useEonetEvents({ days: 20, limit: 250 });
-
-  const { data: quakeEvents } = useUsgsEarthquakes({ days: 2, minMagnitude: 2.5, limit: 200 });
-  const { data: alertEvents } = useNwsAlerts({ severity: "severe", limit: 150 });
+  // Fontes reais. Sem fallback fictício: se nada responde, nada é exibido.
+  const eonet = useEonetEvents({ days: 20, limit: 250 });
+  const quakes = useUsgsEarthquakes({ days: 2, minMagnitude: 2.5, limit: 200 });
+  const alerts = useNwsAlerts({ severity: "severe", limit: 150 });
 
   // Três fontes reais convivendo no mesmo modelo, sem duplicar ids.
   const source = useMemo(() => {
-    const merged = [...(eonetEvents ?? []), ...(quakeEvents ?? []), ...(alertEvents ?? [])];
-    if (merged.length === 0) return ORBI_EVENTS;
+    const merged = [...(eonet.data ?? []), ...(quakes.data ?? []), ...(alerts.data ?? [])];
     const seen = new Set<string>();
     return merged.filter((e) => (seen.has(e.id) ? false : (seen.add(e.id), true)));
-  }, [eonetEvents, quakeEvents, alertEvents]);
-  const isLive = source !== ORBI_EVENTS;
+  }, [eonet.data, quakes.data, alerts.data]);
 
-  // O tempo é uma dimensão: no passado só existe o que já havia sido detectado.
+  const sourcesPending = eonet.isPending || quakes.isPending || alerts.isPending;
+  const isLive = source.length > 0;
+
+  // O tempo é uma dimensão: no passado só existe o que já havia sido detectado;
+  // à frente de agora o ORBI não possui previsão científica, então nada é exibido.
   const events = useMemo(() => {
     if (!layers.includes("events")) return [];
+    if (hour > 0) return [];
     const filtered = source.filter((e) => active.includes(e.category));
-    if (hour >= 0) return filtered;
+    if (hour === 0) return filtered;
     return filtered.filter((e) => e.detectedMinutesAgo >= Math.abs(hour) * 60);
   }, [active, layers, source, hour]);
 
@@ -337,12 +339,16 @@ function Index() {
       )}
 
       <p className="label-track pointer-events-none absolute bottom-7 left-1/2 hidden -translate-x-1/2 translate-y-10 text-[9px] text-muted-foreground/60 xl:block">
-        {isLive ? t.common.liveData : t.planet.sourceUnavailable}
+        {isLive ? t.common.liveData : ""}
       </p>
 
-      {events.length === 0 && layers.includes("events") && (
+      {events.length === 0 && layers.includes("events") && !sourcesPending && (
         <p className="pointer-events-none absolute left-1/2 top-1/2 z-10 w-[min(90vw,22rem)] -translate-x-1/2 -translate-y-1/2 text-center text-sm font-light text-muted-foreground/70">
-          {t.planet.calm}
+          {hour > 0
+            ? t.planet.noForecastWindow
+            : isLive
+              ? t.planet.calm
+              : t.planet.sourceUnavailable}
         </p>
       )}
 

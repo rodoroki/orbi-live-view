@@ -182,7 +182,8 @@ export const es = {
     observingYourRegion: "Observando tu región",
     nowOnPlanet: "Ahora en el planeta",
     calm: "El planeta está en calma en esta ventana de tiempo.",
-    sourceUnavailable: "Fuente en vivo no disponible · mostrando datos de referencia",
+    sourceUnavailable: "Fuentes en vivo no disponibles · no se muestra nada",
+    noForecastWindow: "ORBI no tiene pronóstico científico. No se muestra nada más allá de ahora.",
     exploreEarth: "Explora la Tierra",
   },
 };
