@@ -1,10 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import {
-  USGS_API,
-  usgsResponseToOrbiEvents,
-  type UsgsResponse,
-} from "@/lib/data/adapters/usgs";
+import { USGS_API, usgsResponseToOrbiEvents, type UsgsResponse } from "@/lib/data/adapters/usgs";
 import type { SerializableOrbiEvent } from "@/lib/data/adapters/eonet";
 
 /**

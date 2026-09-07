@@ -17,12 +17,33 @@ export type GeoPlace = {
 
 const CONTINENTS: GeoPlace[] = [
   { id: "c-africa", name: "África", detail: "Continente", lat: 2, lng: 20, kind: "continent" },
-  { id: "c-america-s", name: "América do Sul", detail: "Continente", lat: -14, lng: -58, kind: "continent" },
-  { id: "c-america-n", name: "América do Norte", detail: "Continente", lat: 45, lng: -100, kind: "continent" },
+  {
+    id: "c-america-s",
+    name: "América do Sul",
+    detail: "Continente",
+    lat: -14,
+    lng: -58,
+    kind: "continent",
+  },
+  {
+    id: "c-america-n",
+    name: "América do Norte",
+    detail: "Continente",
+    lat: 45,
+    lng: -100,
+    kind: "continent",
+  },
   { id: "c-europe", name: "Europa", detail: "Continente", lat: 50, lng: 12, kind: "continent" },
   { id: "c-asia", name: "Ásia", detail: "Continente", lat: 34, lng: 90, kind: "continent" },
   { id: "c-oceania", name: "Oceania", detail: "Continente", lat: -25, lng: 140, kind: "continent" },
-  { id: "c-antarctica", name: "Antártica", detail: "Continente", lat: -80, lng: 0, kind: "continent" },
+  {
+    id: "c-antarctica",
+    name: "Antártica",
+    detail: "Continente",
+    lat: -80,
+    lng: 0,
+    kind: "continent",
+  },
 ];
 
 function normalize(value: string) {

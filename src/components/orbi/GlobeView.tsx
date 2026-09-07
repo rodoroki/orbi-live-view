@@ -40,7 +40,6 @@ const DEFAULT_VIEW = { lat: 8, lng: -40, altitude: 2.4 };
 const MIN_ALTITUDE = 0.012;
 const MAX_ALTITUDE = 4.0;
 
-
 const ZOOM_IN_FACTOR = 0.68;
 const ZOOM_OUT_FACTOR = 1.42;
 
@@ -63,12 +62,10 @@ const TILE_SPAN = 3; // (2*span+1)^2 tiles ao redor do centro
 const TILE_MIN_Z = 4;
 const TILE_MAX_Z = 13;
 
-
 const IMAGERY_URL =
   "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile";
 const REFERENCE_URL =
   "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile";
-
 
 // -----------------------------------------------------------------------------
 // TYPES
@@ -147,7 +144,6 @@ function createEventPill(event: EventMarker, onSelect: (event: OrbiEvent) => voi
   return pill;
 }
 
-
 // -----------------------------------------------------------------------------
 // TILE MATH — slippy map (Web Mercator) → retângulos lat/lng no globo
 // -----------------------------------------------------------------------------
@@ -181,7 +177,6 @@ function zoomForAltitude(altitude: number) {
   return Math.min(TILE_MAX_Z, Math.max(TILE_MIN_Z, z));
 }
 
-
 function tilesAround(lat: number, lng: number, z: number): DetailTile[] {
   const n = 2 ** z;
   const latRad = (Math.max(-85, Math.min(85, lat)) * Math.PI) / 180;
@@ -195,7 +190,7 @@ function tilesAround(lat: number, lng: number, z: number): DetailTile[] {
     for (let dy = -TILE_SPAN; dy <= TILE_SPAN; dy++) {
       const y = cy + dy;
       if (y < 0 || y >= n) continue;
-      const x = ((cx + dx) % n + n) % n;
+      const x = (((cx + dx) % n) + n) % n;
       const lngL = tileToLng(cx + dx, z);
       const lngR = tileToLng(cx + dx + 1, z);
       const latT = tileToLat(y, z);
@@ -275,7 +270,6 @@ function getTileMaterial(tile: DetailTile) {
   return material;
 }
 
-
 // -----------------------------------------------------------------------------
 // SUN — posição sub-solar aproximada (lat/lng) e conversão para vetor 3D
 // -----------------------------------------------------------------------------
@@ -284,8 +278,7 @@ function subSolarPoint(date: Date) {
   const yearStart = Date.UTC(date.getUTCFullYear(), 0, 0);
   const dayOfYear = Math.floor((date.getTime() - yearStart) / 86_400_000);
   // declinação solar (aprox. de Cooper)
-  const declination =
-    -23.44 * Math.cos(((2 * Math.PI) / 365) * (dayOfYear + 10));
+  const declination = -23.44 * Math.cos(((2 * Math.PI) / 365) * (dayOfYear + 10));
   // longitude sub-solar: 0° às 12:00 UTC, 15°/hora
   const utcHours = date.getUTCHours() + date.getUTCMinutes() / 60;
   const longitude = 180 - utcHours * 15;
@@ -373,9 +366,7 @@ function createDayNightMaterial(): THREE.ShaderMaterial {
 
 function updateSunDirection(material: THREE.ShaderMaterial) {
   const { lat, lng } = subSolarPoint(new Date());
-  (material.uniforms["sunDirection"]!.value as THREE.Vector3).copy(
-    latLngToVector3(lat, lng),
-  );
+  (material.uniforms["sunDirection"]!.value as THREE.Vector3).copy(latLngToVector3(lat, lng));
 }
 
 // -----------------------------------------------------------------------------
@@ -477,14 +468,12 @@ export default function GlobeView({
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
-    const update = () =>
-      setSize({ width: el.clientWidth, height: el.clientHeight });
+    const update = () => setSize({ width: el.clientWidth, height: el.clientHeight });
     update();
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-
 
   // ---------------------------------------------------------------------------
   // GLOBE INITIALIZATION + PUBLIC API
@@ -545,10 +534,7 @@ export default function GlobeView({
     const globe = globeRef.current;
     if (!globe || !focus) return;
     (globe.controls() as unknown as Controls).autoRotate = false;
-    globe.pointOfView(
-      { lat: focus.lat, lng: focus.lng, altitude: 1.2 },
-      SELECT_ANIMATION_MS,
-    );
+    globe.pointOfView({ lat: focus.lat, lng: focus.lng, altitude: 1.2 }, SELECT_ANIMATION_MS);
   }, [focus]);
 
   // ---------------------------------------------------------------------------
@@ -587,8 +573,6 @@ export default function GlobeView({
   // RENDER
   // ---------------------------------------------------------------------------
 
-
-
   // Sinais: apenas os acontecimentos relevantes e recentes pulsam.
   // Menos marcadores, mais acontecimentos.
   const signals = events
@@ -601,7 +585,6 @@ export default function GlobeView({
   const focusRings: { lat: number; lng: number; category?: string }[] = focus
     ? [...signals, { lat: focus.lat, lng: focus.lng }]
     : signals;
-
 
   return (
     <div ref={wrapRef} className="h-full w-full">
@@ -634,7 +617,7 @@ export default function GlobeView({
           polygonSideColor={() => "rgba(0,0,0,0)"}
           polygonStrokeColor={() => BORDER_COLOR}
           polygonLabel={(d: object) =>
-            `<span style="font-size:11px">${((d as { properties?: { name?: string } }).properties?.name ?? "")}</span>`
+            `<span style="font-size:11px">${(d as { properties?: { name?: string } }).properties?.name ?? ""}</span>`
           }
           onPolygonClick={(d: object) => {
             const props = (d as { properties?: { name?: string } }).properties;
@@ -648,7 +631,9 @@ export default function GlobeView({
           labelLat="lat"
           labelLng="lng"
           labelText="name"
-          labelSize={(d: object) => Math.min(1.1, 0.32 + Math.log10((d as CountryLabel).size + 1) * 0.35)}
+          labelSize={(d: object) =>
+            Math.min(1.1, 0.32 + Math.log10((d as CountryLabel).size + 1) * 0.35)
+          }
           labelDotRadius={0}
           labelColor={() => LABEL_COLOR}
           labelResolution={2}
@@ -676,7 +661,6 @@ export default function GlobeView({
           ringAltitude={0.008}
         />
       )}
-
 
       {/* Futuras camadas (não renderizam ainda):
           - AtmosphericLayer (Windy)

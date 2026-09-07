@@ -64,9 +64,7 @@ export function mapWindyToMetrics(json: WindyResponse): Metric[] {
         "wind",
         `${Math.round(speedMs * MS_TO_KNOTS)} kt`,
         toSeries(
-          json["wind_u-surface"]?.map((u, i) =>
-            Math.hypot(u, json["wind_v-surface"]?.[i] ?? 0),
-          ),
+          json["wind_u-surface"]?.map((u, i) => Math.hypot(u, json["wind_v-surface"]?.[i] ?? 0)),
         ),
       ),
     );
@@ -74,11 +72,7 @@ export function mapWindyToMetrics(json: WindyResponse): Metric[] {
   const gust = pick(json["gust-surface"]);
   if (gust != null) {
     metrics.push(
-      makeMetric(
-        "gusts",
-        `${Math.round(gust * MS_TO_KNOTS)} kt`,
-        toSeries(json["gust-surface"]),
-      ),
+      makeMetric("gusts", `${Math.round(gust * MS_TO_KNOTS)} kt`, toSeries(json["gust-surface"])),
     );
   }
   const pressure = pick(json["pressure-surface"]);
@@ -105,9 +99,7 @@ export function mapWindyToMetrics(json: WindyResponse): Metric[] {
   }
   const rh = pick(json["rh-surface"]);
   if (rh != null) {
-    metrics.push(
-      makeMetric("humidity", `${Math.round(rh)} %`, toSeries(json["rh-surface"])),
-    );
+    metrics.push(makeMetric("humidity", `${Math.round(rh)} %`, toSeries(json["rh-surface"])));
   }
   const clouds = (["lclouds-surface", "mclouds-surface", "hclouds-surface"] as const)
     .map((k) => pick(json[k]))
@@ -160,7 +152,17 @@ export const getWindyPointForecast = createServerFn({ method: "GET" })
         lon: data.lng,
         model: "gfs",
         // "gust" não é suportado pelo modelo GFS na Point Forecast API
-        parameters: ["temp", "wind", "rh", "pressure", "precip", "lclouds", "mclouds", "hclouds", "ptype"],
+        parameters: [
+          "temp",
+          "wind",
+          "rh",
+          "pressure",
+          "precip",
+          "lclouds",
+          "mclouds",
+          "hclouds",
+          "ptype",
+        ],
         levels: ["surface"],
         key: apiKey,
       }),
@@ -218,4 +220,3 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
 
     return { webcams };
   });
-

@@ -38,11 +38,7 @@ function elapsedLabel(minutes: number): string {
   return `${Math.round(minutes / 1440)} d`;
 }
 
-export function buildInsight(
-  event: OrbiEvent,
-  all: OrbiEvent[],
-  t: Translations,
-): OrbiInsight {
+export function buildInsight(event: OrbiEvent, all: OrbiEvent[], t: Translations): OrbiInsight {
   const phenomenon =
     t.discovery.phenomena[event.category as keyof typeof t.discovery.phenomena] ?? "";
   const source = sourceOf(event);

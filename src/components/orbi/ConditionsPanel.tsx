@@ -5,9 +5,7 @@ import { useWindyForecast } from "@/lib/windy";
 import { useTranslation } from "@/lib/i18n";
 
 function Sparkline({ points }: { points: number[] }) {
-  const d = points
-    .map((p, i) => `${(i / (points.length - 1)) * 100},${(1 - p) * 20}`)
-    .join(" ");
+  const d = points.map((p, i) => `${(i / (points.length - 1)) * 100},${(1 - p) * 20}`).join(" ");
   return (
     <svg viewBox="0 0 100 20" preserveAspectRatio="none" className="h-5 w-16 opacity-70">
       <polyline
@@ -53,9 +51,7 @@ export default function ConditionsPanel({
   const metrics =
     tab === "ocean"
       ? OCEAN_METRICS
-      : ATMOSPHERE_METRICS.map(
-          (m) => liveMetrics?.find((live) => live.key === m.key) ?? m,
-        );
+      : ATMOSPHERE_METRICS.map((m) => liveMetrics?.find((live) => live.key === m.key) ?? m);
 
   return (
     <div className="surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-4 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-80 md:p-5 md:animate-rise">
@@ -78,9 +74,7 @@ export default function ConditionsPanel({
             type="button"
             onClick={() => setTab(key)}
             className={`label-track focus-ring rounded-full px-3 py-1.5 text-[9px] transition-colors duration-200 ${
-              tab === key
-                ? "bg-accent text-primary"
-                : "text-muted-foreground hover:text-foreground"
+              tab === key ? "bg-accent text-primary" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {t.conditions[key]}
@@ -90,11 +84,7 @@ export default function ConditionsPanel({
 
       <div className="mt-3 flex flex-col">
         {metrics.map((m) => (
-          <MetricRow
-            key={m.key}
-            metric={m}
-            label={t.metrics[m.key as keyof typeof t.metrics]}
-          />
+          <MetricRow key={m.key} metric={m} label={t.metrics[m.key as keyof typeof t.metrics]} />
         ))}
       </div>
 

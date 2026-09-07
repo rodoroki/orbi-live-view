@@ -23,7 +23,11 @@ check(
 // 1) Todo evento canônico deve validar contra o schema Zod.
 for (const event of canonical) {
   const result = OrbiEventSchema.safeParse(event);
-  check(`schema válido para ${event.id}`, result.success, result.success ? undefined : JSON.stringify(result.error.issues));
+  check(
+    `schema válido para ${event.id}`,
+    result.success,
+    result.success ? undefined : JSON.stringify(result.error.issues),
+  );
 }
 
 // 2) Round-trip completo: mock -> canônico -> legado, comparado ao mock original.
@@ -39,11 +43,27 @@ for (const original of ORBI_EVENTS) {
   check(`${original.id}: place`, back.place === original.place);
   check(`${original.id}: lat`, back.lat === original.lat);
   check(`${original.id}: lng`, back.lng === original.lng);
-  check(`${original.id}: category`, back.category === original.category, `${back.category} vs ${original.category}`);
-  check(`${original.id}: magnitude`, back.magnitude === original.magnitude, `"${back.magnitude}" vs "${original.magnitude}"`);
+  check(
+    `${original.id}: category`,
+    back.category === original.category,
+    `${back.category} vs ${original.category}`,
+  );
+  check(
+    `${original.id}: magnitude`,
+    back.magnitude === original.magnitude,
+    `"${back.magnitude}" vs "${original.magnitude}"`,
+  );
   check(`${original.id}: severity`, back.severity === original.severity);
-  check(`${original.id}: region`, back.region === original.region, `${back.region} vs ${original.region}`);
-  check(`${original.id}: priority`, back.priority === original.priority, `${back.priority} vs ${original.priority}`);
+  check(
+    `${original.id}: region`,
+    back.region === original.region,
+    `${back.region} vs ${original.region}`,
+  );
+  check(
+    `${original.id}: priority`,
+    back.priority === original.priority,
+    `${back.priority} vs ${original.priority}`,
+  );
   check(
     `${original.id}: detectedMinutesAgo (tolerância 1min)`,
     Math.abs(back.detectedMinutesAgo - original.detectedMinutesAgo) <= 1,
@@ -53,7 +73,9 @@ for (const original of ORBI_EVENTS) {
 
 console.log("");
 if (failures === 0) {
-  console.log(`OK — ${ORBI_EVENTS.length} eventos passaram no round-trip mock -> OrbiEvent -> legado.`);
+  console.log(
+    `OK — ${ORBI_EVENTS.length} eventos passaram no round-trip mock -> OrbiEvent -> legado.`,
+  );
 } else {
   console.log(`${failures} falha(s) encontrada(s).`);
   process.exit(1);

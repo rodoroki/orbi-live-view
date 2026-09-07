@@ -10,12 +10,15 @@ const DESCRIPTION =
 
 export const Route = createFileRoute("/earthquakes")({
   head: () => ({
-    meta: seoMeta({ path: "/earthquakes", title: TITLE, description: DESCRIPTION, locale: "en_US" }),
+    meta: seoMeta({
+      path: "/earthquakes",
+      title: TITLE,
+      description: DESCRIPTION,
+      locale: "en_US",
+    }),
     links: seoLinks("/earthquakes"),
     scripts: [
-      jsonLdScript(
-        webPageJsonLd({ path: "/earthquakes", title: TITLE, description: DESCRIPTION }),
-      ),
+      jsonLdScript(webPageJsonLd({ path: "/earthquakes", title: TITLE, description: DESCRIPTION })),
     ],
   }),
   component: Page,

@@ -35,4 +35,3 @@ export function useWindyWebcams(lat: number | null, lng: number | null) {
     retry: 1,
   });
 }
-

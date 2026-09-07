@@ -13,10 +13,7 @@ export default function WebcamsPanel({
   onClose: () => void;
 }) {
   const { t } = useTranslation();
-  const { data, isLoading, isError } = useWindyWebcams(
-    coords?.lat ?? null,
-    coords?.lng ?? null,
-  );
+  const { data, isLoading, isError } = useWindyWebcams(coords?.lat ?? null, coords?.lng ?? null);
 
   return (
     <div className="surface-panel absolute inset-x-3 bottom-20 z-20 max-h-[60vh] overflow-y-auto rounded-md p-4 animate-sheet-up md:inset-x-auto md:bottom-auto md:left-24 md:top-24 md:w-80 md:p-5 md:animate-rise">

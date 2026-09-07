@@ -102,7 +102,8 @@ export const es = {
     viewWeatherMap: "Ver mapa meteorológico",
     weatherMap: "Mapa meteorológico",
     weatherMapTitle: "Superficie meteorológica",
-    weatherMapBody: "Superficie reservada al futuro proveedor de datos meteorológicos. Capas, animación y reproducción listas para recibir campos en vivo.",
+    weatherMapBody:
+      "Superficie reservada al futuro proveedor de datos meteorológicos. Capas, animación y reproducción listas para recibir campos en vivo.",
   },
   metrics: {
     temperature: "Temperatura",

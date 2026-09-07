@@ -19,8 +19,7 @@ export default function NowOnPlanet({
   const { t } = useTranslation();
   if (events.length === 0) return null;
 
-  const near =
-    origin != null && events.some((e) => distanceKm(origin, e) < 1500);
+  const near = origin != null && events.some((e) => distanceKm(origin, e) < 1500);
 
   return (
     <div className="pointer-events-none absolute left-4 top-24 z-10 hidden flex-col gap-2 lg:flex">

@@ -1,7 +1,6 @@
 import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
 import { useTranslation } from "@/lib/i18n";
 
-
 const EARTH_NIGHT = "/textures/earth-night.jpg";
 
 type Props = {
@@ -20,10 +19,7 @@ export default function FlatMapView({ events, selected, onSelect }: Props) {
 
   return (
     <div className="flex h-full w-full items-center justify-center overflow-hidden">
-      <div
-        className="relative w-full max-w-[1600px]"
-        style={{ aspectRatio: "2 / 1" }}
-      >
+      <div className="relative w-full max-w-[1600px]" style={{ aspectRatio: "2 / 1" }}>
         <img
           src={EARTH_NIGHT}
           alt="Mapa mundial noturno"
@@ -32,8 +28,7 @@ export default function FlatMapView({ events, selected, onSelect }: Props) {
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            background:
-              "radial-gradient(circle at 50% 50%, transparent 45%, var(--void) 100%)",
+            background: "radial-gradient(circle at 50% 50%, transparent 45%, var(--void) 100%)",
           }}
         />
         {events.map((event) => {
@@ -72,7 +67,6 @@ export default function FlatMapView({ events, selected, onSelect }: Props) {
                 {event.place}
               </span>
             </button>
-
           );
         })}
       </div>

@@ -102,7 +102,8 @@ export const ptBR = {
     viewWeatherMap: "Ver mapa meteorológico",
     weatherMap: "Mapa meteorológico",
     weatherMapTitle: "Superfície meteorológica",
-    weatherMapBody: "Superfície reservada ao futuro provedor de dados meteorológicos. Camadas, animação e reprodução prontas para receber campos ao vivo.",
+    weatherMapBody:
+      "Superfície reservada ao futuro provedor de dados meteorológicos. Camadas, animação e reprodução prontas para receber campos ao vivo.",
   },
   metrics: {
     temperature: "Temperatura",
@@ -169,7 +170,8 @@ export const ptBR = {
     detected: "Detectado",
     headline: "{{phenomenon}} detectada",
     summary: "{{phenomenon}} registrada em {{place}}, informada por {{source}}.",
-    nearby: "Outros {{count}} eventos foram registrados nas proximidades nas últimas {{hours}} horas.",
+    nearby:
+      "Outros {{count}} eventos foram registrados nas proximidades nas últimas {{hours}} horas.",
     sameKind: "{{count}} eventos semelhantes ({{phenomenon}}) constam nesta área.",
     noContext: "Sem contexto adicional relevante neste momento.",
     noForecast: "Sem previsão disponível para este evento.",

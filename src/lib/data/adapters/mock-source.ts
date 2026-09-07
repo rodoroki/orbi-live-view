@@ -1,4 +1,9 @@
-import { ORBI_EVENTS, type EventCategory, type OrbiEvent as LegacyEvent, type OrbiRegion } from "@/lib/orbi-events";
+import {
+  ORBI_EVENTS,
+  type EventCategory,
+  type OrbiEvent as LegacyEvent,
+  type OrbiRegion,
+} from "@/lib/orbi-events";
 import type { OrbiDataSource } from "../types";
 import type { OrbiEvent, Priority, Severity, Status } from "@/lib/schemas";
 

@@ -22,12 +22,7 @@ import RegionSearch from "@/components/orbi/RegionSearch";
 import WebcamsPanel from "@/components/orbi/WebcamsPanel";
 import NowOnPlanet from "@/components/orbi/NowOnPlanet";
 import type { GeoPlace } from "@/lib/geo-search";
-import {
-  CATEGORY_META,
-  ORBI_EVENTS,
-  type EventCategory,
-  type OrbiEvent,
-} from "@/lib/orbi-events";
+import { CATEGORY_META, ORBI_EVENTS, type EventCategory, type OrbiEvent } from "@/lib/orbi-events";
 import { useTranslation } from "@/lib/i18n";
 import { useEonetEvents } from "@/lib/eonet";
 import { useUsgsEarthquakes } from "@/lib/usgs";
@@ -35,14 +30,7 @@ import { useNwsAlerts } from "@/lib/nws";
 import { useUserLocation } from "@/lib/user-location";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { rankEvents } from "@/lib/intelligence";
-import {
-  jsonLdScript,
-  organizationJsonLd,
-  seoLinks,
-  seoMeta,
-  websiteJsonLd,
-} from "@/lib/seo";
-
+import { jsonLdScript, organizationJsonLd, seoLinks, seoMeta, websiteJsonLd } from "@/lib/seo";
 
 const GlobeView = lazy(() => import("@/components/orbi/GlobeView"));
 
@@ -63,8 +51,6 @@ export const Route = createFileRoute("/")({
   }),
   component: Index,
 });
-
-
 
 const ALL_CATEGORIES = Object.keys(CATEGORY_META) as EventCategory[];
 
@@ -91,12 +77,10 @@ function Index() {
     flyTo: (lat: number, lng: number, altitude?: number) => void;
   } | null>(null);
 
-
   const { location: userLocation } = useUserLocation();
 
   // Fonte real (NASA EONET) com fallback claramente identificado.
   const { data: eonetEvents } = useEonetEvents({ days: 20, limit: 250 });
-
 
   const { data: quakeEvents } = useUsgsEarthquakes({ days: 2, minMagnitude: 2.5, limit: 200 });
   const { data: alertEvents } = useNwsAlerts({ severity: "severe", limit: 150 });
@@ -207,7 +191,10 @@ function Index() {
   };
 
   return (
-    <div className="absolute inset-0 overflow-hidden" style={{ background: "var(--gradient-void)" }}>
+    <div
+      className="absolute inset-0 overflow-hidden"
+      style={{ background: "var(--gradient-void)" }}
+    >
       {/* Conteúdo semântico no DOM: descreve o produto a leitores de tela e a mecanismos de busca. */}
       <header className="sr-only">
         <h1>ORBI LIVE — Real-Time Earth Intelligence</h1>
@@ -283,25 +270,25 @@ function Index() {
           chrome ? "opacity-100" : "opacity-0 hover:opacity-100"
         }`}
       >
-      <MapTools
-        onZoom={handleZoom}
-        onReset={handleReset}
-        onToggleFilters={() => setFiltersOpen((v) => !v)}
-        filtersOpen={filtersOpen}
-        onToggleLayers={() => setLayersOpen((v) => !v)}
-        layersOpen={layersOpen}
-        onToggleEvents={() => setEventsOpen((v) => !v)}
-        eventsOpen={eventsOpen}
-        onToggleConditions={() => {
-          setConditionsOpen((v) => !v);
-          setPanelOpen(false);
-        }}
-        conditionsOpen={conditionsOpen}
-        onToggleWebcams={() => setWebcamsOpen((v) => !v)}
-        webcamsOpen={webcamsOpen}
-      />
-      <TimelineBar hour={hour} onChange={setHour} />
-      <ViewToggle mode={mode} onChange={setMode} />
+        <MapTools
+          onZoom={handleZoom}
+          onReset={handleReset}
+          onToggleFilters={() => setFiltersOpen((v) => !v)}
+          filtersOpen={filtersOpen}
+          onToggleLayers={() => setLayersOpen((v) => !v)}
+          layersOpen={layersOpen}
+          onToggleEvents={() => setEventsOpen((v) => !v)}
+          eventsOpen={eventsOpen}
+          onToggleConditions={() => {
+            setConditionsOpen((v) => !v);
+            setPanelOpen(false);
+          }}
+          conditionsOpen={conditionsOpen}
+          onToggleWebcams={() => setWebcamsOpen((v) => !v)}
+          webcamsOpen={webcamsOpen}
+        />
+        <TimelineBar hour={hour} onChange={setHour} />
+        <ViewToggle mode={mode} onChange={setMode} />
       </div>
       {conditionsOpen && (
         <ConditionsPanel
@@ -313,9 +300,7 @@ function Index() {
       {weatherMapOpen && (
         <WeatherMapOverlay onClose={() => setWeatherMapOpen(false)} coords={coords} />
       )}
-      {webcamsOpen && (
-        <WebcamsPanel coords={coords} onClose={() => setWebcamsOpen(false)} />
-      )}
+      {webcamsOpen && <WebcamsPanel coords={coords} onClose={() => setWebcamsOpen(false)} />}
       {eventsOpen && (
         <EventsPanel
           events={events}
@@ -329,9 +314,7 @@ function Index() {
           active={layers}
           onClose={() => setLayersOpen(false)}
           onToggle={(l) =>
-            setLayers((prev) =>
-              prev.includes(l) ? prev.filter((x) => x !== l) : [...prev, l],
-            )
+            setLayers((prev) => (prev.includes(l) ? prev.filter((x) => x !== l) : [...prev, l]))
           }
         />
       )}
@@ -340,9 +323,7 @@ function Index() {
           active={active}
           onClose={() => setFiltersOpen(false)}
           onToggle={(c) =>
-            setActive((prev) =>
-              prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c],
-            )
+            setActive((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]))
           }
         />
       )}
@@ -352,11 +333,7 @@ function Index() {
       )}
 
       {!selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
-        <ContextCard
-          event={null}
-          total={events.length}
-          onClose={() => setPanelOpen(false)}
-        />
+        <ContextCard event={null} total={events.length} onClose={() => setPanelOpen(false)} />
       )}
 
       <p className="label-track pointer-events-none absolute bottom-7 left-1/2 hidden -translate-x-1/2 translate-y-10 text-[9px] text-muted-foreground/60 xl:block">
@@ -387,7 +364,6 @@ function Index() {
     </div>
   );
 }
-
 
 function StageFallback() {
   return (

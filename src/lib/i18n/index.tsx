@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { en } from './locales/en';
-import { ptBR } from './locales/pt-BR';
-import { es } from './locales/es';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { en } from "./locales/en";
+import { ptBR } from "./locales/pt-BR";
+import { es } from "./locales/es";
 
-type Locale = 'en' | 'pt-BR' | 'es';
+type Locale = "en" | "pt-BR" | "es";
 type Translations = typeof en;
 
 interface I18nContextType {
@@ -16,7 +16,7 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
 const translations: Record<Locale, Translations> = {
   en,
-  'pt-BR': ptBR,
+  "pt-BR": ptBR,
   es,
 };
 
@@ -24,32 +24,32 @@ export type { Locale };
 
 /** Resolve locale: usuário (localStorage) > navegador/Accept-Language > en */
 export function resolveLocale(candidate?: string | null): Locale {
-  if (!candidate) return 'en';
-  if (candidate.startsWith('pt')) return 'pt-BR';
-  if (candidate.startsWith('es')) return 'es';
-  return 'en';
+  if (!candidate) return "en";
+  if (candidate.startsWith("pt")) return "pt-BR";
+  if (candidate.startsWith("es")) return "es";
+  return "en";
 }
 
 export function I18nProvider({
   children,
-  initialLocale = 'en',
+  initialLocale = "en",
 }: {
   children: React.ReactNode;
   initialLocale?: Locale;
 }) {
   const [locale, setLocale] = useState<Locale>(() => {
-    if (typeof window === 'undefined') return initialLocale;
-    const saved = localStorage.getItem('orbi-locale') as Locale;
+    if (typeof window === "undefined") return initialLocale;
+    const saved = localStorage.getItem("orbi-locale") as Locale;
     if (saved && translations[saved]) return saved;
-    
+
     const browserLang = navigator.language;
-    if (browserLang.startsWith('pt')) return 'pt-BR';
-    if (browserLang.startsWith('es')) return 'es';
-    return 'en';
+    if (browserLang.startsWith("pt")) return "pt-BR";
+    if (browserLang.startsWith("es")) return "es";
+    return "en";
   });
 
   useEffect(() => {
-    localStorage.setItem('orbi-locale', locale);
+    localStorage.setItem("orbi-locale", locale);
     document.documentElement.lang = locale;
   }, [locale]);
 
@@ -59,11 +59,7 @@ export function I18nProvider({
     t: translations[locale],
   };
 
-  return (
-    <I18nContext.Provider value={value}>
-      {children}
-    </I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
 
 /** Interpolação simples: format("{{count}} results", { count: 3 }) */
@@ -76,7 +72,7 @@ export function format(template: string, vars: Record<string, string | number>) 
 export function useTranslation() {
   const context = useContext(I18nContext);
   if (!context) {
-    throw new Error('useTranslation must be used within an I18nProvider');
+    throw new Error("useTranslation must be used within an I18nProvider");
   }
   return context;
 }
