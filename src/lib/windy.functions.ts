@@ -142,9 +142,10 @@ export const getWindyPointForecast = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }): Promise<{ metrics: Metric[] }> => {
     const apiKey = process.env["WINDY_POINT_FORECAST_API_KEY"];
-    if (!apiKey) throw new Error("WINDY_POINT_FORECAST_API_KEY missing");
+    if (!apiKey) return { metrics: [] };
 
-    const res = await fetch("https://api.windy.com/api/point-forecast/v2", {
+    try {
+      const res = await fetch("https://api.windy.com/api/point-forecast/v2", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -168,9 +169,12 @@ export const getWindyPointForecast = createServerFn({ method: "GET" })
       }),
     });
 
-    if (!res.ok) throw new Error(`Windy forecast failed: ${res.status}`);
-    const json = (await res.json()) as WindyResponse;
-    return { metrics: mapWindyToMetrics(json) };
+      if (!res.ok) return { metrics: [] };
+      const json = (await res.json()) as WindyResponse;
+      return { metrics: mapWindyToMetrics(json) };
+    } catch {
+      return { metrics: [] };
+    }
   });
 
 /**
@@ -190,14 +194,14 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }): Promise<{ webcams: WindyWebcam[] }> => {
     const apiKey = process.env["WINDY_WEBCAMS_API_KEY"];
-    if (!apiKey) throw new Error("WINDY_WEBCAMS_API_KEY missing");
+    if (!apiKey) return { webcams: [] };
 
     const url =
       `https://api.windy.com/webcams/api/v3/webcams?nearby=${data.lat},${data.lng},${data.radiusKm}` +
       `&limit=12&include=images,location`;
 
     const res = await fetch(url, { headers: { "x-windy-api-key": apiKey } });
-    if (!res.ok) throw new Error(`Windy webcams failed: ${res.status}`);
+    if (!res.ok) return { webcams: [] };
 
     const json = (await res.json()) as {
       webcams?: {
