@@ -92,6 +92,8 @@ function Index() {
   const { location: userLocation } = useUserLocation();
 
   // Fonte real (NASA EONET) com fallback claramente identificado.
+  const { data: eonetEvents } = useEonetEvents({ days: 20, limit: 250 });
+
 
   const { data: quakeEvents } = useUsgsEarthquakes({ days: 2, minMagnitude: 2.5, limit: 200 });
   const { data: alertEvents } = useNwsAlerts({ severity: "severe", limit: 150 });
