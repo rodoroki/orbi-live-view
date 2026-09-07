@@ -186,4 +186,51 @@ export const en = {
     noForecastWindow: "ORBI has no scientific forecast. Nothing is shown ahead of now.",
     exploreEarth: "Explore the Earth",
   },
+  pages: {
+    related: "Related pages",
+    links: {
+      earthquakes: "Live earthquakes (USGS)",
+      naturalEvents: "Live natural events (NASA EONET)",
+      weather: "Live weather alerts (NOAA/NWS)",
+      globe: "Explore the ORBI LIVE globe",
+      globeEvents: "See it on the ORBI LIVE globe",
+      globeAtmosphere: "See atmospheric layers on the globe",
+      globeOcean: "See the ocean on the ORBI LIVE globe",
+      globeTimeline: "Use the timeline on the globe",
+      sources: "Data sources and transparency",
+    },
+    events: {
+      eyebrow: "Events",
+      title: "Planetary events",
+      intro:
+        "A continuous record of natural phenomena observed on the surface and in the atmosphere.",
+      body: "This page is a thematic entry point. Verified records are shown on the pages linked below, always with the original source identified.",
+    },
+    atmosphere: {
+      eyebrow: "Atmosphere",
+      title: "Atmospheric layer",
+      intro:
+        "Wind, temperature, humidity and pressure presented as layers over the planetary map.",
+      body: "Atmospheric conditions are shown on the globe, from the sources linked below. This page publishes no values of its own.",
+    },
+    ocean: {
+      eyebrow: "Ocean",
+      title: "Ocean system",
+      intro: "Currents, wave height and sea surface temperature, observed at global scale.",
+      body: "ORBI LIVE does not yet publish its own ocean measurements. Observed ocean events appear on the globe and on the pages linked below.",
+    },
+    explore: {
+      eyebrow: "Explore",
+      title: "Explore the planet",
+      intro: "Move across regions, markers and observation points. An open surface for discovery.",
+      body: "Exploration happens on the globe: rotate, zoom in and select a signal to see what the source declares about it.",
+    },
+    timeline: {
+      eyebrow: "Timeline",
+      title: "Timeline",
+      intro:
+        "A temporal reconstruction of observed events, letting you move back and forth through the planet's recent history.",
+      body: "The timeline lives on the globe: step back through the last hours to see only what had already been detected at that moment. ORBI shows no forecasts the sources do not provide.",
+    },
+  },
 };
