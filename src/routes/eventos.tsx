@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoLinks } from "@/lib/seo";
 import { SectionPage, DemoList } from "@/components/orbi/SectionPage";
 
 export const Route = createFileRoute("/eventos")({
@@ -9,6 +10,7 @@ export const Route = createFileRoute("/eventos")({
       { property: "og:title", content: "ORBI LIVE — Eventos planetários" },
       { property: "og:description", content: 'Registro contínuo de fenômenos naturais observados na superfície e na atmosfera. Fontes reais serão conectadas em etapa posterior.' },
     ],
+    links: seoLinks("/eventos"),
   }),
   component: Page,
 });

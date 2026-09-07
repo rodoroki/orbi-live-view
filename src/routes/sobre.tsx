@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoLinks } from "@/lib/seo";
 import { SectionPage } from "@/components/orbi/SectionPage";
 
 const INTRO =
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/sobre")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: seoLinks("/sobre"),
   }),
   component: Page,
 });

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoLinks } from "@/lib/seo";
 import { SectionPage, DemoList } from "@/components/orbi/SectionPage";
 
 export const Route = createFileRoute("/timeline")({
@@ -9,6 +10,7 @@ export const Route = createFileRoute("/timeline")({
       { property: "og:title", content: "ORBI LIVE — Linha do tempo" },
       { property: "og:description", content: 'Reconstrução temporal dos eventos observados, permitindo avançar e retroceder na história recente do planeta.' },
     ],
+    links: seoLinks("/timeline"),
   }),
   component: Page,
 });

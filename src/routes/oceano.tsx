@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoLinks } from "@/lib/seo";
 import { SectionPage, DemoList } from "@/components/orbi/SectionPage";
 
 export const Route = createFileRoute("/oceano")({
@@ -9,6 +10,7 @@ export const Route = createFileRoute("/oceano")({
       { property: "og:title", content: "ORBI LIVE — Sistema oceânico" },
       { property: "og:description", content: 'Correntes, altura de ondas e temperatura da superfície do mar, observadas em escala global.' },
     ],
+    links: seoLinks("/oceano"),
   }),
   component: Page,
 });
