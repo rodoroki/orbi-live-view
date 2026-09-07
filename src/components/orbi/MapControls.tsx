@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { CATEGORY_META, type EventCategory, type OrbiEvent } from "@/lib/orbi-events";
 import { useTranslation } from "@/lib/i18n";
+import { formatElapsed } from "@/lib/relative-time";
 
 export function ToolRail() {
   const { t } = useTranslation();
@@ -274,7 +275,7 @@ export function ContextCard({
   total: number;
   onClose: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   return (
     <div className="surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-4 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-72 md:p-5 md:animate-rise">
@@ -305,7 +306,7 @@ export function ContextCard({
           <Row label={t.eventDetails.location} value={event.place} />
           <Row label="Coord." value={`${event.lat.toFixed(1)}, ${event.lng.toFixed(1)}`} />
           <Row label={t.eventDetails.magnitude} value={event.magnitude} />
-          <Row label={t.eventDetails.updated} value={event.updated} />
+          <Row label={t.eventDetails.updated} value={formatElapsed(event.detectedMinutesAgo, locale)} />
         </div>
       ) : (
         <div className="mt-5 flex flex-col gap-2.5">

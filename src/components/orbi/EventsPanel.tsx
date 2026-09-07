@@ -13,6 +13,7 @@ import {
   type OrbiRegion,
 } from "@/lib/orbi-events";
 import { format, useTranslation } from "@/lib/i18n";
+import { formatElapsed } from "@/lib/relative-time";
 
 const SEVERITIES: EventSeverity[] = ["critical", "high", "moderate", "low"];
 const ALL_CATEGORIES = Object.keys(CATEGORY_META) as EventCategory[];
@@ -25,7 +26,7 @@ type Props = {
 };
 
 export default function EventsPanel({ events, selected, onSelect, onClose }: Props) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<EventCategory | "all">("all");
   const [region, setRegion] = useState<OrbiRegion | "all">("all");
@@ -167,7 +168,7 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
                           <span className="text-muted-foreground">
                             {t.categories[event.category]}
                           </span>
-                          <span className="ml-auto text-muted-foreground/70">{event.updated}</span>
+                          <span className="ml-auto text-muted-foreground/70">{formatElapsed(event.detectedMinutesAgo, locale)}</span>
                         </div>
                       </div>
                     </div>
