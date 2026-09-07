@@ -200,27 +200,32 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
       `https://api.windy.com/webcams/api/v3/webcams?nearby=${data.lat},${data.lng},${data.radiusKm}` +
       `&limit=12&include=images,location`;
 
-    const res = await fetch(url, { headers: { "x-windy-api-key": apiKey } });
-    if (!res.ok) return { webcams: [] };
+    try {
+      const res = await fetch(url, { headers: { "x-windy-api-key": apiKey } });
+      if (!res.ok) return { webcams: [] };
 
-    const json = (await res.json()) as {
-      webcams?: {
-        webcamId?: number | string;
-        title?: string;
-        images?: { current?: { preview?: string; thumbnail?: string } };
-        location?: { latitude?: number; longitude?: number; city?: string };
-      }[];
-    };
+      const json = (await res.json()) as {
+        webcams?: {
+          webcamId?: number | string;
+          title?: string;
+          images?: { current?: { preview?: string; thumbnail?: string } };
+          location?: { latitude?: number; longitude?: number; city?: string };
+        }[];
+      };
 
-    const webcams: WindyWebcam[] = (json.webcams ?? [])
-      .map((w) => ({
-        id: String(w.webcamId ?? ""),
-        title: w.title ?? w.location?.city ?? "Webcam",
-        imageUrl: w.images?.current?.preview ?? w.images?.current?.thumbnail ?? null,
-        lat: w.location?.latitude ?? data.lat,
-        lng: w.location?.longitude ?? data.lng,
-      }))
-      .filter((w) => w.id !== "");
+      const webcams: WindyWebcam[] = (json.webcams ?? [])
+        .map((w) => ({
+          id: String(w.webcamId ?? ""),
+          title: w.title ?? w.location?.city ?? "Webcam",
+          imageUrl: w.images?.current?.preview ?? w.images?.current?.thumbnail ?? null,
+          lat: w.location?.latitude ?? data.lat,
+          lng: w.location?.longitude ?? data.lng,
+        }))
+        .filter((w) => w.id !== "");
 
-    return { webcams };
+      return { webcams };
+    } catch {
+      return { webcams: [] };
+    }
   });
+
