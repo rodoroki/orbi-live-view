@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoLinks } from "@/lib/seo";
 import { SectionPage, DemoList } from "@/components/orbi/SectionPage";
 
 export const Route = createFileRoute("/explorar")({
@@ -9,6 +10,7 @@ export const Route = createFileRoute("/explorar")({
       { property: "og:title", content: "ORBI LIVE — Explorar o planeta" },
       { property: "og:description", content: 'Navegue por regiões, marcadores e pontos de observação. Uma superfície aberta para descoberta.' },
     ],
+    links: seoLinks("/explorar"),
   }),
   component: Page,
 });

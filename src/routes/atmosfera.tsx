@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { seoLinks } from "@/lib/seo";
 import { SectionPage, DemoList } from "@/components/orbi/SectionPage";
 
 export const Route = createFileRoute("/atmosfera")({
@@ -9,6 +10,7 @@ export const Route = createFileRoute("/atmosfera")({
       { property: "og:title", content: "ORBI LIVE — Camada atmosférica" },
       { property: "og:description", content: 'Vento, temperatura, umidade e pressão apresentados como camadas sobre o mapa planetário.' },
     ],
+    links: seoLinks("/atmosfera"),
   }),
   component: Page,
 });
