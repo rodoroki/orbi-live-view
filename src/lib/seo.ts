@@ -48,11 +48,10 @@ export function seoLinks(path: string) {
   const url = absoluteUrl(path);
   return [
     { rel: "canonical", href: url },
-    { rel: "alternate", hrefLang: "pt-BR", href: url },
-    { rel: "alternate", hrefLang: "en", href: url },
-    { rel: "alternate", hrefLang: "es", href: url },
+    // Enquanto não existirem URLs por idioma (/en, /pt-br, /es), apenas x-default.
     { rel: "alternate", hrefLang: "x-default", href: url },
   ];
+
 }
 
 export const websiteJsonLd = {
