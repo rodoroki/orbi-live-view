@@ -46,24 +46,33 @@ export default function FlatMapView({ events, selected, onSelect }: Props) {
               type="button"
               onClick={() => onSelect(event)}
               aria-label={`${t.categories[event.category as keyof typeof t.categories] || meta.label} · ${event.place}`}
-              className={`focus-ring group absolute flex max-w-36 -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-full border px-2 py-1 shadow-lg backdrop-blur-md transition-all duration-200 hover:z-20 hover:scale-105 ${
-                active
-                  ? "z-20 border-primary/70 bg-background/95 text-foreground"
-                  : "z-10 border-border/70 bg-background/80 text-foreground/90"
+              className={`focus-ring group absolute flex h-4 w-4 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-transform duration-200 hover:z-20 hover:scale-125 ${
+                active ? "z-20" : "z-10"
               }`}
               style={{ left: `${pos.left}%`, top: `${pos.top}%` }}
             >
               <span
-                className="block h-1.5 w-1.5 shrink-0 rounded-full transition-all"
+                className="absolute inset-0 rounded-full opacity-25"
+                style={{ background: `radial-gradient(circle, ${meta.color} 0%, transparent 70%)` }}
+              />
+              <span
+                className="relative block rounded-full border border-white/50"
                 style={{
+                  width: active ? 7 : 5,
+                  height: active ? 7 : 5,
                   backgroundColor: meta.color,
-                  boxShadow: `0 0 ${active ? 14 : 8}px ${meta.color}`,
+                  boxShadow: `0 0 ${active ? 12 : 6}px ${meta.color}`,
                 }}
               />
-              <span className="truncate text-[10px] font-medium leading-none">
+              <span
+                className={`pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded-full border border-border/60 bg-background/90 px-2 py-0.5 text-[10px] font-medium leading-none text-foreground backdrop-blur-md transition-opacity duration-200 ${
+                  active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                }`}
+              >
                 {event.place}
               </span>
             </button>
+
           );
         })}
       </div>
