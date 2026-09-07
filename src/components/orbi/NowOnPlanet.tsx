@@ -1,5 +1,6 @@
 import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
 import { useTranslation } from "@/lib/i18n";
+import { distanceKm } from "@/lib/intelligence";
 
 /**
  * ORBI — Discovery mínima: "Agora no planeta".
@@ -7,18 +8,24 @@ import { useTranslation } from "@/lib/i18n";
  */
 export default function NowOnPlanet({
   events,
+  origin,
   onSelect,
 }: {
   events: OrbiEvent[];
+  /** posição do observador — muda o título para "perto de você" */
+  origin?: { lat: number; lng: number } | null;
   onSelect: (event: OrbiEvent) => void;
 }) {
   const { t } = useTranslation();
   if (events.length === 0) return null;
 
+  const near =
+    origin != null && events.some((e) => distanceKm(origin, e) < 1500);
+
   return (
     <div className="pointer-events-none absolute left-4 top-24 z-10 hidden flex-col gap-2 lg:flex">
       <span className="label-track text-[9px] text-muted-foreground/60">
-        {t.planet.nowOnPlanet}
+        {near ? t.insight.nearYou : t.planet.nowOnPlanet}
       </span>
       <div className="pointer-events-auto flex flex-col gap-1.5">
         {events.slice(0, 3).map((event) => {

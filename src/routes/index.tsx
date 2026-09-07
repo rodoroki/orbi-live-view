@@ -247,7 +247,7 @@ function Index() {
         </p>
       )}
       {!eventsOpen && !conditionsOpen && (
-        <NowOnPlanet events={highlights} onSelect={handleSelect} />
+        <NowOnPlanet events={highlights} origin={userLocation} onSelect={handleSelect} />
       )}
       <RegionSearch onPick={handlePickPlace} current={place} />
       <div
