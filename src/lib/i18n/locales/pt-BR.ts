@@ -68,6 +68,7 @@ export const ptBR = {
     all: "Todos",
   },
   eventDetails: {
+    locationUnavailable: "Localização indisponível",
     details: "Detalhes",
     sources: "Fontes",
     updated: "Atualizado",
@@ -186,5 +187,54 @@ export const ptBR = {
     sourceUnavailable: "Fontes ao vivo indisponíveis · nada está a ser exibido",
     noForecastWindow: "O ORBI não possui previsão científica. Nada é exibido à frente de agora.",
     exploreEarth: "Explore a Terra",
+  },
+  pages: {
+    related: "Páginas relacionadas",
+    links: {
+      earthquakes: "Terremotos ao vivo (USGS)",
+      naturalEvents: "Eventos naturais ao vivo (NASA EONET)",
+      weather: "Alertas meteorológicos ao vivo (NOAA/NWS)",
+      globe: "Explorar o globo ORBI LIVE",
+      globeEvents: "Ver no globo ORBI LIVE",
+      globeAtmosphere: "Ver camadas atmosféricas no globo",
+      globeOcean: "Ver o oceano no globo ORBI LIVE",
+      globeTimeline: "Usar a linha do tempo no globo",
+      sources: "Fontes de dados e transparência",
+    },
+    events: {
+      eyebrow: "Eventos",
+      title: "Eventos planetários",
+      intro:
+        "Registro contínuo de fenômenos naturais observados na superfície e na atmosfera.",
+      body: "Esta página é uma porta de entrada temática. Os registros verificados são apresentados nas páginas ligadas abaixo, sempre com a fonte original identificada.",
+    },
+    atmosphere: {
+      eyebrow: "Atmosfera",
+      title: "Camada atmosférica",
+      intro:
+        "Vento, temperatura, umidade e pressão apresentados como camadas sobre o mapa planetário.",
+      body: "As condições atmosféricas são apresentadas sobre o globo, a partir das fontes ligadas abaixo. Esta página não publica valores próprios.",
+    },
+    ocean: {
+      eyebrow: "Oceano",
+      title: "Sistema oceânico",
+      intro:
+        "Correntes, altura de ondas e temperatura da superfície do mar, observadas em escala global.",
+      body: "O ORBI LIVE ainda não publica medições oceânicas próprias. Os eventos oceânicos observados aparecem no globo e nas páginas ligadas abaixo.",
+    },
+    explore: {
+      eyebrow: "Explorar",
+      title: "Explorar o planeta",
+      intro:
+        "Navegue por regiões, marcadores e pontos de observação. Uma superfície aberta para descoberta.",
+      body: "A exploração acontece no globo: gire, aproxime e selecione um sinal para ver o que a fonte declara sobre ele.",
+    },
+    timeline: {
+      eyebrow: "Linha do tempo",
+      title: "Linha do tempo",
+      intro:
+        "Reconstrução temporal dos eventos observados, permitindo avançar e retroceder na história recente do planeta.",
+      body: "A linha do tempo vive no globo: recue nas últimas horas para ver apenas o que já tinha sido detectado nesse momento. O ORBI não apresenta previsões que as fontes não forneçam.",
+    },
   },
 };

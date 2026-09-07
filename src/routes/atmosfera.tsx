@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { seoLinks } from "@/lib/seo";
 import { SectionPage } from "@/components/orbi/SectionPage";
 import { RelatedLinks } from "@/components/orbi/LivePage";
+import { useTranslation } from "@/lib/i18n";
 
 export const Route = createFileRoute("/atmosfera")({
   head: () => ({
@@ -18,32 +19,28 @@ export const Route = createFileRoute("/atmosfera")({
         content:
           "Vento, temperatura, umidade e pressão apresentados como camadas sobre o mapa planetário.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: seoLinks("/atmosfera"),
   }),
   component: Page,
 });
 
-const links = [
-  { to: "/weather", label: "Alertas meteorológicos ao vivo (NOAA/NWS)" },
-  { to: "/", label: "Ver camadas atmosféricas no globo" },
-];
-
 function Page() {
+  const { t } = useTranslation();
+  const page = t.pages.atmosphere;
+
   return (
-    <SectionPage
-      eyebrow="Atmosfera"
-      title="Camada atmosférica"
-      intro={
-        "Vento, temperatura, umidade e pressão apresentados como camadas sobre o mapa planetário."
-      }
-    >
-      <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground">
-        {
-          "As condições atmosféricas são apresentadas sobre o globo, a partir das fontes ligadas abaixo. Esta página não publica valores próprios."
-        }
-      </p>
-      <RelatedLinks links={links} />
+    <SectionPage eyebrow={page.eyebrow} title={page.title} intro={page.intro}>
+      <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground">{page.body}</p>
+      <RelatedLinks
+        label={t.pages.related}
+        links={[
+          { to: "/weather", label: t.pages.links.weather },
+          { to: "/", label: t.pages.links.globeAtmosphere },
+        ]}
+      />
     </SectionPage>
   );
 }

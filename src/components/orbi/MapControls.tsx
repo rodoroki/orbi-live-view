@@ -294,7 +294,7 @@ export function ContextCard({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Fechar painel"
+          aria-label={t.common.close}
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
           <X className="h-4 w-4" strokeWidth={1.4} />
@@ -303,8 +303,10 @@ export function ContextCard({
 
       {event ? (
         <div className="mt-5 flex flex-col gap-2.5">
-          <Row label={t.eventDetails.location} value={event.place} />
-          <Row label="Coord." value={`${event.lat.toFixed(1)}, ${event.lng.toFixed(1)}`} />
+          <Row
+            label={t.eventDetails.location}
+            value={event.place?.trim() || t.eventDetails.locationUnavailable}
+          />
           <Row label={t.eventDetails.magnitude} value={event.magnitude} />
           <Row
             label={t.eventDetails.updated}

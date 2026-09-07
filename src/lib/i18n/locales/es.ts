@@ -68,6 +68,7 @@ export const es = {
     all: "Todos",
   },
   eventDetails: {
+    locationUnavailable: "Ubicación no disponible",
     details: "Detalles",
     sources: "Fuentes",
     updated: "Actualizado",
@@ -185,5 +186,54 @@ export const es = {
     sourceUnavailable: "Fuentes en vivo no disponibles · no se muestra nada",
     noForecastWindow: "ORBI no tiene pronóstico científico. No se muestra nada más allá de ahora.",
     exploreEarth: "Explora la Tierra",
+  },
+  pages: {
+    related: "Páginas relacionadas",
+    links: {
+      earthquakes: "Terremotos en vivo (USGS)",
+      naturalEvents: "Eventos naturales en vivo (NASA EONET)",
+      weather: "Alertas meteorológicas en vivo (NOAA/NWS)",
+      globe: "Explorar el globo ORBI LIVE",
+      globeEvents: "Verlo en el globo ORBI LIVE",
+      globeAtmosphere: "Ver las capas atmosféricas en el globo",
+      globeOcean: "Ver el océano en el globo ORBI LIVE",
+      globeTimeline: "Usar la línea de tiempo en el globo",
+      sources: "Fuentes de datos y transparencia",
+    },
+    events: {
+      eyebrow: "Eventos",
+      title: "Eventos planetarios",
+      intro:
+        "Registro continuo de fenómenos naturales observados en la superficie y en la atmósfera.",
+      body: "Esta página es una puerta de entrada temática. Los registros verificados se muestran en las páginas enlazadas abajo, siempre con la fuente original identificada.",
+    },
+    atmosphere: {
+      eyebrow: "Atmósfera",
+      title: "Capa atmosférica",
+      intro:
+        "Viento, temperatura, humedad y presión presentados como capas sobre el mapa planetario.",
+      body: "Las condiciones atmosféricas se muestran sobre el globo, a partir de las fuentes enlazadas abajo. Esta página no publica valores propios.",
+    },
+    ocean: {
+      eyebrow: "Océano",
+      title: "Sistema oceánico",
+      intro:
+        "Corrientes, altura de las olas y temperatura de la superficie del mar, observadas a escala global.",
+      body: "ORBI LIVE aún no publica mediciones oceánicas propias. Los eventos oceánicos observados aparecen en el globo y en las páginas enlazadas abajo.",
+    },
+    explore: {
+      eyebrow: "Explorar",
+      title: "Explorar el planeta",
+      intro:
+        "Navega por regiones, marcadores y puntos de observación. Una superficie abierta al descubrimiento.",
+      body: "La exploración ocurre en el globo: gira, acércate y selecciona una señal para ver lo que la fuente declara sobre ella.",
+    },
+    timeline: {
+      eyebrow: "Línea de tiempo",
+      title: "Línea de tiempo",
+      intro:
+        "Reconstrucción temporal de los eventos observados, permitiendo avanzar y retroceder en la historia reciente del planeta.",
+      body: "La línea de tiempo vive en el globo: retrocede en las últimas horas para ver solo lo que ya había sido detectado en ese momento. ORBI no presenta pronósticos que las fuentes no proporcionen.",
+    },
   },
 };

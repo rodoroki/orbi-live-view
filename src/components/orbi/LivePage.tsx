@@ -70,9 +70,15 @@ export function LiveEventList({
   );
 }
 
-export function RelatedLinks({ links }: { links: { to: string; label: string }[] }) {
+export function RelatedLinks({
+  links,
+  label = "Related pages",
+}: {
+  links: { to: string; label: string }[];
+  label?: string;
+}) {
   return (
-    <nav className="mt-16 flex flex-col gap-2" aria-label="Páginas relacionadas">
+    <nav className="mt-16 flex flex-col gap-2" aria-label={label}>
       {links.map((link) => (
         <Link
           key={link.to}

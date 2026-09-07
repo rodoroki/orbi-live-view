@@ -68,7 +68,7 @@ export default function DiscoveryCard({
           </span>
 
           <h2 className="label-track mt-4 text-[11px] text-foreground">
-            {event.place.toUpperCase()}
+            {(event.place?.trim() || t.eventDetails.locationUnavailable).toUpperCase()}
           </h2>
           <p className="mt-2 text-sm font-light leading-snug text-muted-foreground">{phenomenon}</p>
           <p className="label-track mt-4 text-[9px] text-muted-foreground/60">

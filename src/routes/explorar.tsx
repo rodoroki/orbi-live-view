@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { seoLinks } from "@/lib/seo";
 import { SectionPage } from "@/components/orbi/SectionPage";
 import { RelatedLinks } from "@/components/orbi/LivePage";
+import { useTranslation } from "@/lib/i18n";
 
 export const Route = createFileRoute("/explorar")({
   head: () => ({
@@ -18,32 +19,28 @@ export const Route = createFileRoute("/explorar")({
         content:
           "Navegue por regiões, marcadores e pontos de observação. Uma superfície aberta para descoberta.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: seoLinks("/explorar"),
   }),
   component: Page,
 });
 
-const links = [
-  { to: "/", label: "Explorar o globo ORBI LIVE" },
-  { to: "/sobre", label: "Fontes de dados e transparência" },
-];
-
 function Page() {
+  const { t } = useTranslation();
+  const page = t.pages.explore;
+
   return (
-    <SectionPage
-      eyebrow="Explorar"
-      title="Explorar o planeta"
-      intro={
-        "Navegue por regiões, marcadores e pontos de observação. Uma superfície aberta para descoberta."
-      }
-    >
-      <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground">
-        {
-          "A exploração acontece no globo: rode, aproxime e selecione um sinal para ver o que a fonte declara sobre ele."
-        }
-      </p>
-      <RelatedLinks links={links} />
+    <SectionPage eyebrow={page.eyebrow} title={page.title} intro={page.intro}>
+      <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground">{page.body}</p>
+      <RelatedLinks
+        label={t.pages.related}
+        links={[
+          { to: "/", label: t.pages.links.globe },
+          { to: "/sobre", label: t.pages.links.sources },
+        ]}
+      />
     </SectionPage>
   );
 }
