@@ -68,6 +68,7 @@ export const es = {
     all: "Todos",
   },
   eventDetails: {
+    locationUnavailable: "Ubicación no disponible",
     details: "Detalles",
     sources: "Fuentes",
     updated: "Actualizado",

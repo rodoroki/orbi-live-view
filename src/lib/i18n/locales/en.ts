@@ -68,6 +68,7 @@ export const en = {
     all: "All",
   },
   eventDetails: {
+    locationUnavailable: "Location unavailable",
     details: "Details",
     sources: "Sources",
     updated: "Updated",

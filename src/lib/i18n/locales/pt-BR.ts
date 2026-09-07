@@ -68,6 +68,7 @@ export const ptBR = {
     all: "Todos",
   },
   eventDetails: {
+    locationUnavailable: "Localização indisponível",
     details: "Detalhes",
     sources: "Fontes",
     updated: "Atualizado",
