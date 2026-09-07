@@ -34,6 +34,7 @@ import { useUsgsEarthquakes } from "@/lib/usgs";
 import { useNwsAlerts } from "@/lib/nws";
 import { useUserLocation } from "@/lib/user-location";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { rankEvents } from "@/lib/intelligence";
 
 
 const GlobeView = lazy(() => import("@/components/orbi/GlobeView"));
@@ -110,13 +111,11 @@ function Index() {
     return filtered.filter((e) => e.detectedMinutesAgo >= Math.abs(hour) * 60);
   }, [active, layers, source, hour]);
 
-  // Discovery prefere lugares com nome — coordenadas não contam história.
-  const highlights = useMemo(() => {
-    const named = events.filter((e) => !/^-?\d/.test(e.place));
-    return [...(named.length >= 3 ? named : events)]
-      .sort((a, b) => a.priority - b.priority || a.detectedMinutesAgo - b.detectedMinutesAgo)
-      .slice(0, 3);
-  }, [events]);
+  // Relevance Engine decide o que merece atenção agora (máx. 3).
+  const highlights = useMemo(
+    () => rankEvents(events, { origin: userLocation }).slice(0, 3),
+    [events, userLocation],
+  );
 
   // painel de contexto reabre automaticamente ao selecionar um evento
 
@@ -142,7 +141,6 @@ function Index() {
   );
 
   // ponto de observação: região buscada > evento selecionado > sua localização
-  const { location: userLocation } = useUserLocation();
   const coords = place
     ? { lat: place.lat, lng: place.lng }
     : selected
@@ -318,7 +316,7 @@ function Index() {
       )}
 
       {selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
-        <DiscoveryCard event={selected} onClose={() => setPanelOpen(false)} />
+        <DiscoveryCard event={selected} events={events} onClose={() => setPanelOpen(false)} />
       )}
 
       {!selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
