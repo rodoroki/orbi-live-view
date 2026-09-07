@@ -44,23 +44,19 @@ export const Route = createFileRoute("/")({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ORBI LIVE — Earth Intelligence" },
-      {
-        name: "description",
-        content:
-          "ORBI LIVE is a planetary intelligence platform for real-time observation of Earth events, atmosphere, and oceans.",
-      },
-      { property: "og:title", content: "ORBI LIVE — Earth Intelligence" },
-      {
-        property: "og:description",
-        content: "A sophisticated window for observing the planet.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      ...seoMeta({
+        path: "/",
+        title: "ORBI LIVE — Real-Time Earth Intelligence",
+        description:
+          "Explore Earth in real time. Discover earthquakes, natural events, severe weather and atmospheric conditions around the planet with ORBI LIVE.",
+      }),
     ],
+    links: seoLinks("/"),
+    scripts: [jsonLdScript(websiteJsonLd), jsonLdScript(organizationJsonLd)],
   }),
   component: Index,
 });
+
 
 
 const ALL_CATEGORIES = Object.keys(CATEGORY_META) as EventCategory[];

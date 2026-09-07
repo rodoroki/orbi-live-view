@@ -11,11 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AtmosferaRouteImport } from './routes/atmosfera'
+import { Route as EarthquakesRouteImport } from './routes/earthquakes'
 import { Route as EventosRouteImport } from './routes/eventos'
 import { Route as ExplorarRouteImport } from './routes/explorar'
+import { Route as NaturalEventsRouteImport } from './routes/natural-events'
 import { Route as OceanoRouteImport } from './routes/oceano'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as TimelineRouteImport } from './routes/timeline'
+import { Route as WeatherRouteImport } from './routes/weather'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -25,6 +29,11 @@ const IndexRoute = IndexRouteImport.update({
 const AtmosferaRoute = AtmosferaRouteImport.update({
   id: '/atmosfera',
   path: '/atmosfera',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EarthquakesRoute = EarthquakesRouteImport.update({
+  id: '/earthquakes',
+  path: '/earthquakes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventosRoute = EventosRouteImport.update({
@@ -37,9 +46,19 @@ const ExplorarRoute = ExplorarRouteImport.update({
   path: '/explorar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NaturalEventsRoute = NaturalEventsRouteImport.update({
+  id: '/natural-events',
+  path: '/natural-events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OceanoRoute = OceanoRouteImport.update({
   id: '/oceano',
   path: '/oceano',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SobreRoute = SobreRouteImport.update({
@@ -52,73 +71,106 @@ const TimelineRoute = TimelineRouteImport.update({
   path: '/timeline',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WeatherRoute = WeatherRouteImport.update({
+  id: '/weather',
+  path: '/weather',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/atmosfera': typeof AtmosferaRoute
+  '/earthquakes': typeof EarthquakesRoute
   '/eventos': typeof EventosRoute
   '/explorar': typeof ExplorarRoute
+  '/natural-events': typeof NaturalEventsRoute
   '/oceano': typeof OceanoRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/timeline': typeof TimelineRoute
+  '/weather': typeof WeatherRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/atmosfera': typeof AtmosferaRoute
+  '/earthquakes': typeof EarthquakesRoute
   '/eventos': typeof EventosRoute
   '/explorar': typeof ExplorarRoute
+  '/natural-events': typeof NaturalEventsRoute
   '/oceano': typeof OceanoRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/timeline': typeof TimelineRoute
+  '/weather': typeof WeatherRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/atmosfera': typeof AtmosferaRoute
+  '/earthquakes': typeof EarthquakesRoute
   '/eventos': typeof EventosRoute
   '/explorar': typeof ExplorarRoute
+  '/natural-events': typeof NaturalEventsRoute
   '/oceano': typeof OceanoRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/timeline': typeof TimelineRoute
+  '/weather': typeof WeatherRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/atmosfera'
+    | '/earthquakes'
     | '/eventos'
     | '/explorar'
+    | '/natural-events'
     | '/oceano'
+    | '/sitemap.xml'
     | '/sobre'
     | '/timeline'
+    | '/weather'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/atmosfera'
+    | '/earthquakes'
     | '/eventos'
     | '/explorar'
+    | '/natural-events'
     | '/oceano'
+    | '/sitemap.xml'
     | '/sobre'
     | '/timeline'
+    | '/weather'
   id:
     | '__root__'
     | '/'
     | '/atmosfera'
+    | '/earthquakes'
     | '/eventos'
     | '/explorar'
+    | '/natural-events'
     | '/oceano'
+    | '/sitemap.xml'
     | '/sobre'
     | '/timeline'
+    | '/weather'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AtmosferaRoute: typeof AtmosferaRoute
+  EarthquakesRoute: typeof EarthquakesRoute
   EventosRoute: typeof EventosRoute
   ExplorarRoute: typeof ExplorarRoute
+  NaturalEventsRoute: typeof NaturalEventsRoute
   OceanoRoute: typeof OceanoRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   TimelineRoute: typeof TimelineRoute
+  WeatherRoute: typeof WeatherRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -137,6 +189,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AtmosferaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/earthquakes': {
+      id: '/earthquakes'
+      path: '/earthquakes'
+      fullPath: '/earthquakes'
+      preLoaderRoute: typeof EarthquakesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/eventos': {
       id: '/eventos'
       path: '/eventos'
@@ -151,11 +210,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExplorarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/natural-events': {
+      id: '/natural-events'
+      path: '/natural-events'
+      fullPath: '/natural-events'
+      preLoaderRoute: typeof NaturalEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/oceano': {
       id: '/oceano'
       path: '/oceano'
       fullPath: '/oceano'
       preLoaderRoute: typeof OceanoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sobre': {
@@ -172,17 +245,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TimelineRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/weather': {
+      id: '/weather'
+      path: '/weather'
+      fullPath: '/weather'
+      preLoaderRoute: typeof WeatherRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AtmosferaRoute: AtmosferaRoute,
+  EarthquakesRoute: EarthquakesRoute,
   EventosRoute: EventosRoute,
   ExplorarRoute: ExplorarRoute,
+  NaturalEventsRoute: NaturalEventsRoute,
   OceanoRoute: OceanoRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   TimelineRoute: TimelineRoute,
+  WeatherRoute: WeatherRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
