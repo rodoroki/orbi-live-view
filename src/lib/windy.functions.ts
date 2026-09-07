@@ -146,28 +146,28 @@ export const getWindyPointForecast = createServerFn({ method: "GET" })
 
     try {
       const res = await fetch("https://api.windy.com/api/point-forecast/v2", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        lat: data.lat,
-        lon: data.lng,
-        model: "gfs",
-        // "gust" não é suportado pelo modelo GFS na Point Forecast API
-        parameters: [
-          "temp",
-          "wind",
-          "rh",
-          "pressure",
-          "precip",
-          "lclouds",
-          "mclouds",
-          "hclouds",
-          "ptype",
-        ],
-        levels: ["surface"],
-        key: apiKey,
-      }),
-    });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lat: data.lat,
+          lon: data.lng,
+          model: "gfs",
+          // "gust" não é suportado pelo modelo GFS na Point Forecast API
+          parameters: [
+            "temp",
+            "wind",
+            "rh",
+            "pressure",
+            "precip",
+            "lclouds",
+            "mclouds",
+            "hclouds",
+            "ptype",
+          ],
+          levels: ["surface"],
+          key: apiKey,
+        }),
+      });
 
       if (!res.ok) return { metrics: [] };
       const json = (await res.json()) as WindyResponse;
@@ -228,4 +228,3 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
       return { webcams: [] };
     }
   });
-
