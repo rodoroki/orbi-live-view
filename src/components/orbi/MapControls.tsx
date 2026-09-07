@@ -294,7 +294,7 @@ export function ContextCard({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Fechar painel"
+          aria-label={t.common.close}
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
           <X className="h-4 w-4" strokeWidth={1.4} />
