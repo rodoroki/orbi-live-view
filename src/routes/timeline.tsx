@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { seoLinks } from "@/lib/seo";
 import { SectionPage } from "@/components/orbi/SectionPage";
 import { RelatedLinks } from "@/components/orbi/LivePage";
+import { useTranslation } from "@/lib/i18n";
 
 export const Route = createFileRoute("/timeline")({
   head: () => ({
@@ -18,32 +19,28 @@ export const Route = createFileRoute("/timeline")({
         content:
           "Reconstrução temporal dos eventos observados, permitindo avançar e retroceder na história recente do planeta.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: seoLinks("/timeline"),
   }),
   component: Page,
 });
 
-const links = [
-  { to: "/", label: "Usar a linha do tempo no globo" },
-  { to: "/earthquakes", label: "Terremotos das últimas horas" },
-];
-
 function Page() {
+  const { t } = useTranslation();
+  const page = t.pages.timeline;
+
   return (
-    <SectionPage
-      eyebrow="Timeline"
-      title="Linha do tempo"
-      intro={
-        "Reconstrução temporal dos eventos observados, permitindo avançar e retroceder na história recente do planeta."
-      }
-    >
-      <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground">
-        {
-          "A linha do tempo vive no globo: recue nas últimas horas para ver apenas o que já tinha sido detetado nesse momento. O ORBI não apresenta previsões que as fontes não forneçam."
-        }
-      </p>
-      <RelatedLinks links={links} />
+    <SectionPage eyebrow={page.eyebrow} title={page.title} intro={page.intro}>
+      <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground">{page.body}</p>
+      <RelatedLinks
+        label={t.pages.related}
+        links={[
+          { to: "/", label: t.pages.links.globeTimeline },
+          { to: "/earthquakes", label: t.pages.links.earthquakes },
+        ]}
+      />
     </SectionPage>
   );
 }
