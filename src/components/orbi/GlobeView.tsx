@@ -114,29 +114,39 @@ function categoryColor(event: OrbiEvent) {
 type EventMarker = OrbiEvent & { active: boolean };
 
 function createEventPill(event: EventMarker, onSelect: (event: OrbiEvent) => void) {
+  const color = categoryColor(event);
   const pill = document.createElement("button");
   pill.type = "button";
-  pill.className = event.active
-    ? "group flex max-w-36 cursor-pointer items-center gap-1.5 rounded-full border border-primary/70 bg-background/95 px-2 py-1 text-foreground shadow-lg backdrop-blur-md transition-transform hover:scale-105"
-    : "group flex max-w-36 cursor-pointer items-center gap-1.5 rounded-full border border-border/70 bg-background/80 px-2 py-1 text-foreground/90 shadow-lg backdrop-blur-md transition-transform hover:scale-105";
+  pill.className =
+    "group relative flex h-4 w-4 cursor-pointer items-center justify-center rounded-full transition-transform duration-200 hover:scale-125";
   pill.setAttribute("aria-label", `${CATEGORY_META[event.category].label} · ${event.place}`);
 
+  const halo = document.createElement("span");
+  halo.className = "absolute inset-0 rounded-full opacity-25";
+  halo.style.background = `radial-gradient(circle, ${color} 0%, transparent 70%)`;
+
   const signal = document.createElement("span");
-  signal.className = "block h-1.5 w-1.5 shrink-0 rounded-full";
-  signal.style.backgroundColor = categoryColor(event);
-  signal.style.boxShadow = `0 0 ${event.active ? 14 : 8}px ${categoryColor(event)}`;
+  signal.className = "relative block rounded-full";
+  signal.style.width = event.active ? "7px" : "5px";
+  signal.style.height = event.active ? "7px" : "5px";
+  signal.style.backgroundColor = color;
+  signal.style.border = "1px solid rgba(255,255,255,0.5)";
+  signal.style.boxShadow = `0 0 ${event.active ? 12 : 6}px ${color}`;
 
   const label = document.createElement("span");
-  label.className = "truncate text-[10px] font-medium leading-none";
+  label.className =
+    "pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded-full border border-border/60 bg-background/90 px-2 py-0.5 text-[10px] font-medium leading-none text-foreground opacity-0 backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100";
   label.textContent = event.place;
+  if (event.active) label.classList.replace("opacity-0", "opacity-100");
 
-  pill.append(signal, label);
+  pill.append(halo, signal, label);
   pill.addEventListener("click", (clickEvent) => {
     clickEvent.stopPropagation();
     onSelect(event);
   });
   return pill;
 }
+
 
 // -----------------------------------------------------------------------------
 // TILE MATH — slippy map (Web Mercator) → retângulos lat/lng no globo
