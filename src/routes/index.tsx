@@ -35,6 +35,13 @@ import { useNwsAlerts } from "@/lib/nws";
 import { useUserLocation } from "@/lib/user-location";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { rankEvents } from "@/lib/intelligence";
+import {
+  jsonLdScript,
+  organizationJsonLd,
+  seoLinks,
+  seoMeta,
+  websiteJsonLd,
+} from "@/lib/seo";
 
 
 const GlobeView = lazy(() => import("@/components/orbi/GlobeView"));
@@ -201,6 +208,31 @@ function Index() {
 
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ background: "var(--gradient-void)" }}>
+      {/* Conteúdo semântico no DOM: descreve o produto a leitores de tela e a mecanismos de busca. */}
+      <header className="sr-only">
+        <h1>ORBI LIVE — Real-Time Earth Intelligence</h1>
+        <p>
+          Real-time Earth observation. Explore earthquakes, natural events, severe weather and
+          atmospheric conditions happening around the planet, from official sources such as NASA
+          EONET, USGS and NOAA.
+        </p>
+        <nav aria-label="Earth intelligence pages">
+          <ul>
+            <li>
+              <Link to="/earthquakes">Live earthquake map — earthquakes today</Link>
+            </li>
+            <li>
+              <Link to="/natural-events">Natural events happening on Earth</Link>
+            </li>
+            <li>
+              <Link to="/weather">Severe weather alerts and live weather map</Link>
+            </li>
+            <li>
+              <Link to="/sobre">Data sources and transparency</Link>
+            </li>
+          </ul>
+        </nav>
+      </header>
 
       <div className="absolute inset-0">
         {mode === "globe" ? (
