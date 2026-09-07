@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, ArrowLeft, X } from "lucide-react";
 import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
 import { format, useTranslation } from "@/lib/i18n";
+import { buildInsight } from "@/lib/intelligence";
 
 /**
  * ORBI — Discovery
@@ -12,9 +13,12 @@ import { format, useTranslation } from "@/lib/i18n";
  */
 export default function DiscoveryCard({
   event,
+  events = [],
   onClose,
 }: {
   event: OrbiEvent;
+  /** universo de eventos visíveis — base do contexto local */
+  events?: OrbiEvent[];
   onClose: () => void;
 }) {
   const { t } = useTranslation();
@@ -23,6 +27,8 @@ export default function DiscoveryCard({
   useEffect(() => {
     setDeep(false);
   }, [event.id]);
+
+  const insight = useMemo(() => buildInsight(event, events, t), [event, events, t]);
 
   const color = CATEGORY_META[event.category]?.color ?? "var(--primary)";
   const phenomenon =
@@ -85,25 +91,36 @@ export default function DiscoveryCard({
         </div>
       ) : (
         <div className="animate-fade-in">
-          <p className="label-track text-[9px] text-primary">
-            {t.discovery.whatIsHappening}
+          <p className="label-track text-[9px] text-primary">{t.insight.title}</p>
+
+          <h3 className="mt-4 text-sm font-light leading-snug text-foreground">
+            {insight.headline}
+          </h3>
+          <p className="mt-2 text-sm font-light leading-relaxed text-muted-foreground">
+            {insight.summary}
           </p>
 
-          <p className="mt-4 text-sm font-light leading-relaxed text-foreground">
-            {format(t.discovery.context, { phenomenon, place: event.place })}
+          <p className="label-track mt-6 text-[9px] text-muted-foreground/60">
+            {t.insight.whatWeKnow}
           </p>
-
-          <div className="mt-6 flex flex-col gap-2.5">
-            <Row label={t.discovery.began} value={format(t.discovery.detected, { time: elapsed })} />
-            <Row label={t.discovery.intensity} value={event.magnitude} />
-            <Row
-              label={t.discovery.coordinates}
-              value={`${event.lat.toFixed(1)}, ${event.lng.toFixed(1)}`}
-            />
+          <div className="mt-3 flex flex-col gap-2.5">
+            {insight.facts.map((fact) => (
+              <Row key={fact.label} label={fact.label} value={fact.value} />
+            ))}
           </div>
 
+          <p className="label-track mt-6 text-[9px] text-muted-foreground/60">
+            {t.insight.context}
+          </p>
+          <p className="mt-2 text-xs font-light leading-relaxed text-muted-foreground">
+            {insight.context}
+          </p>
+
           <div className="mt-6 flex items-center gap-2 border-t border-border pt-4">
-            {["NASA", "Windy"].map((s) => (
+            <span className="label-track text-[9px] text-muted-foreground/50">
+              {t.insight.source}
+            </span>
+            {insight.sources.map((s) => (
               <span
                 key={s}
                 className="label-track rounded-full border border-border/60 px-2.5 py-1 text-[9px] text-muted-foreground/70"
