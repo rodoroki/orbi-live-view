@@ -1,5 +1,6 @@
 import type { OrbiEvent, Priority, Severity, Status } from "@/lib/schemas";
 import type { OrbiRegion } from "@/lib/orbi-events";
+import { coarsePlaceLabel } from "./place-label";
 
 /**
  * ORBI DATA CORE — NASA EONET v3 Adapter
@@ -92,7 +93,11 @@ function latestPoint(geometry: EonetGeometry[]): {
 
 /** Point → [lng, lat]; Polygon → centróide simples do primeiro anel. */
 function flattenToPoint(coordinates: unknown): [number, number] | null {
-  if (Array.isArray(coordinates) && typeof coordinates[0] === "number" && typeof coordinates[1] === "number") {
+  if (
+    Array.isArray(coordinates) &&
+    typeof coordinates[0] === "number" &&
+    typeof coordinates[1] === "number"
+  ) {
     return [coordinates[0], coordinates[1]];
   }
   const points: [number, number][] = [];
@@ -106,10 +111,7 @@ function flattenToPoint(coordinates: unknown): [number, number] | null {
   };
   walk(coordinates);
   if (points.length === 0) return null;
-  const sum = points.reduce<[number, number]>(
-    (acc, p) => [acc[0] + p[0], acc[1] + p[1]],
-    [0, 0],
-  );
+  const sum = points.reduce<[number, number]>((acc, p) => [acc[0] + p[0], acc[1] + p[1]], [0, 0]);
   return [sum[0] / points.length, sum[1] / points.length];
 }
 
@@ -161,7 +163,7 @@ function formatMagnitude(value?: number | null, unit?: string | null): string {
 function placeName(title: string, lat: number, lng: number): string {
   const parts = title.split(",");
   if (parts.length > 1) return parts.slice(1).join(",").trim();
-  return `${lat.toFixed(1)}°, ${lng.toFixed(1)}°`;
+  return coarsePlaceLabel(lat, lng);
 }
 
 export function eonetEventToOrbiEvent(event: EonetEvent): SerializableOrbiEvent | null {

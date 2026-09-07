@@ -17,18 +17,19 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-screen bg-void text-foreground">
       <header className="pointer-events-none absolute inset-x-0 top-0 z-20 flex h-14 items-center gap-6 px-4 md:h-16 md:gap-10 md:px-6">
-        <Link to="/" className="pointer-events-auto flex min-w-0 items-center gap-2.5 text-primary md:gap-3">
+        <Link
+          to="/"
+          className="pointer-events-auto flex min-w-0 items-center gap-2.5 text-primary md:gap-3"
+        >
           <OrbiMark />
           <span className="flex min-w-0 flex-col leading-none">
             <span className="font-display truncate text-[13px] font-medium tracking-[0.28em] text-foreground md:text-[15px] md:tracking-[0.3em]">
-              ORBI LIVE{" "}
-              <span className="font-light text-primary/80">WORLD</span>
+              ORBI LIVE <span className="font-light text-primary/80">WORLD</span>
             </span>
             <span className="label-track mt-1 hidden text-[9px] text-muted-foreground sm:block">
               Earth Intelligence
             </span>
           </span>
-
         </Link>
 
         <nav className="pointer-events-auto hidden flex-1 items-center gap-8 lg:flex">
@@ -73,8 +74,6 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-
-
 
       <main className="min-h-screen">{children}</main>
     </div>

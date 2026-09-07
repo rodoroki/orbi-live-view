@@ -1,10 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import {
-  NWS_API,
-  nwsAlertsToOrbiEvents,
-  type NwsAlertsResponse,
-} from "@/lib/data/adapters/nws";
+import { NWS_API, nwsAlertsToOrbiEvents, type NwsAlertsResponse } from "@/lib/data/adapters/nws";
 import type { SerializableOrbiEvent } from "@/lib/data/adapters/eonet";
 
 /**
@@ -16,9 +12,7 @@ export const getNwsAlerts = createServerFn({ method: "GET" })
     z
       .object({
         limit: z.number().min(1).max(500).default(150),
-        severity: z
-          .enum(["all", "extreme", "severe", "moderate"])
-          .default("severe"),
+        severity: z.enum(["all", "extreme", "severe", "moderate"]).default("severe"),
       })
       .parse(data ?? {}),
   )

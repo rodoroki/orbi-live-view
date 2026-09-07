@@ -32,9 +32,7 @@ export function buildContext(
   const nearby = all.filter(
     (other) => other.id !== event.id && distanceKm(other, event) <= radiusKm,
   );
-  const recentNearby = nearby.filter(
-    (other) => other.detectedMinutesAgo <= windowHours * 60,
-  );
+  const recentNearby = nearby.filter((other) => other.detectedMinutesAgo <= windowHours * 60);
   const sameKind = nearby.filter((other) => other.category === event.category);
 
   return {

@@ -109,7 +109,6 @@ export default function RegionSearch({
         </button>
       </div>
 
-
       {open && query.trim().length >= 2 && (
         <div className="surface-panel mt-2 max-h-72 overflow-y-auto rounded-md p-1 animate-rise">
           {(results ?? []).map((place) => (

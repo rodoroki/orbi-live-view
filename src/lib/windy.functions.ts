@@ -64,9 +64,7 @@ export function mapWindyToMetrics(json: WindyResponse): Metric[] {
         "wind",
         `${Math.round(speedMs * MS_TO_KNOTS)} kt`,
         toSeries(
-          json["wind_u-surface"]?.map((u, i) =>
-            Math.hypot(u, json["wind_v-surface"]?.[i] ?? 0),
-          ),
+          json["wind_u-surface"]?.map((u, i) => Math.hypot(u, json["wind_v-surface"]?.[i] ?? 0)),
         ),
       ),
     );
@@ -74,11 +72,7 @@ export function mapWindyToMetrics(json: WindyResponse): Metric[] {
   const gust = pick(json["gust-surface"]);
   if (gust != null) {
     metrics.push(
-      makeMetric(
-        "gusts",
-        `${Math.round(gust * MS_TO_KNOTS)} kt`,
-        toSeries(json["gust-surface"]),
-      ),
+      makeMetric("gusts", `${Math.round(gust * MS_TO_KNOTS)} kt`, toSeries(json["gust-surface"])),
     );
   }
   const pressure = pick(json["pressure-surface"]);
@@ -105,9 +99,7 @@ export function mapWindyToMetrics(json: WindyResponse): Metric[] {
   }
   const rh = pick(json["rh-surface"]);
   if (rh != null) {
-    metrics.push(
-      makeMetric("humidity", `${Math.round(rh)} %`, toSeries(json["rh-surface"])),
-    );
+    metrics.push(makeMetric("humidity", `${Math.round(rh)} %`, toSeries(json["rh-surface"])));
   }
   const clouds = (["lclouds-surface", "mclouds-surface", "hclouds-surface"] as const)
     .map((k) => pick(json[k]))
@@ -150,25 +142,39 @@ export const getWindyPointForecast = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }): Promise<{ metrics: Metric[] }> => {
     const apiKey = process.env["WINDY_POINT_FORECAST_API_KEY"];
-    if (!apiKey) throw new Error("WINDY_POINT_FORECAST_API_KEY missing");
+    if (!apiKey) return { metrics: [] };
 
-    const res = await fetch("https://api.windy.com/api/point-forecast/v2", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        lat: data.lat,
-        lon: data.lng,
-        model: "gfs",
-        // "gust" não é suportado pelo modelo GFS na Point Forecast API
-        parameters: ["temp", "wind", "rh", "pressure", "precip", "lclouds", "mclouds", "hclouds", "ptype"],
-        levels: ["surface"],
-        key: apiKey,
-      }),
-    });
+    try {
+      const res = await fetch("https://api.windy.com/api/point-forecast/v2", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lat: data.lat,
+          lon: data.lng,
+          model: "gfs",
+          // "gust" não é suportado pelo modelo GFS na Point Forecast API
+          parameters: [
+            "temp",
+            "wind",
+            "rh",
+            "pressure",
+            "precip",
+            "lclouds",
+            "mclouds",
+            "hclouds",
+            "ptype",
+          ],
+          levels: ["surface"],
+          key: apiKey,
+        }),
+      });
 
-    if (!res.ok) throw new Error(`Windy forecast failed: ${res.status}`);
-    const json = (await res.json()) as WindyResponse;
-    return { metrics: mapWindyToMetrics(json) };
+      if (!res.ok) return { metrics: [] };
+      const json = (await res.json()) as WindyResponse;
+      return { metrics: mapWindyToMetrics(json) };
+    } catch {
+      return { metrics: [] };
+    }
   });
 
 /**
@@ -188,34 +194,37 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }): Promise<{ webcams: WindyWebcam[] }> => {
     const apiKey = process.env["WINDY_WEBCAMS_API_KEY"];
-    if (!apiKey) throw new Error("WINDY_WEBCAMS_API_KEY missing");
+    if (!apiKey) return { webcams: [] };
 
     const url =
       `https://api.windy.com/webcams/api/v3/webcams?nearby=${data.lat},${data.lng},${data.radiusKm}` +
       `&limit=12&include=images,location`;
 
-    const res = await fetch(url, { headers: { "x-windy-api-key": apiKey } });
-    if (!res.ok) throw new Error(`Windy webcams failed: ${res.status}`);
+    try {
+      const res = await fetch(url, { headers: { "x-windy-api-key": apiKey } });
+      if (!res.ok) return { webcams: [] };
 
-    const json = (await res.json()) as {
-      webcams?: {
-        webcamId?: number | string;
-        title?: string;
-        images?: { current?: { preview?: string; thumbnail?: string } };
-        location?: { latitude?: number; longitude?: number; city?: string };
-      }[];
-    };
+      const json = (await res.json()) as {
+        webcams?: {
+          webcamId?: number | string;
+          title?: string;
+          images?: { current?: { preview?: string; thumbnail?: string } };
+          location?: { latitude?: number; longitude?: number; city?: string };
+        }[];
+      };
 
-    const webcams: WindyWebcam[] = (json.webcams ?? [])
-      .map((w) => ({
-        id: String(w.webcamId ?? ""),
-        title: w.title ?? w.location?.city ?? "Webcam",
-        imageUrl: w.images?.current?.preview ?? w.images?.current?.thumbnail ?? null,
-        lat: w.location?.latitude ?? data.lat,
-        lng: w.location?.longitude ?? data.lng,
-      }))
-      .filter((w) => w.id !== "");
+      const webcams: WindyWebcam[] = (json.webcams ?? [])
+        .map((w) => ({
+          id: String(w.webcamId ?? ""),
+          title: w.title ?? w.location?.city ?? "Webcam",
+          imageUrl: w.images?.current?.preview ?? w.images?.current?.thumbnail ?? null,
+          lat: w.location?.latitude ?? data.lat,
+          lng: w.location?.longitude ?? data.lng,
+        }))
+        .filter((w) => w.id !== "");
 
-    return { webcams };
+      return { webcams };
+    } catch {
+      return { webcams: [] };
+    }
   });
-

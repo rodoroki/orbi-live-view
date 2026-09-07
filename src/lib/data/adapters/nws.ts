@@ -1,5 +1,6 @@
 import type { Severity, Priority, Status } from "@/lib/schemas";
 import { regionFromCoords } from "./eonet";
+import { placeOrRegion } from "./place-label";
 import type { SerializableOrbiEvent } from "./eonet";
 
 /**
@@ -39,7 +40,11 @@ const SEVERITY_MAP: Record<string, Severity> = {
 
 const PHENOMENON_BY_KEYWORD: { match: RegExp; category: string; phenomenon: string }[] = [
   { match: /flood/i, category: "weather", phenomenon: "flood" },
-  { match: /tornado|thunderstorm|storm|wind|hurricane|tropical/i, category: "weather", phenomenon: "storm" },
+  {
+    match: /tornado|thunderstorm|storm|wind|hurricane|tropical/i,
+    category: "weather",
+    phenomenon: "storm",
+  },
   { match: /fire|smoke/i, category: "fire", phenomenon: "wildfire" },
   { match: /snow|ice|winter|blizzard|freez/i, category: "weather", phenomenon: "precipitation" },
   { match: /heat|cold|frost/i, category: "climate", phenomenon: "temperature" },
@@ -82,7 +87,10 @@ export function nwsAlertToOrbiEvent(feature: NwsAlertFeature): SerializableOrbiE
     ({ category: "weather", phenomenon: "severe-weather" } as const);
   const severity = SEVERITY_MAP[feature.properties.severity ?? "Unknown"] ?? "unknown";
   const detectedAt = new Date(
-    feature.properties.onset ?? feature.properties.effective ?? feature.properties.sent ?? Date.now(),
+    feature.properties.onset ??
+      feature.properties.effective ??
+      feature.properties.sent ??
+      Date.now(),
   ).toISOString();
   const ends = feature.properties.ends ? new Date(feature.properties.ends) : null;
   const status: Status = ends && ends.getTime() < Date.now() ? "ended" : "active";
@@ -100,7 +108,7 @@ export function nwsAlertToOrbiEvent(feature: NwsAlertFeature): SerializableOrbiE
     location: {
       latitude: lat,
       longitude: lng,
-      name: feature.properties.areaDesc ?? `${lat.toFixed(1)}°, ${lng.toFixed(1)}°`,
+      name: placeOrRegion(feature.properties.areaDesc, lat, lng),
       region: regionFromCoords(lat, lng),
       country: "United States",
       entityType: "area",

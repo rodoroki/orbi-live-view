@@ -70,9 +70,7 @@ export default function DiscoveryCard({
           <h2 className="label-track mt-4 text-[11px] text-foreground">
             {event.place.toUpperCase()}
           </h2>
-          <p className="mt-2 text-sm font-light leading-snug text-muted-foreground">
-            {phenomenon}
-          </p>
+          <p className="mt-2 text-sm font-light leading-snug text-muted-foreground">{phenomenon}</p>
           <p className="label-track mt-4 text-[9px] text-muted-foreground/60">
             {format(t.discovery.detected, { time: elapsed })}
           </p>

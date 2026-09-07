@@ -19,7 +19,7 @@ import { useTranslation } from "@/lib/i18n";
 
 export function ToolRail() {
   const { t } = useTranslation();
-  
+
   const tools = [
     { label: t.common.map, to: "/", icon: Globe2 },
     { label: t.nav.events, to: "/eventos", icon: Activity },
@@ -117,7 +117,12 @@ export function MapTools({
       <button type="button" aria-label={t.map.zoomIn} className={iconBtn} onClick={() => onZoom(1)}>
         <Plus className="h-4 w-4" strokeWidth={1.4} />
       </button>
-      <button type="button" aria-label={t.map.zoomOut} className={iconBtn} onClick={() => onZoom(-1)}>
+      <button
+        type="button"
+        aria-label={t.map.zoomOut}
+        className={iconBtn}
+        onClick={() => onZoom(-1)}
+      >
         <Minus className="h-4 w-4" strokeWidth={1.4} />
       </button>
       <button type="button" aria-label={t.map.reset} className={iconBtn} onClick={onReset}>
@@ -197,7 +202,6 @@ export function ViewToggle({
   );
 }
 
-
 export function CategoryFilters({
   active,
   onToggle,
@@ -216,30 +220,31 @@ export function CategoryFilters({
         {onClose && <PanelClose onClose={onClose} />}
       </div>
       <div className="grid grid-cols-2 gap-1 md:flex md:flex-col">
-      {(Object.keys(CATEGORY_META) as EventCategory[]).map((key) => {
-
-        const meta = CATEGORY_META[key];
-        const on = active.includes(key);
-        return (
-          <button
-            key={key}
-            type="button"
-            onClick={() => onToggle(key)}
-            className={`focus-ring flex items-center gap-2.5 rounded-sm px-2.5 py-1.5 transition-colors duration-200 ${
-              on ? "text-foreground" : "text-muted-foreground/50"
-            } hover:bg-accent`}
-          >
-            <span
-              className="h-2 w-2 rounded-full"
-              style={{
-                backgroundColor: on ? meta.color : "transparent",
-                border: `1px solid ${meta.color}`,
-              }}
-            />
-            <span className="label-track">{t.categories[key as keyof typeof t.categories] || meta.label}</span>
-          </button>
-        );
-      })}
+        {(Object.keys(CATEGORY_META) as EventCategory[]).map((key) => {
+          const meta = CATEGORY_META[key];
+          const on = active.includes(key);
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => onToggle(key)}
+              className={`focus-ring flex items-center gap-2.5 rounded-sm px-2.5 py-1.5 transition-colors duration-200 ${
+                on ? "text-foreground" : "text-muted-foreground/50"
+              } hover:bg-accent`}
+            >
+              <span
+                className="h-2 w-2 rounded-full"
+                style={{
+                  backgroundColor: on ? meta.color : "transparent",
+                  border: `1px solid ${meta.color}`,
+                }}
+              />
+              <span className="label-track">
+                {t.categories[key as keyof typeof t.categories] || meta.label}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -260,7 +265,6 @@ function PanelClose({ onClose }: { onClose: () => void }) {
   );
 }
 
-
 export function ContextCard({
   event,
   total,
@@ -277,7 +281,10 @@ export function ContextCard({
       <div className="flex items-start justify-between">
         <div>
           <p className="label-track text-primary">
-            {event ? (t.categories[event.category as keyof typeof t.categories] || CATEGORY_META[event.category].label) : t.eventDetails.details}
+            {event
+              ? t.categories[event.category as keyof typeof t.categories] ||
+                CATEGORY_META[event.category].label
+              : t.eventDetails.details}
           </p>
           <h2 className="mt-2 text-base font-medium tracking-tight">
             {event ? event.title : t.common.explore}
@@ -296,10 +303,7 @@ export function ContextCard({
       {event ? (
         <div className="mt-5 flex flex-col gap-2.5">
           <Row label={t.eventDetails.location} value={event.place} />
-          <Row
-            label="Coord."
-            value={`${event.lat.toFixed(1)}, ${event.lng.toFixed(1)}`}
-          />
+          <Row label="Coord." value={`${event.lat.toFixed(1)}, ${event.lng.toFixed(1)}`} />
           <Row label={t.eventDetails.magnitude} value={event.magnitude} />
           <Row label={t.eventDetails.updated} value={event.updated} />
         </div>

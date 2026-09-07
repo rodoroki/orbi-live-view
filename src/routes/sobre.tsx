@@ -121,9 +121,7 @@ function Page() {
                   {source.status === "live" ? "Ao vivo" : "Previsto"}
                 </span>
               </div>
-              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                {source.use}
-              </p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{source.use}</p>
             </div>
             <span className="label-track shrink-0 text-[9px] text-muted-foreground/70">
               {source.org}
@@ -133,9 +131,9 @@ function Page() {
       </ul>
 
       <p className="mt-10 text-xs leading-relaxed text-muted-foreground/80">
-        Os dados exibidos pertencem às respectivas instituições e são usados conforme
-        seus termos públicos de uso. O ORBI LIVE não altera os valores originais: apenas
-        organiza, traduz e apresenta a informação.
+        Os dados exibidos pertencem às respectivas instituições e são usados conforme seus termos
+        públicos de uso. O ORBI LIVE não altera os valores originais: apenas organiza, traduz e
+        apresenta a informação.
       </p>
     </SectionPage>
   );

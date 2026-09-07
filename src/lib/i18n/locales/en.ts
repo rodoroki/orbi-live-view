@@ -102,7 +102,8 @@ export const en = {
     viewWeatherMap: "View weather map",
     weatherMap: "Weather map",
     weatherMapTitle: "Meteorological surface",
-    weatherMapBody: "Surface reserved for the upcoming weather data provider. Layers, animation and playback are ready to receive live fields.",
+    weatherMapBody:
+      "Surface reserved for the upcoming weather data provider. Layers, animation and playback are ready to receive live fields.",
   },
   metrics: {
     temperature: "Temperature",

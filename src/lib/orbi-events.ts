@@ -1,20 +1,8 @@
-export type EventCategory =
-  | "fire"
-  | "storm"
-  | "volcano"
-  | "quake"
-  | "ocean"
-  | "atmosphere";
+export type EventCategory = "fire" | "storm" | "volcano" | "quake" | "ocean" | "atmosphere";
 
 export type EventSeverity = "critical" | "high" | "moderate" | "low";
 
-export type OrbiRegion =
-  | "americas"
-  | "europe"
-  | "africa"
-  | "asia"
-  | "oceania"
-  | "oceans";
+export type OrbiRegion = "americas" | "europe" | "africa" | "asia" | "oceania" | "oceans";
 
 export type OrbiEvent = {
   id: string;
@@ -32,17 +20,15 @@ export type OrbiEvent = {
   priority: 1 | 2 | 3;
 };
 
-export const CATEGORY_META: Record<
-  EventCategory,
-  { label: string; glyph: string; color: string }
-> = {
-  fire: { label: "Incêndios", glyph: "🔥", color: "#e08a4a" },
-  storm: { label: "Tempestades", glyph: "🌪", color: "#7fa8dd" },
-  volcano: { label: "Vulcões", glyph: "🌋", color: "#d1653f" },
-  quake: { label: "Terremotos", glyph: "🌎", color: "#d8c168" },
-  ocean: { label: "Oceanos", glyph: "🌊", color: "#5fb6c9" },
-  atmosphere: { label: "Atmosféricos", glyph: "☁", color: "#b9c6cc" },
-};
+export const CATEGORY_META: Record<EventCategory, { label: string; glyph: string; color: string }> =
+  {
+    fire: { label: "Incêndios", glyph: "🔥", color: "#e08a4a" },
+    storm: { label: "Tempestades", glyph: "🌪", color: "#7fa8dd" },
+    volcano: { label: "Vulcões", glyph: "🌋", color: "#d1653f" },
+    quake: { label: "Terremotos", glyph: "🌎", color: "#d8c168" },
+    ocean: { label: "Oceanos", glyph: "🌊", color: "#5fb6c9" },
+    atmosphere: { label: "Atmosféricos", glyph: "☁", color: "#b9c6cc" },
+  };
 
 /** Contagens fictícias — "eventos agora" por categoria. */
 export const CATEGORY_COUNTS: Record<EventCategory, number> = {
@@ -54,24 +40,15 @@ export const CATEGORY_COUNTS: Record<EventCategory, number> = {
   atmosphere: 36,
 };
 
-export const SEVERITY_META: Record<
-  EventSeverity,
-  { label: string; color: string; rank: number }
-> = {
-  critical: { label: "Crítico", color: "#d1653f", rank: 4 },
-  high: { label: "Alto", color: "#e08a4a", rank: 3 },
-  moderate: { label: "Moderado", color: "#d8c168", rank: 2 },
-  low: { label: "Baixo", color: "#8fa3ab", rank: 1 },
-};
+export const SEVERITY_META: Record<EventSeverity, { label: string; color: string; rank: number }> =
+  {
+    critical: { label: "Crítico", color: "#d1653f", rank: 4 },
+    high: { label: "Alto", color: "#e08a4a", rank: 3 },
+    moderate: { label: "Moderado", color: "#d8c168", rank: 2 },
+    low: { label: "Baixo", color: "#8fa3ab", rank: 1 },
+  };
 
-export const REGIONS: OrbiRegion[] = [
-  "americas",
-  "europe",
-  "africa",
-  "asia",
-  "oceania",
-  "oceans",
-];
+export const REGIONS: OrbiRegion[] = ["americas", "europe", "africa", "asia", "oceania", "oceans"];
 
 export const PERIODS = ["24h", "7d", "30d", "all"] as const;
 export type OrbiPeriod = (typeof PERIODS)[number];

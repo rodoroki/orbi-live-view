@@ -126,7 +126,6 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
 
       {/* list */}
       <div className="mt-5 flex shrink-0 items-baseline justify-between border-t border-border/60 px-5 pt-4">
-
         <p className="label-track text-muted-foreground">{t.events.recent}</p>
         <span className="font-mono text-[10px] text-muted-foreground/70">
           {format(t.events.resultCount, { count: filtered.length })}
@@ -161,20 +160,14 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
                         <p className="truncate text-[13px] font-medium tracking-tight">
                           {event.title}
                         </p>
-                        <p className="truncate text-[11px] text-muted-foreground">
-                          {event.place}
-                        </p>
+                        <p className="truncate text-[11px] text-muted-foreground">{event.place}</p>
                         <div className="mt-1.5 flex items-center gap-2 text-[11px]">
-                          <span style={{ color: sev.color }}>
-                            {t.severity[event.severity]}
-                          </span>
+                          <span style={{ color: sev.color }}>{t.severity[event.severity]}</span>
                           <span className="h-2.5 w-px bg-border" />
                           <span className="text-muted-foreground">
                             {t.categories[event.category]}
                           </span>
-                          <span className="ml-auto text-muted-foreground/70">
-                            {event.updated}
-                          </span>
+                          <span className="ml-auto text-muted-foreground/70">{event.updated}</span>
                         </div>
                       </div>
                     </div>

@@ -28,7 +28,8 @@ export type Metric = {
 
 const series = (seed: number, spread = 0.35): number[] =>
   Array.from({ length: 17 }, (_, i) => {
-    const wave = Math.sin(seed + i * 0.55) * spread + Math.cos(seed * 1.7 + i * 0.21) * (spread / 2);
+    const wave =
+      Math.sin(seed + i * 0.55) * spread + Math.cos(seed * 1.7 + i * 0.21) * (spread / 2);
     return Math.min(1, Math.max(0.05, 0.5 + wave));
   });
 

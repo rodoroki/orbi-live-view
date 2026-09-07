@@ -74,9 +74,7 @@ const CATEGORY_FALLBACK: Record<string, LegacyCategory> = {
 
 function toLegacyCategory(event: OrbiEvent): LegacyCategory {
   return (
-    PHENOMENON_TO_LEGACY[event.phenomenon] ??
-    CATEGORY_FALLBACK[event.category] ??
-    "atmosphere"
+    PHENOMENON_TO_LEGACY[event.phenomenon] ?? CATEGORY_FALLBACK[event.category] ?? "atmosphere"
   );
 }
 

@@ -1,5 +1,6 @@
 import type { Severity, Priority, Status } from "@/lib/schemas";
 import { regionFromCoords } from "./eonet";
+import { placeOrRegion } from "./place-label";
 import type { SerializableOrbiEvent } from "./eonet";
 
 /**
@@ -54,7 +55,7 @@ export function usgsFeatureToOrbiEvent(feature: UsgsFeature): SerializableOrbiEv
   const status: Status = "active";
   const time = feature.properties.time ?? Date.now();
   const updated = feature.properties.updated ?? time;
-  const place = feature.properties.place ?? `${lat.toFixed(1)}°, ${lng.toFixed(1)}°`;
+  const place = placeOrRegion(feature.properties.place, lat, lng);
 
   return {
     id: `usgs-${feature.id}`,

@@ -32,11 +32,7 @@ export default function TimelineBar({
     if (hour === 0) return t.timeline.now.toUpperCase();
     const abs = Math.abs(hour);
     if (hour < 0)
-      return locale === "en"
-        ? `${abs}h ago`
-        : locale === "es"
-          ? `hace ${abs}h`
-          : `há ${abs}h`;
+      return locale === "en" ? `${abs}h ago` : locale === "es" ? `hace ${abs}h` : `há ${abs}h`;
     return locale === "en" ? `in ${abs}h` : locale === "es" ? `en ${abs}h` : `em ${abs}h`;
   })();
 

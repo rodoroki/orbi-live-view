@@ -21,13 +21,7 @@ import { SourceSchema } from "./source";
 export const StatusSchema = z.enum(["active", "ongoing", "ended", "unknown"]);
 export type Status = z.infer<typeof StatusSchema>;
 
-export const SeveritySchema = z.enum([
-  "low",
-  "moderate",
-  "high",
-  "critical",
-  "unknown",
-]);
+export const SeveritySchema = z.enum(["low", "moderate", "high", "critical", "unknown"]);
 export type Severity = z.infer<typeof SeveritySchema>;
 
 export const PrioritySchema = z.enum(["low", "normal", "high", "critical"]);
