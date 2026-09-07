@@ -168,7 +168,9 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
                           <span className="text-muted-foreground">
                             {t.categories[event.category]}
                           </span>
-                          <span className="ml-auto text-muted-foreground/70">{formatElapsed(event.detectedMinutesAgo, locale)}</span>
+                          <span className="ml-auto text-muted-foreground/70">
+                            {formatElapsed(event.detectedMinutesAgo, locale)}
+                          </span>
                         </div>
                       </div>
                     </div>
