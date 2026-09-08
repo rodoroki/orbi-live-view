@@ -124,6 +124,11 @@ export type WindyWebcam = {
   imageUrl: string | null;
   lat: number;
   lng: number;
+  city?: string;
+  region?: string;
+  country?: string;
+  /** IANA timezone declarado pela fonte, quando existe */
+  timezone?: string;
 };
 
 /**
@@ -209,7 +214,14 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
           webcamId?: number | string;
           title?: string;
           images?: { current?: { preview?: string; thumbnail?: string } };
-          location?: { latitude?: number; longitude?: number; city?: string };
+          location?: {
+            latitude?: number;
+            longitude?: number;
+            city?: string;
+            region?: string;
+            country?: string;
+            timezone?: string;
+          };
         }[];
       };
 
@@ -220,6 +232,10 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
           imageUrl: w.images?.current?.preview ?? w.images?.current?.thumbnail ?? null,
           lat: w.location?.latitude ?? data.lat,
           lng: w.location?.longitude ?? data.lng,
+          city: w.location?.city,
+          region: w.location?.region,
+          country: w.location?.country,
+          timezone: w.location?.timezone,
         }))
         .filter((w) => w.id !== "");
 

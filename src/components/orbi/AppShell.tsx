@@ -1,10 +1,18 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { OrbiMark } from "./OrbiMark";
 import { useTranslation } from "@/lib/i18n";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useTranslation();
+  // Modo transmissão (/live?mode=broadcast): sem chrome do site, só a cena.
+  const isBroadcast = useRouterState({
+    select: (s) =>
+      s.location.pathname === "/live" &&
+      (s.location.search as { mode?: string }).mode === "broadcast",
+  });
+
+  if (isBroadcast) return <>{children}</>;
 
   const nav = [
     { label: t.nav.planet, to: "/" },

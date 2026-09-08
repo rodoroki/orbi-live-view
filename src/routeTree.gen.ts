@@ -14,6 +14,7 @@ import { Route as AtmosferaRouteImport } from './routes/atmosfera'
 import { Route as EarthquakesRouteImport } from './routes/earthquakes'
 import { Route as EventosRouteImport } from './routes/eventos'
 import { Route as ExplorarRouteImport } from './routes/explorar'
+import { Route as LiveRouteImport } from './routes/live'
 import { Route as NaturalEventsRouteImport } from './routes/natural-events'
 import { Route as OceanoRouteImport } from './routes/oceano'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -44,6 +45,11 @@ const EventosRoute = EventosRouteImport.update({
 const ExplorarRoute = ExplorarRouteImport.update({
   id: '/explorar',
   path: '/explorar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiveRoute = LiveRouteImport.update({
+  id: '/live',
+  path: '/live',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NaturalEventsRoute = NaturalEventsRouteImport.update({
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/earthquakes': typeof EarthquakesRoute
   '/eventos': typeof EventosRoute
   '/explorar': typeof ExplorarRoute
+  '/live': typeof LiveRoute
   '/natural-events': typeof NaturalEventsRoute
   '/oceano': typeof OceanoRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/earthquakes': typeof EarthquakesRoute
   '/eventos': typeof EventosRoute
   '/explorar': typeof ExplorarRoute
+  '/live': typeof LiveRoute
   '/natural-events': typeof NaturalEventsRoute
   '/oceano': typeof OceanoRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/earthquakes': typeof EarthquakesRoute
   '/eventos': typeof EventosRoute
   '/explorar': typeof ExplorarRoute
+  '/live': typeof LiveRoute
   '/natural-events': typeof NaturalEventsRoute
   '/oceano': typeof OceanoRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/earthquakes'
     | '/eventos'
     | '/explorar'
+    | '/live'
     | '/natural-events'
     | '/oceano'
     | '/sitemap.xml'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/earthquakes'
     | '/eventos'
     | '/explorar'
+    | '/live'
     | '/natural-events'
     | '/oceano'
     | '/sitemap.xml'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/earthquakes'
     | '/eventos'
     | '/explorar'
+    | '/live'
     | '/natural-events'
     | '/oceano'
     | '/sitemap.xml'
@@ -165,6 +177,7 @@ export interface RootRouteChildren {
   EarthquakesRoute: typeof EarthquakesRoute
   EventosRoute: typeof EventosRoute
   ExplorarRoute: typeof ExplorarRoute
+  LiveRoute: typeof LiveRoute
   NaturalEventsRoute: typeof NaturalEventsRoute
   OceanoRoute: typeof OceanoRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -208,6 +221,13 @@ declare module '@tanstack/react-router' {
       path: '/explorar'
       fullPath: '/explorar'
       preLoaderRoute: typeof ExplorarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/live': {
+      id: '/live'
+      path: '/live'
+      fullPath: '/live'
+      preLoaderRoute: typeof LiveRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/natural-events': {
@@ -261,6 +281,7 @@ const rootRouteChildren: RootRouteChildren = {
   EarthquakesRoute: EarthquakesRoute,
   EventosRoute: EventosRoute,
   ExplorarRoute: ExplorarRoute,
+  LiveRoute: LiveRoute,
   NaturalEventsRoute: NaturalEventsRoute,
   OceanoRoute: OceanoRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

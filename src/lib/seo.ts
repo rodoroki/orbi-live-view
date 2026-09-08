@@ -99,6 +99,7 @@ export const jsonLdScript = (data: unknown) => ({
 /** Páginas públicas e indexáveis — fonte única do sitemap. */
 export const PUBLIC_ROUTES: { path: string; priority: string; changefreq: string }[] = [
   { path: "/", priority: "1.0", changefreq: "hourly" },
+  { path: "/live", priority: "0.9", changefreq: "hourly" },
   { path: "/earthquakes", priority: "0.9", changefreq: "hourly" },
   { path: "/natural-events", priority: "0.9", changefreq: "hourly" },
   { path: "/weather", priority: "0.9", changefreq: "hourly" },

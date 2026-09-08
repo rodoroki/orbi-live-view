@@ -236,4 +236,15 @@ export const es = {
       body: "La línea de tiempo vive en el globo: retrocede en las últimas horas para ver solo lo que ya había sido detectado en ese momento. ORBI no presenta pronósticos que las fuentes no proporcionen.",
     },
   },
+  broadcast: {
+    live: "En vivo",
+    localTime: "hora local",
+    loading: "Sintonizando…",
+    imageUnavailable: "La imagen de esta cámara no está disponible por ahora.",
+    noCamera: "No hay ninguna cámara en vivo disponible para esta escena.",
+    attribution: "Webcams proporcionadas por windy.com",
+    openCamera: "Abrir esta cámara en windy.com",
+    cameraAlt: "Imagen en vivo de {{place}}",
+    tagline: "Ventana al mundo.",
+  },
 };

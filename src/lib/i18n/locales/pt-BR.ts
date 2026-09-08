@@ -237,4 +237,15 @@ export const ptBR = {
       body: "A linha do tempo vive no globo: recue nas últimas horas para ver apenas o que já tinha sido detectado nesse momento. O ORBI não apresenta previsões que as fontes não forneçam.",
     },
   },
+  broadcast: {
+    live: "Ao vivo",
+    localTime: "hora local",
+    loading: "Sintonizando…",
+    imageUnavailable: "A imagem desta câmera está indisponível no momento.",
+    noCamera: "Nenhuma câmera ao vivo disponível para esta cena agora.",
+    attribution: "Webcams fornecidas por windy.com",
+    openCamera: "Abrir esta câmera no windy.com",
+    cameraAlt: "Imagem ao vivo de {{place}}",
+    tagline: "Janela para o mundo.",
+  },
 };
