@@ -234,4 +234,15 @@ export const en = {
       body: "The timeline lives on the globe: step back through the last hours to see only what had already been detected at that moment. ORBI shows no forecasts the sources do not provide.",
     },
   },
+  broadcast: {
+    live: "Live",
+    localTime: "local time",
+    loading: "Tuning in…",
+    imageUnavailable: "This camera image is momentarily unavailable.",
+    noCamera: "No live camera is available for this scene right now.",
+    attribution: "Webcams provided by windy.com",
+    openCamera: "Open this camera on windy.com",
+    cameraAlt: "Live camera view of {{place}}",
+    tagline: "Window to the world.",
+  },
 };
