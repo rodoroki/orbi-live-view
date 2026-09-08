@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { z } from "zod";
 
 import BroadcastOverlay from "@/components/orbi/live/BroadcastOverlay";
@@ -30,6 +31,16 @@ function LiveRoute() {
   const { mode } = Route.useSearch();
   const broadcast = mode === "broadcast";
   const { scene, isLoading, next } = useSceneSelector();
+
+  // No modo transmissão a cena ocupa tudo e não há scroll.
+  useEffect(() => {
+    if (!broadcast) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [broadcast]);
 
   return (
     <main
