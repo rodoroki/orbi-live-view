@@ -232,6 +232,20 @@
   animation: orbi-rise 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* deriva quase imperceptível da cena — sensação de câmera real */
+@keyframes orbi-live-drift {
+  from {
+    transform: scale(1.005);
+  }
+  to {
+    transform: scale(1.045);
+  }
+}
+
+@utility animate-live-drift {
+  animation: orbi-live-drift 60s ease-out both;
+}
+
 @utility focus-ring {
   &:focus-visible {
     outline: none;
