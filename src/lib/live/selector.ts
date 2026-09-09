@@ -63,8 +63,15 @@ export function useSceneSelector(mode: SceneMode = "world"): SceneSelection {
   const refreshedSceneRef = useRef<string | null>(null);
   const discoveryAttemptRef = useRef(0);
 
-  const { webcams, isLoading, retryDiscovery } = useWebcamDiscovery(regionOffset);
   const { data: events } = useNaturalEvents();
+
+  // Sinal de prioridade geográfica para o Discovery (o scoring segue dono do eventRelevance).
+  const eventPoints = useMemo(
+    () => (events ?? []).map((event) => ({ lat: event.lat, lng: event.lng })),
+    [events],
+  );
+
+  const { webcams, isLoading, retryDiscovery } = useWebcamDiscovery(regionOffset, eventPoints);
 
   /** Clima só a partir do que já está em cache — nenhuma requisição nova. */
   const weatherFor = useCallback(
