@@ -89,11 +89,11 @@ export function useSceneSelector(mode: SceneMode = "world"): SceneSelection {
       rankCandidates(
         webcams.filter((cam) => (failedUntil[cam.id] ?? 0) <= Date.now()),
         {
-        mode,
-        now: new Date(),
-        memory,
-        events: events ?? [],
-        weatherFor,
+          mode,
+          now: new Date(),
+          memory,
+          events: events ?? [],
+          weatherFor,
         },
       ),
     [webcams, mode, memory, events, weatherFor, failedUntil],
@@ -103,31 +103,34 @@ export function useSceneSelector(mode: SceneMode = "world"): SceneSelection {
   rankedRef.current = ranked;
 
   /** Escolhe a melhor cena disponível e avança a janela de descoberta. */
-  const activateNext = useCallback((excludeId?: string) => {
-    const now = Date.now();
-    const best = rankedRef.current.find(
-      (candidate) =>
-        candidate.scene.id !== excludeId && (failedUntil[candidate.scene.id] ?? 0) <= now,
-    );
-    if (!best) {
-      setRegionOffset((o) => (o + DISCOVERY_WINDOW) % DISCOVERY_REGIONS.length);
-      return;
-    }
-    debugSelection(best, mode);
-    setCurrent(best);
-    const source = webcams.find((w) => w.id === best.scene.id) ?? null;
-    setCurrentSource(source);
-    refreshedSceneRef.current = null;
-    discoveryAttemptRef.current = 0;
-    setMemory((m) =>
-      rememberScene(m, best, {
-        city: webcams.find((w) => w.id === best.scene.id)?.city,
-        country: webcams.find((w) => w.id === best.scene.id)?.country,
-      }),
-    );
-    // gira lentamente o universo de candidatos, sem inundar a API
-    setRegionOffset((o) => (o + 1) % DISCOVERY_REGIONS.length);
-  }, [failedUntil, mode, webcams]);
+  const activateNext = useCallback(
+    (excludeId?: string) => {
+      const now = Date.now();
+      const best = rankedRef.current.find(
+        (candidate) =>
+          candidate.scene.id !== excludeId && (failedUntil[candidate.scene.id] ?? 0) <= now,
+      );
+      if (!best) {
+        setRegionOffset((o) => (o + DISCOVERY_WINDOW) % DISCOVERY_REGIONS.length);
+        return;
+      }
+      debugSelection(best, mode);
+      setCurrent(best);
+      const source = webcams.find((w) => w.id === best.scene.id) ?? null;
+      setCurrentSource(source);
+      refreshedSceneRef.current = null;
+      discoveryAttemptRef.current = 0;
+      setMemory((m) =>
+        rememberScene(m, best, {
+          city: webcams.find((w) => w.id === best.scene.id)?.city,
+          country: webcams.find((w) => w.id === best.scene.id)?.country,
+        }),
+      );
+      // gira lentamente o universo de candidatos, sem inundar a API
+      setRegionOffset((o) => (o + 1) % DISCOVERY_REGIONS.length);
+    },
+    [failedUntil, mode, webcams],
+  );
 
   const next = useCallback(() => activateNext(), [activateNext]);
 
@@ -171,9 +174,7 @@ export function useSceneSelector(mode: SceneMode = "world"): SceneSelection {
     }
 
     setFailedUntil((failed) => ({
-      ...Object.fromEntries(
-        Object.entries(failed).filter(([, until]) => until > Date.now()),
-      ),
+      ...Object.fromEntries(Object.entries(failed).filter(([, until]) => until > Date.now())),
       [failedId]: Date.now() + FAILED_CAMERA_COOLDOWN_MS,
     }));
     recoveringRef.current = false;
