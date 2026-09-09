@@ -7,7 +7,8 @@
  * Performance: o catálogo é grande, mas só uma janela pequena de regiões é
  * consultada por vez, e cada consulta usa o cache existente do React Query.
  */
-import { useQueries } from "@tanstack/react-query";
+import { useCallback, useMemo } from "react";
+import { queryOptions, useQueries, useQueryClient } from "@tanstack/react-query";
 
 import { getWindyWebcams, type WindyWebcam } from "@/lib/windy.functions";
 
@@ -45,6 +46,24 @@ export const DISCOVERY_WINDOW = 4;
 
 export type DiscoveredWebcam = WindyWebcam & { origin: DiscoveryRegion };
 
+export function webcamQueryOptions(region: DiscoveryRegion) {
+  return queryOptions({
+    queryKey: ["windy-webcams", region.lat, region.lng],
+    queryFn: async () => {
+      try {
+        const { webcams } = await getWindyWebcams({
+          data: { lat: region.lat, lng: region.lng, radiusKm: 250 },
+        });
+        return webcams;
+      } catch {
+        return [] as WindyWebcam[];
+      }
+    },
+    staleTime: 5 * 60_000,
+    retry: 1,
+  });
+}
+
 /** Janela deslizante de regiões, a partir de um deslocamento. */
 export function regionWindow(offset: number, size = DISCOVERY_WINDOW): DiscoveryRegion[] {
   const total = DISCOVERY_REGIONS.length;
@@ -59,24 +78,11 @@ export function regionWindow(offset: number, size = DISCOVERY_WINDOW): Discovery
  * Uma query por região, com cache — nenhuma chamada extra por render.
  */
 export function useWebcamDiscovery(offset: number) {
-  const regions = regionWindow(offset);
+  const queryClient = useQueryClient();
+  const regions = useMemo(() => regionWindow(offset), [offset]);
 
   const results = useQueries({
-    queries: regions.map((region) => ({
-      queryKey: ["windy-webcams", region.lat, region.lng],
-      queryFn: async () => {
-        try {
-          const { webcams } = await getWindyWebcams({
-            data: { lat: region.lat, lng: region.lng, radiusKm: 250 },
-          });
-          return webcams;
-        } catch {
-          return [] as WindyWebcam[];
-        }
-      },
-      staleTime: 5 * 60_000,
-      retry: 1,
-    })),
+    queries: regions.map(webcamQueryOptions),
   });
 
   const webcams: DiscoveredWebcam[] = [];
@@ -85,8 +91,18 @@ export function useWebcamDiscovery(offset: number) {
     for (const cam of result.data ?? []) webcams.push({ ...cam, origin: region });
   });
 
+  /** Reconsulta somente a janela ativa, usada pelo backoff quando ela volta vazia. */
+  const retryDiscovery = useCallback(async () => {
+    await Promise.all(
+      regions.map((region) =>
+        queryClient.fetchQuery({ ...webcamQueryOptions(region), staleTime: 0 }),
+      ),
+    );
+  }, [queryClient, regions]);
+
   return {
     webcams,
     isLoading: results.some((r) => r.isLoading) && webcams.length === 0,
+    retryDiscovery,
   };
 }

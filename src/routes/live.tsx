@@ -30,7 +30,7 @@ export const Route = createFileRoute("/live")({
 function LiveRoute() {
   const { mode } = Route.useSearch();
   const broadcast = mode === "broadcast";
-  const { scene, isLoading, next } = useSceneSelector();
+  const { scene, isLoading, recover, markActive } = useSceneSelector();
 
   // No modo transmissão a cena ocupa tudo e não há scroll.
   useEffect(() => {
@@ -51,7 +51,12 @@ function LiveRoute() {
       }
     >
       <h1 className="sr-only">ORBI LIVE — live window to the world</h1>
-      <LiveStage scene={scene} isLoading={isLoading} onImageError={next} />
+      <LiveStage
+        scene={scene}
+        isLoading={isLoading}
+        onImageError={recover}
+        onImageLoad={markActive}
+      />
       <BroadcastOverlay scene={scene} />
     </main>
   );
