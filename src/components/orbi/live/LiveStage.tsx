@@ -32,11 +32,11 @@ export default function LiveStage({
   const mediaSignature = scene ? sceneMediaSignature(scene) : null;
 
   useEffect(() => {
-    if (!scene) return;
+    if (!mediaSignature) return;
     setPreviousUrl(activeImageUrlRef.current);
     setMediaIndex(0);
     setStatus("loading");
-  }, [mediaSignature, scene]);
+  }, [mediaSignature]);
 
   const failCurrentMedia = () => {
     if (scene && mediaIndex + 1 < scene.media.length) {
