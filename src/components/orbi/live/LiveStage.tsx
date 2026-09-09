@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { format, useTranslation } from "@/lib/i18n";
-import type { LiveMedia, LiveScene } from "@/lib/live/scene";
+import { sceneMediaSignature, type LiveMedia, type LiveScene } from "@/lib/live/scene";
 
 type Status = "loading" | "active" | "error";
 
@@ -24,19 +24,19 @@ export default function LiveStage({
   const [status, setStatus] = useState<Status>("loading");
   /** imagem anterior mantida no ar até a próxima carregar (crossfade) */
   const [previousUrl, setPreviousUrl] = useState<string | null>(null);
+  const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
   const [mediaIndex, setMediaIndex] = useState(0);
 
   const media = scene?.media[mediaIndex] ?? null;
   const currentUrl = media?.url ?? null;
+  const mediaSignature = scene ? sceneMediaSignature(scene) : null;
 
   useEffect(() => {
     if (!scene) return;
-    setPreviousUrl((prev) => (media?.type === "image" ? media.url : prev));
+    setPreviousUrl(activeImageUrl);
     setMediaIndex(0);
     setStatus("loading");
-    // A mídia anterior é lida de propósito só na troca de cena.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene?.id]);
+  }, [activeImageUrl, mediaSignature, scene]);
 
   const failCurrentMedia = () => {
     if (scene && mediaIndex + 1 < scene.media.length) {
@@ -81,6 +81,7 @@ export default function LiveStage({
           onReady={() => {
             setStatus("active");
             setPreviousUrl(null);
+            setActiveImageUrl(media.type === "image" ? media.url : null);
             onImageLoad?.();
           }}
           onError={failCurrentMedia}
