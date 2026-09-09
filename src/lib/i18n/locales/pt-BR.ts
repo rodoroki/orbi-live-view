@@ -204,8 +204,7 @@ export const ptBR = {
     events: {
       eyebrow: "Eventos",
       title: "Eventos planetários",
-      intro:
-        "Registro contínuo de fenômenos naturais observados na superfície e na atmosfera.",
+      intro: "Registro contínuo de fenômenos naturais observados na superfície e na atmosfera.",
       body: "Esta página é uma porta de entrada temática. Os registros verificados são apresentados nas páginas ligadas abaixo, sempre com a fonte original identificada.",
     },
     atmosphere: {

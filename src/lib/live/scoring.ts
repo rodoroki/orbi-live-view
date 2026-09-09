@@ -88,10 +88,7 @@ export function visualQuality(cam: DiscoveredWebcam): number {
 }
 
 /** 2. Diversidade geográfica — favorece o que ainda não apareceu. */
-export function geographicDiversity(
-  cam: DiscoveredWebcam,
-  memory: SceneMemory,
-): number {
+export function geographicDiversity(cam: DiscoveredWebcam, memory: SceneMemory): number {
   let score = 0;
   if (!memory.continents.includes(cam.origin.continent)) score += 14;
   if (cam.country && !memory.countries.includes(cam.country)) score += 8;
@@ -135,7 +132,9 @@ export function temporalInterest(
       ? { score: 9, reason: "+ city at night" }
       : { score: 2, reason: "+ night scene" };
   }
-  return cam.city ? { score: 5, reason: "+ daylight city" } : { score: 8, reason: "+ daylight landscape" };
+  return cam.city
+    ? { score: 5, reason: "+ daylight city" }
+    : { score: 8, reason: "+ daylight landscape" };
 }
 
 /** 5. Interesse meteorológico — só com dados que já existem em cache. */
@@ -178,7 +177,10 @@ export function eventRelevance(
 }
 
 /** 7. Penalidade de repetição — quanto mais recente, maior a punição. */
-export function repetitionPenalty(cam: DiscoveredWebcam, memory: SceneMemory): {
+export function repetitionPenalty(
+  cam: DiscoveredWebcam,
+  memory: SceneMemory,
+): {
   score: number;
   reasons: string[];
 } {
@@ -202,10 +204,7 @@ export function repetitionPenalty(cam: DiscoveredWebcam, memory: SceneMemory): {
 }
 
 /** Avalia um candidato: transforma webcam real em cena pontuada e explicada. */
-export function evaluateCandidate(
-  cam: DiscoveredWebcam,
-  context: ScoringContext,
-): SceneCandidate {
+export function evaluateCandidate(cam: DiscoveredWebcam, context: ScoringContext): SceneCandidate {
   const scene = webcamToScene(cam);
   const reasons: string[] = [];
 
