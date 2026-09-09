@@ -93,7 +93,7 @@ export function geographicDiversity(
   memory: SceneMemory,
 ): number {
   let score = 0;
-  if (!memory.continents.includes(cam.region.continent)) score += 14;
+  if (!memory.continents.includes(cam.origin.continent)) score += 14;
   if (cam.country && !memory.countries.includes(cam.country)) score += 8;
   if (cam.city && !memory.cities.includes(cam.city)) score += 6;
   return score;
@@ -242,7 +242,7 @@ export function evaluateCandidate(
         event.score,
     ) - penalty.score;
 
-  return { scene, score, reasons, continent: cam.region.continent };
+  return { scene, score, reasons, continent: cam.origin.continent };
 }
 
 /** Ordena candidatos e devolve o melhor primeiro. */

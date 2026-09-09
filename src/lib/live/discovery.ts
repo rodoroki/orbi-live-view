@@ -43,7 +43,7 @@ export const DISCOVERY_REGIONS: readonly DiscoveryRegion[] = [
 /** Quantas regiões ficam ativas ao mesmo tempo (controla nº de requisições). */
 export const DISCOVERY_WINDOW = 4;
 
-export type DiscoveredWebcam = WindyWebcam & { region: DiscoveryRegion };
+export type DiscoveredWebcam = WindyWebcam & { origin: DiscoveryRegion };
 
 /** Janela deslizante de regiões, a partir de um deslocamento. */
 export function regionWindow(offset: number, size = DISCOVERY_WINDOW): DiscoveryRegion[] {
@@ -82,7 +82,7 @@ export function useWebcamDiscovery(offset: number) {
   const webcams: DiscoveredWebcam[] = [];
   results.forEach((result, index) => {
     const region = regions[index]!;
-    for (const cam of result.data ?? []) webcams.push({ ...cam, region });
+    for (const cam of result.data ?? []) webcams.push({ ...cam, origin: region });
   });
 
   return {
