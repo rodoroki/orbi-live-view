@@ -48,7 +48,7 @@ export type SceneSelection = {
 function numberFrom(metrics: Metric[] | null | undefined, key: string): number | undefined {
   const metric = metrics?.find((m) => m.key === key);
   if (!metric) return undefined;
-  const parsed = Number.parseFloat(metric.value.replace(",", ".").replace(/[^0-9.\-]/g, ""));
+  const parsed = Number.parseFloat(metric.value.replace(",", ".").replace(/[^0-9.-]/g, ""));
   return Number.isFinite(parsed) ? parsed : undefined;
 }
 
@@ -111,6 +111,8 @@ export function useSceneSelector(mode: SceneMode = "world"): SceneSelection {
           candidate.scene.id !== excludeId && (failedUntil[candidate.scene.id] ?? 0) <= now,
       );
       if (!best) {
+        setCurrent(null);
+        setCurrentSource(null);
         setRegionOffset((o) => (o + DISCOVERY_WINDOW) % DISCOVERY_REGIONS.length);
         return;
       }
@@ -205,8 +207,11 @@ export function useSceneSelector(mode: SceneMode = "world"): SceneSelection {
     const timer = window.setTimeout(async () => {
       if (import.meta.env.DEV) console.debug(`[ORBI LIVE] discovery retry: ${attempt + 1}`);
       discoveryAttemptRef.current += 1;
-      await retryDiscovery();
-      setRegionOffset((o) => (o + DISCOVERY_WINDOW) % DISCOVERY_REGIONS.length);
+      try {
+        await retryDiscovery();
+      } finally {
+        setRegionOffset((o) => (o + DISCOVERY_WINDOW) % DISCOVERY_REGIONS.length);
+      }
     }, DISCOVERY_BACKOFF_MS[attempt]);
     return () => window.clearTimeout(timer);
   }, [current, isLoading, ranked.length, retryDiscovery]);
