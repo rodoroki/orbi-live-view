@@ -58,16 +58,20 @@ export default function LiveStage({
             setStatus("error");
             onImageError?.();
           }}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1600ms] ease-out motion-reduce:transition-none ${
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[900ms] ease-out motion-reduce:transition-none ${
             status === "active" ? "opacity-100 animate-live-drift" : "opacity-0"
           }`}
         />
       )}
 
-      {/* vinheta discreta — a informação lê sobre qualquer imagem */}
+      {/* leve escurecimento nas bordas — a informação lê sobre qualquer imagem */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_40%,transparent_45%,rgba(0,0,0,0.55)_100%)]"
+        className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/45 to-transparent"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black/60 to-transparent"
       />
 
       {status === "error" && (
@@ -82,11 +86,12 @@ export default function LiveStage({
         </p>
       )}
 
-      {!scene && isLoading && (
-        <p className="label-track absolute inset-0 flex items-center justify-center px-8 text-center text-[10px] text-muted-foreground">
+      {(isLoading || (!!scene && status === "loading" && !previousUrl)) && (
+        <p className="label-track absolute inset-0 flex animate-pulse items-center justify-center px-8 text-center text-[10px] text-muted-foreground motion-reduce:animate-none">
           {t.broadcast.loading}
         </p>
       )}
     </div>
   );
 }
+
