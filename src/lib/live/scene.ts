@@ -12,9 +12,9 @@ import type { WindyWebcam } from "@/lib/windy.functions";
 import { placeOrRegion } from "@/lib/data/adapters/place-label";
 
 export type LiveSceneWeather = {
-  temperature?: string;
-  condition?: string;
-  wind?: string;
+  temperature?: string | undefined;
+  condition?: string | undefined;
+  wind?: string | undefined;
 };
 
 export type LiveScene = {
@@ -28,7 +28,7 @@ export type LiveScene = {
   area: string | null;
   lat: number;
   lng: number;
-  timezone?: string;
+  timezone?: string | undefined;
   sourceUrl: string;
   sourceLabel: string;
 };

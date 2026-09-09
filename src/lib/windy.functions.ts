@@ -124,11 +124,11 @@ export type WindyWebcam = {
   imageUrl: string | null;
   lat: number;
   lng: number;
-  city?: string;
-  region?: string;
-  country?: string;
+  city?: string | undefined;
+  region?: string | undefined;
+  country?: string | undefined;
   /** IANA timezone declarado pela fonte, quando existe */
-  timezone?: string;
+  timezone?: string | undefined;
 };
 
 /**
