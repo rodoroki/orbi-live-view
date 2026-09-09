@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { format, useTranslation } from "@/lib/i18n";
-import type { LiveScene } from "@/lib/live/scene";
+import type { LiveMedia, LiveScene } from "@/lib/live/scene";
 
 type Status = "loading" | "active" | "error";
 
@@ -24,26 +24,40 @@ export default function LiveStage({
   const [status, setStatus] = useState<Status>("loading");
   /** imagem anterior mantida no ar até a próxima carregar (crossfade) */
   const [previousUrl, setPreviousUrl] = useState<string | null>(null);
-  const [currentUrl, setCurrentUrl] = useState<string | null>(null);
+  const [mediaIndex, setMediaIndex] = useState(0);
+
+  const media = scene?.media[mediaIndex] ?? null;
+  const currentUrl = media?.url ?? null;
 
   useEffect(() => {
-    if (!scene?.imageUrl) return;
-    setPreviousUrl((prev) => currentUrl ?? prev);
-    setCurrentUrl(scene.imageUrl);
+    if (!scene) return;
+    setPreviousUrl((prev) => (media?.type === "image" ? media.url : prev));
+    setMediaIndex(0);
     setStatus("loading");
-    // currentUrl é lido de propósito só na troca de cena
+    // A mídia anterior é lida de propósito só na troca de cena.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene?.imageUrl]);
+  }, [scene?.id]);
+
+  const failCurrentMedia = () => {
+    if (scene && mediaIndex + 1 < scene.media.length) {
+      setMediaIndex((index) => index + 1);
+      setStatus("loading");
+      return;
+    }
+    setStatus("error");
+    onImageError?.();
+  };
 
   // Algumas origens não disparam erro prontamente; trate loading travado como falha.
   useEffect(() => {
     if (!currentUrl || status !== "loading") return;
     const timer = window.setTimeout(() => {
-      setStatus("error");
-      onImageError?.();
+      failCurrentMedia();
     }, 12_000);
     return () => window.clearTimeout(timer);
-  }, [currentUrl, onImageError, status]);
+    // A função depende da mídia atual e reinicia o watchdog a cada fallback.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUrl, status]);
 
   const alt = scene ? format(t.broadcast.cameraAlt, { place: scene.place }) : "";
 
@@ -58,25 +72,18 @@ export default function LiveStage({
         />
       )}
 
-      {currentUrl && (
-        <img
-          key={currentUrl}
-          src={currentUrl}
+      {media && (
+        <MediaSurface
+          key={`${scene?.id ?? "scene"}-${mediaIndex}-${media.url}`}
+          media={media}
           alt={alt}
-          loading="eager"
-          decoding="async"
-          onLoad={() => {
+          active={status === "active"}
+          onReady={() => {
             setStatus("active");
             setPreviousUrl(null);
             onImageLoad?.();
           }}
-          onError={() => {
-            setStatus("error");
-            onImageError?.();
-          }}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[900ms] ease-out motion-reduce:transition-none ${
-            status === "active" ? "opacity-100 animate-live-drift" : "opacity-0"
-          }`}
+          onError={failCurrentMedia}
         />
       )}
 
@@ -108,5 +115,50 @@ export default function LiveStage({
         </p>
       )}
     </div>
+  );
+}
+
+function MediaSurface({
+  media,
+  alt,
+  active,
+  onReady,
+  onError,
+}: {
+  media: LiveMedia;
+  alt: string;
+  active: boolean;
+  onReady: () => void;
+  onError: () => void;
+}) {
+  const className = `absolute inset-0 h-full w-full transition-opacity duration-[900ms] ease-out motion-reduce:transition-none ${
+    active ? "opacity-100" : "opacity-0"
+  }`;
+
+  if (media.presentation === "iframe") {
+    return (
+      <iframe
+        src={media.url}
+        title={alt}
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowFullScreen
+        loading="eager"
+        onLoad={onReady}
+        onError={onError}
+        className={`${className} border-0`}
+      />
+    );
+  }
+
+  return (
+    <img
+      src={media.url}
+      alt={alt}
+      loading="eager"
+      decoding="async"
+      onLoad={onReady}
+      onError={onError}
+      className={`${className} object-cover ${active ? "animate-live-drift" : ""}`}
+    />
   );
 }

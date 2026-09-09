@@ -10,7 +10,7 @@
  */
 import { nearestEvent, type NaturalEvent } from "@/lib/nasa/events";
 import type { DiscoveredWebcam } from "./discovery";
-import { webcamToScene, type LiveScene } from "./scene";
+import { webcamMedia, webcamToScene, type LiveScene } from "./scene";
 
 export type SceneMode = "world" | "now";
 
@@ -79,7 +79,7 @@ export function rememberScene(
  */
 export function visualQuality(cam: DiscoveredWebcam): number {
   let score = 0;
-  if (cam.imageUrl) score += 12;
+  if (webcamMedia(cam).length > 0) score += 12;
   if (cam.city) score += 4;
   if (cam.region || cam.country) score += 3;
   if (cam.timezone) score += 3;
@@ -250,7 +250,7 @@ export function rankCandidates(
   context: ScoringContext,
 ): SceneCandidate[] {
   return cams
-    .filter((cam) => Boolean(cam.imageUrl))
+    .filter((cam) => webcamMedia(cam).length > 0)
     .map((cam) => evaluateCandidate(cam, context))
     .sort((a, b) => b.score - a.score);
 }
