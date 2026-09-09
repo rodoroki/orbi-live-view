@@ -13,10 +13,12 @@ export default function LiveStage({
   scene,
   isLoading,
   onImageError,
+  onImageLoad,
 }: {
   scene: LiveScene | null;
   isLoading: boolean;
   onImageError?: () => void;
+  onImageLoad?: () => void;
 }) {
   const { t } = useTranslation();
   const [status, setStatus] = useState<Status>("loading");
@@ -32,6 +34,16 @@ export default function LiveStage({
     // currentUrl é lido de propósito só na troca de cena
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene?.imageUrl]);
+
+  // Algumas origens não disparam erro prontamente; trate loading travado como falha.
+  useEffect(() => {
+    if (!currentUrl || status !== "loading") return;
+    const timer = window.setTimeout(() => {
+      setStatus("error");
+      onImageError?.();
+    }, 12_000);
+    return () => window.clearTimeout(timer);
+  }, [currentUrl, onImageError, status]);
 
   const alt = scene ? format(t.broadcast.cameraAlt, { place: scene.place }) : "";
 
@@ -53,7 +65,11 @@ export default function LiveStage({
           alt={alt}
           loading="eager"
           decoding="async"
-          onLoad={() => setStatus("active")}
+          onLoad={() => {
+            setStatus("active");
+            setPreviousUrl(null);
+            onImageLoad?.();
+          }}
           onError={() => {
             setStatus("error");
             onImageError?.();
@@ -74,7 +90,7 @@ export default function LiveStage({
         className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black/60 to-transparent"
       />
 
-      {status === "error" && (
+      {status === "error" && !previousUrl && (
         <p className="label-track absolute inset-0 flex items-center justify-center px-8 text-center text-[10px] text-muted-foreground">
           {t.broadcast.imageUnavailable}
         </p>
@@ -94,4 +110,3 @@ export default function LiveStage({
     </div>
   );
 }
-

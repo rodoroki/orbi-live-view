@@ -32,7 +32,8 @@ export function useNaturalEvents() {
         return events
           .map((e) => {
             const loc = (e as { location?: { latitude?: number; longitude?: number } }).location;
-            if (typeof loc?.latitude !== "number" || typeof loc?.longitude !== "number") return null;
+            if (typeof loc?.latitude !== "number" || typeof loc?.longitude !== "number")
+              return null;
             return {
               id: e.id,
               title: e.title,
@@ -54,12 +55,7 @@ export function useNaturalEvents() {
 }
 
 /** Distância aproximada em quilômetros (haversine). */
-export function distanceKm(
-  aLat: number,
-  aLng: number,
-  bLat: number,
-  bLng: number,
-): number {
+export function distanceKm(aLat: number, aLng: number, bLat: number, bLng: number): number {
   const toRad = (v: number) => (v * Math.PI) / 180;
   const dLat = toRad(bLat - aLat);
   const dLng = toRad(bLng - aLng);

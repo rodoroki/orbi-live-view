@@ -10,14 +10,12 @@ export const Route = createFileRoute("/eventos")({
       { title: "ORBI LIVE — Eventos planetários" },
       {
         name: "description",
-        content:
-          "Registro contínuo de fenômenos naturais observados na superfície e na atmosfera.",
+        content: "Registro contínuo de fenômenos naturais observados na superfície e na atmosfera.",
       },
       { property: "og:title", content: "ORBI LIVE — Eventos planetários" },
       {
         property: "og:description",
-        content:
-          "Registro contínuo de fenômenos naturais observados na superfície e na atmosfera.",
+        content: "Registro contínuo de fenômenos naturais observados na superfície e na atmosfera.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

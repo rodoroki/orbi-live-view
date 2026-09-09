@@ -210,8 +210,7 @@ export const en = {
     atmosphere: {
       eyebrow: "Atmosphere",
       title: "Atmospheric layer",
-      intro:
-        "Wind, temperature, humidity and pressure presented as layers over the planetary map.",
+      intro: "Wind, temperature, humidity and pressure presented as layers over the planetary map.",
       body: "Atmospheric conditions are shown on the globe, from the sources linked below. This page publishes no values of its own.",
     },
     ocean: {
