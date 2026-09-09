@@ -25,16 +25,60 @@ export type PlanetaryRegion = {
 /** Universo de descoberta: pontos de observação macro, não conteúdo. */
 export const PLANETARY_REGIONS: readonly PlanetaryRegion[] = [
   // South America
-  { id: "balneario-camboriu", continent: "south-america", lat: -26.99, lng: -48.63, priority: 1.2, tags: ["coast", "city"] },
-  { id: "rio-de-janeiro", continent: "south-america", lat: -22.91, lng: -43.18, priority: 1.2, tags: ["coast", "city"] },
+  {
+    id: "balneario-camboriu",
+    continent: "south-america",
+    lat: -26.99,
+    lng: -48.63,
+    priority: 1.2,
+    tags: ["coast", "city"],
+  },
+  {
+    id: "rio-de-janeiro",
+    continent: "south-america",
+    lat: -22.91,
+    lng: -43.18,
+    priority: 1.2,
+    tags: ["coast", "city"],
+  },
   { id: "sao-paulo", continent: "south-america", lat: -23.55, lng: -46.63, tags: ["city"] },
-  { id: "florianopolis", continent: "south-america", lat: -27.6, lng: -48.55, tags: ["island", "beach"] },
+  {
+    id: "florianopolis",
+    continent: "south-america",
+    lat: -27.6,
+    lng: -48.55,
+    tags: ["island", "beach"],
+  },
   { id: "salvador", continent: "south-america", lat: -12.97, lng: -38.5, tags: ["coast"] },
-  { id: "amazon-manaus", continent: "south-america", lat: -3.12, lng: -60.02, tags: ["forest", "river"] },
-  { id: "patagonia-bariloche", continent: "south-america", lat: -41.13, lng: -71.31, tags: ["mountain", "lake"] },
+  {
+    id: "amazon-manaus",
+    continent: "south-america",
+    lat: -3.12,
+    lng: -60.02,
+    tags: ["forest", "river"],
+  },
+  {
+    id: "patagonia-bariloche",
+    continent: "south-america",
+    lat: -41.13,
+    lng: -71.31,
+    tags: ["mountain", "lake"],
+  },
   { id: "ushuaia", continent: "south-america", lat: -54.8, lng: -68.3, tags: ["port", "mountain"] },
-  { id: "andes-santiago", continent: "south-america", lat: -33.45, lng: -70.67, tags: ["mountain", "city"] },
-  { id: "valparaiso", continent: "south-america", lat: -33.05, lng: -71.62, tags: ["port", "coast"] },
+  {
+    id: "andes-santiago",
+    continent: "south-america",
+    lat: -33.45,
+    lng: -70.67,
+    tags: ["mountain", "city"],
+  },
+  {
+    id: "valparaiso",
+    continent: "south-america",
+    lat: -33.05,
+    lng: -71.62,
+    tags: ["port", "coast"],
+  },
   { id: "buenos-aires", continent: "south-america", lat: -34.6, lng: -58.38, tags: ["city"] },
   { id: "atacama", continent: "south-america", lat: -22.91, lng: -68.2, tags: ["desert"] },
   { id: "cusco-andes", continent: "south-america", lat: -13.53, lng: -71.97, tags: ["mountain"] },
@@ -42,28 +86,110 @@ export const PLANETARY_REGIONS: readonly PlanetaryRegion[] = [
   { id: "galapagos", continent: "south-america", lat: -0.74, lng: -90.31, tags: ["island"] },
 
   // North America
-  { id: "new-york", continent: "north-america", lat: 40.71, lng: -74.01, priority: 1.1, tags: ["city"] },
-  { id: "san-francisco", continent: "north-america", lat: 37.77, lng: -122.42, tags: ["city", "coast"] },
-  { id: "rocky-mountains", continent: "north-america", lat: 50.45, lng: -116.0, tags: ["mountain", "ski"] },
+  {
+    id: "new-york",
+    continent: "north-america",
+    lat: 40.71,
+    lng: -74.01,
+    priority: 1.1,
+    tags: ["city"],
+  },
+  {
+    id: "san-francisco",
+    continent: "north-america",
+    lat: 37.77,
+    lng: -122.42,
+    tags: ["city", "coast"],
+  },
+  {
+    id: "rocky-mountains",
+    continent: "north-america",
+    lat: 50.45,
+    lng: -116.0,
+    tags: ["mountain", "ski"],
+  },
   { id: "banff", continent: "north-america", lat: 51.18, lng: -115.57, tags: ["park", "mountain"] },
-  { id: "alaska-anchorage", continent: "north-america", lat: 61.22, lng: -149.9, tags: ["mountain", "remote"] },
-  { id: "yellowstone", continent: "north-america", lat: 44.6, lng: -110.5, tags: ["park", "volcanic"] },
-  { id: "grand-canyon", continent: "north-america", lat: 36.06, lng: -112.14, tags: ["desert", "park"] },
-  { id: "florida-keys", continent: "north-america", lat: 24.56, lng: -81.78, tags: ["island", "beach"] },
+  {
+    id: "alaska-anchorage",
+    continent: "north-america",
+    lat: 61.22,
+    lng: -149.9,
+    tags: ["mountain", "remote"],
+  },
+  {
+    id: "yellowstone",
+    continent: "north-america",
+    lat: 44.6,
+    lng: -110.5,
+    tags: ["park", "volcanic"],
+  },
+  {
+    id: "grand-canyon",
+    continent: "north-america",
+    lat: 36.06,
+    lng: -112.14,
+    tags: ["desert", "park"],
+  },
+  {
+    id: "florida-keys",
+    continent: "north-america",
+    lat: 24.56,
+    lng: -81.78,
+    tags: ["island", "beach"],
+  },
   { id: "chicago", continent: "north-america", lat: 41.88, lng: -87.63, tags: ["city", "lake"] },
-  { id: "vancouver", continent: "north-america", lat: 49.28, lng: -123.12, tags: ["city", "coast"] },
+  {
+    id: "vancouver",
+    continent: "north-america",
+    lat: 49.28,
+    lng: -123.12,
+    tags: ["city", "coast"],
+  },
   { id: "mexico-city", continent: "north-america", lat: 19.43, lng: -99.13, tags: ["city"] },
   { id: "yucatan", continent: "north-america", lat: 20.62, lng: -87.08, tags: ["beach"] },
-  { id: "hawaii-volcanoes", continent: "north-america", lat: 19.42, lng: -155.29, tags: ["volcano", "island"] },
+  {
+    id: "hawaii-volcanoes",
+    continent: "north-america",
+    lat: 19.42,
+    lng: -155.29,
+    tags: ["volcano", "island"],
+  },
   { id: "quebec", continent: "north-america", lat: 46.81, lng: -71.21, tags: ["city", "river"] },
   { id: "havana", continent: "north-america", lat: 23.11, lng: -82.37, tags: ["city", "coast"] },
 
   // Europe
-  { id: "reykjavik", continent: "europe", lat: 64.15, lng: -21.94, priority: 1.2, tags: ["volcano", "coast"] },
-  { id: "dolomites", continent: "europe", lat: 46.05, lng: 11.12, priority: 1.2, tags: ["mountain", "ski"] },
-  { id: "swiss-alps", continent: "europe", lat: 46.55, lng: 8.0, priority: 1.2, tags: ["mountain", "ski"] },
+  {
+    id: "reykjavik",
+    continent: "europe",
+    lat: 64.15,
+    lng: -21.94,
+    priority: 1.2,
+    tags: ["volcano", "coast"],
+  },
+  {
+    id: "dolomites",
+    continent: "europe",
+    lat: 46.05,
+    lng: 11.12,
+    priority: 1.2,
+    tags: ["mountain", "ski"],
+  },
+  {
+    id: "swiss-alps",
+    continent: "europe",
+    lat: 46.55,
+    lng: 8.0,
+    priority: 1.2,
+    tags: ["mountain", "ski"],
+  },
   { id: "lisbon", continent: "europe", lat: 38.72, lng: -9.14, tags: ["city", "coast"] },
-  { id: "canary-islands", continent: "europe", lat: 28.29, lng: -16.63, tags: ["island", "volcano"] },
+  {
+    id: "canary-islands",
+    continent: "europe",
+    lat: 28.29,
+    lng: -16.63,
+    tags: ["island", "volcano"],
+  },
   { id: "madeira", continent: "europe", lat: 32.65, lng: -16.91, tags: ["island"] },
   { id: "barcelona", continent: "europe", lat: 41.39, lng: 2.17, tags: ["city", "coast"] },
   { id: "amalfi-coast", continent: "europe", lat: 40.63, lng: 14.6, tags: ["coast"] },
@@ -71,7 +197,13 @@ export const PLANETARY_REGIONS: readonly PlanetaryRegion[] = [
   { id: "norway-fjords", continent: "europe", lat: 61.0, lng: 6.5, tags: ["fjord", "mountain"] },
   { id: "lofoten", continent: "europe", lat: 68.2, lng: 13.9, tags: ["island", "arctic"] },
   { id: "stockholm", continent: "europe", lat: 59.33, lng: 18.07, tags: ["city"] },
-  { id: "scottish-highlands", continent: "europe", lat: 57.12, lng: -4.71, tags: ["mountain", "lake"] },
+  {
+    id: "scottish-highlands",
+    continent: "europe",
+    lat: 57.12,
+    lng: -4.71,
+    tags: ["mountain", "lake"],
+  },
   { id: "amsterdam", continent: "europe", lat: 52.37, lng: 4.9, tags: ["city", "port"] },
   { id: "paris", continent: "europe", lat: 48.86, lng: 2.35, tags: ["city"] },
   { id: "prague", continent: "europe", lat: 50.08, lng: 14.44, tags: ["city"] },
@@ -100,8 +232,21 @@ export const PLANETARY_REGIONS: readonly PlanetaryRegion[] = [
   { id: "baikal", continent: "asia", lat: 51.85, lng: 104.87, tags: ["lake", "remote"] },
 
   // Africa
-  { id: "cape-town", continent: "africa", lat: -33.92, lng: 18.42, priority: 1.1, tags: ["city", "coast"] },
-  { id: "atlas-marrakech", continent: "africa", lat: 31.63, lng: -7.99, tags: ["mountain", "desert"] },
+  {
+    id: "cape-town",
+    continent: "africa",
+    lat: -33.92,
+    lng: 18.42,
+    priority: 1.1,
+    tags: ["city", "coast"],
+  },
+  {
+    id: "atlas-marrakech",
+    continent: "africa",
+    lat: 31.63,
+    lng: -7.99,
+    tags: ["mountain", "desert"],
+  },
   { id: "sahara-merzouga", continent: "africa", lat: 31.1, lng: -4.01, tags: ["desert"] },
   { id: "cairo-nile", continent: "africa", lat: 30.04, lng: 31.24, tags: ["city", "river"] },
   { id: "red-sea-hurghada", continent: "africa", lat: 27.26, lng: 33.81, tags: ["coast", "beach"] },
@@ -112,12 +257,31 @@ export const PLANETARY_REGIONS: readonly PlanetaryRegion[] = [
   { id: "nairobi", continent: "africa", lat: -1.29, lng: 36.82, tags: ["city"] },
   { id: "lagos", continent: "africa", lat: 6.52, lng: 3.38, tags: ["city", "port"] },
   { id: "madagascar", continent: "africa", lat: -18.88, lng: 47.51, tags: ["island"] },
-  { id: "canary-african-coast", continent: "africa", lat: 23.68, lng: -15.93, tags: ["coast", "desert"] },
+  {
+    id: "canary-african-coast",
+    continent: "africa",
+    lat: 23.68,
+    lng: -15.93,
+    tags: ["coast", "desert"],
+  },
 
   // Oceania
-  { id: "sydney", continent: "oceania", lat: -33.86, lng: 151.21, priority: 1.1, tags: ["city", "coast"] },
+  {
+    id: "sydney",
+    continent: "oceania",
+    lat: -33.86,
+    lng: 151.21,
+    priority: 1.1,
+    tags: ["city", "coast"],
+  },
   { id: "gold-coast", continent: "oceania", lat: -28.0, lng: 153.43, tags: ["beach"] },
-  { id: "great-barrier-reef", continent: "oceania", lat: -16.92, lng: 145.77, tags: ["coast", "island"] },
+  {
+    id: "great-barrier-reef",
+    continent: "oceania",
+    lat: -16.92,
+    lng: 145.77,
+    tags: ["coast", "island"],
+  },
   { id: "melbourne", continent: "oceania", lat: -37.81, lng: 144.96, tags: ["city"] },
   { id: "perth", continent: "oceania", lat: -31.95, lng: 115.86, tags: ["city", "coast"] },
   { id: "queenstown", continent: "oceania", lat: -45.03, lng: 168.66, tags: ["mountain", "lake"] },
@@ -128,9 +292,27 @@ export const PLANETARY_REGIONS: readonly PlanetaryRegion[] = [
 
   // Polar / remote — podem simplesmente não ter candidatos
   { id: "svalbard", continent: "polar", lat: 78.22, lng: 15.63, tags: ["arctic", "remote"] },
-  { id: "greenland-ilulissat", continent: "polar", lat: 69.22, lng: -51.1, tags: ["arctic", "ice"] },
-  { id: "antarctica-peninsula", continent: "polar", lat: -64.77, lng: -64.05, tags: ["antarctic", "remote"] },
-  { id: "antarctica-mcmurdo", continent: "polar", lat: -77.85, lng: 166.67, tags: ["antarctic", "remote"] },
+  {
+    id: "greenland-ilulissat",
+    continent: "polar",
+    lat: 69.22,
+    lng: -51.1,
+    tags: ["arctic", "ice"],
+  },
+  {
+    id: "antarctica-peninsula",
+    continent: "polar",
+    lat: -64.77,
+    lng: -64.05,
+    tags: ["antarctic", "remote"],
+  },
+  {
+    id: "antarctica-mcmurdo",
+    continent: "polar",
+    lat: -77.85,
+    lng: 166.67,
+    tags: ["antarctic", "remote"],
+  },
 ];
 
 /** Request budget: quantas regiões podem ficar ativas ao mesmo tempo. */
@@ -219,7 +401,9 @@ function discoveryPriority(
   score += Math.min(minutesSinceVisit, 60) / 6;
 
   // sinal de prioridade geográfica: evento natural real por perto
-  if (eventPoints.some((p) => Math.abs(p.lat - region.lat) < 6 && Math.abs(p.lng - region.lng) < 6)) {
+  if (
+    eventPoints.some((p) => Math.abs(p.lat - region.lat) < 6 && Math.abs(p.lng - region.lng) < 6)
+  ) {
     score += 12;
   }
   return score;
