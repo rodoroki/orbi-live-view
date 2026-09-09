@@ -1,7 +1,7 @@
 /**
  * ORBI LIVE — modelo de cena da transmissão.
  *
- * Uma "cena" é o que está no ar num dado momento: uma imagem real de câmera,
+ * Uma "cena" é o que está no ar num dado momento: mídia real de câmera,
  * o lugar que ela mostra e o contexto mínimo que a fonte declara.
  *
  * Separação arquitetural:
@@ -17,10 +17,15 @@ export type LiveSceneWeather = {
   wind?: string | undefined;
 };
 
+export type LiveMedia =
+  | { type: "live"; url: string; presentation: "iframe" }
+  | { type: "timelapse"; url: string; presentation: "iframe" }
+  | { type: "image"; url: string; presentation: "image" };
+
 export type LiveScene = {
   id: string;
-  /** URL temporária da fonte — nunca tratada como asset permanente */
-  imageUrl: string | null;
+  /** Ordem de apresentação e fallback: live → timelapse → image. */
+  media: LiveMedia[];
   title: string;
   /** linha principal do overlay (cidade ou nome da câmera) */
   place: string;
@@ -33,6 +38,35 @@ export type LiveScene = {
   sourceLabel: string;
 };
 
+function safeHttpsUrl(value: string | null | undefined): string | null {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Normaliza somente formatos que a fonte declarou e o navegador sabe apresentar. */
+export function webcamMedia(cam: WindyWebcam): LiveMedia[] {
+  const media: LiveMedia[] = [];
+  const liveUrl = safeHttpsUrl(cam.player?.live);
+  const timelapseUrl = safeHttpsUrl(cam.player?.day);
+  const imageUrl = safeHttpsUrl(cam.imageUrl);
+
+  if (liveUrl) media.push({ type: "live", url: liveUrl, presentation: "iframe" });
+  if (timelapseUrl) {
+    media.push({ type: "timelapse", url: timelapseUrl, presentation: "iframe" });
+  }
+  if (imageUrl) media.push({ type: "image", url: imageUrl, presentation: "image" });
+  return media;
+}
+
+export function sceneMediaSignature(scene: LiveScene): string {
+  return scene.media.map(({ type, url }) => `${type}:${url}`).join("|");
+}
+
 /** Converte uma webcam do Windy na cena que o palco sabe renderizar. */
 export function webcamToScene(cam: WindyWebcam): LiveScene {
   const place = cam.city?.trim() || cam.title?.trim() || placeOrRegion(null, cam.lat, cam.lng);
@@ -40,14 +74,14 @@ export function webcamToScene(cam: WindyWebcam): LiveScene {
 
   return {
     id: cam.id,
-    imageUrl: cam.imageUrl,
+    media: webcamMedia(cam),
     title: cam.title,
     place,
     area,
     lat: cam.lat,
     lng: cam.lng,
     timezone: cam.timezone,
-    sourceUrl: `https://windy.com/webcams/${cam.id}`,
+    sourceUrl: safeHttpsUrl(cam.sourceUrl) ?? `https://windy.com/webcams/${cam.id}`,
     sourceLabel: "windy.com",
   };
 }

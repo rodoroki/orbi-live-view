@@ -122,6 +122,15 @@ export type WindyWebcam = {
   id: string;
   title: string;
   imageUrl: string | null;
+  /** Players incorporáveis declarados pela Webcams API v3. */
+  player?:
+    | {
+        live?: string | undefined;
+        day?: string | undefined;
+      }
+    | undefined;
+  /** Página pública oficial da webcam. */
+  sourceUrl?: string | undefined;
   lat: number;
   lng: number;
   city?: string | undefined;
@@ -203,7 +212,7 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
 
     const url =
       `https://api.windy.com/webcams/api/v3/webcams?nearby=${data.lat},${data.lng},${data.radiusKm}` +
-      `&limit=12&include=images,location`;
+      `&limit=12&include=images,location,player,urls`;
 
     try {
       const res = await fetch(url, { headers: { "x-windy-api-key": apiKey } });
@@ -214,6 +223,11 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
           webcamId?: number | string;
           title?: string;
           images?: { current?: { preview?: string; thumbnail?: string } };
+          player?: {
+            live?: string;
+            day?: string;
+          };
+          urls?: { detail?: string };
           location?: {
             latitude?: number;
             longitude?: number;
@@ -230,6 +244,8 @@ export const getWindyWebcams = createServerFn({ method: "GET" })
           id: String(w.webcamId ?? ""),
           title: w.title ?? w.location?.city ?? "Webcam",
           imageUrl: w.images?.current?.preview ?? w.images?.current?.thumbnail ?? null,
+          player: w.player,
+          sourceUrl: w.urls?.detail,
           lat: w.location?.latitude ?? data.lat,
           lng: w.location?.longitude ?? data.lng,
           city: w.location?.city,

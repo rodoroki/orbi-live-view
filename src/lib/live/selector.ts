@@ -17,7 +17,7 @@ import {
   webcamQueryOptions,
   type DiscoveredWebcam,
 } from "./discovery";
-import { webcamToScene, type LiveScene } from "./scene";
+import { sceneMediaSignature, webcamToScene, type LiveScene } from "./scene";
 import {
   EMPTY_MEMORY,
   debugSelection,
@@ -36,11 +36,11 @@ const DISCOVERY_BACKOFF_MS = [5_000, 15_000, 30_000, 60_000] as const;
 export type SceneSelection = {
   scene: LiveScene | null;
   isLoading: boolean;
-  /** avança manualmente (usado também quando a imagem falha) */
+  /** avança manualmente (usado também quando toda a mídia da cena falha) */
   next: () => void;
   /** tenta renovar a câmera atual antes de selecionar outra */
   recover: () => Promise<void>;
-  /** confirma que a imagem entrou no ar e encerra a tentativa de recuperação */
+  /** confirma que a mídia entrou no ar e encerra a tentativa de recuperação */
   markActive: () => void;
 };
 
@@ -152,21 +152,27 @@ export function useSceneSelector(mode: SceneMode = "world"): SceneSelection {
     try {
       if (refreshedSceneRef.current !== failedId) {
         refreshedSceneRef.current = failedId;
-        if (import.meta.env.DEV) console.debug(`[ORBI LIVE] image refresh: ${failedId}`);
+        if (import.meta.env.DEV) console.debug(`[ORBI LIVE] media refresh: ${failedId}`);
         const refreshed = await queryClient.fetchQuery({
           ...webcamQueryOptions(currentSource.origin),
           staleTime: 0,
         });
-        const sameCamera = refreshed.find((cam) => cam.id === failedId && cam.imageUrl);
-        if (sameCamera?.imageUrl && sameCamera.imageUrl !== current.scene.imageUrl) {
+        const sameCamera = refreshed.find((cam) => cam.id === failedId);
+        const refreshedScene = sameCamera ? webcamToScene(sameCamera) : null;
+        if (
+          sameCamera &&
+          refreshedScene &&
+          refreshedScene.media.length > 0 &&
+          sceneMediaSignature(refreshedScene) !== sceneMediaSignature(current.scene)
+        ) {
           const source = { ...sameCamera, origin: currentSource.origin };
           setCurrentSource(source);
           setCurrent((candidate) =>
-            candidate ? { ...candidate, scene: webcamToScene(source) } : candidate,
+            candidate ? { ...candidate, scene: refreshedScene } : candidate,
           );
           recoveringRef.current = false;
           if (import.meta.env.DEV) {
-            console.debug(`[ORBI LIVE] image recovery succeeded: ${failedId}`);
+            console.debug(`[ORBI LIVE] media recovery succeeded: ${failedId}`);
           }
           return;
         }
