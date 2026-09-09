@@ -152,27 +152,27 @@ export function useSceneSelector(mode: SceneMode = "world"): SceneSelection {
     try {
       if (refreshedSceneRef.current !== failedId) {
         refreshedSceneRef.current = failedId;
-         if (import.meta.env.DEV) console.debug(`[ORBI LIVE] media refresh: ${failedId}`);
+        if (import.meta.env.DEV) console.debug(`[ORBI LIVE] media refresh: ${failedId}`);
         const refreshed = await queryClient.fetchQuery({
           ...webcamQueryOptions(currentSource.origin),
           staleTime: 0,
         });
-         const sameCamera = refreshed.find((cam) => cam.id === failedId);
-         const refreshedScene = sameCamera ? webcamToScene(sameCamera) : null;
-         if (
-           sameCamera &&
-           refreshedScene &&
-           refreshedScene.media.length > 0 &&
-           sceneMediaSignature(refreshedScene) !== sceneMediaSignature(current.scene)
-         ) {
+        const sameCamera = refreshed.find((cam) => cam.id === failedId);
+        const refreshedScene = sameCamera ? webcamToScene(sameCamera) : null;
+        if (
+          sameCamera &&
+          refreshedScene &&
+          refreshedScene.media.length > 0 &&
+          sceneMediaSignature(refreshedScene) !== sceneMediaSignature(current.scene)
+        ) {
           const source = { ...sameCamera, origin: currentSource.origin };
           setCurrentSource(source);
           setCurrent((candidate) =>
-             candidate ? { ...candidate, scene: refreshedScene } : candidate,
+            candidate ? { ...candidate, scene: refreshedScene } : candidate,
           );
           recoveringRef.current = false;
           if (import.meta.env.DEV) {
-             console.debug(`[ORBI LIVE] media recovery succeeded: ${failedId}`);
+            console.debug(`[ORBI LIVE] media recovery succeeded: ${failedId}`);
           }
           return;
         }

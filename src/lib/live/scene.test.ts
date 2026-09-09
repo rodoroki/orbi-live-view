@@ -48,8 +48,8 @@ describe("ORBI LIVE media normalization", () => {
   });
 
   test("uses the official detail URL when provided", () => {
-    expect(
-      webcamToScene({ ...webcam, sourceUrl: "https://windy.com/webcams/42" }).sourceUrl,
-    ).toBe("https://windy.com/webcams/42");
+    expect(webcamToScene({ ...webcam, sourceUrl: "https://windy.com/webcams/42" }).sourceUrl).toBe(
+      "https://windy.com/webcams/42",
+    );
   });
 });
