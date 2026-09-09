@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { format, useTranslation } from "@/lib/i18n";
 import { sceneMediaSignature, type LiveMedia, type LiveScene } from "@/lib/live/scene";
@@ -24,7 +24,7 @@ export default function LiveStage({
   const [status, setStatus] = useState<Status>("loading");
   /** imagem anterior mantida no ar até a próxima carregar (crossfade) */
   const [previousUrl, setPreviousUrl] = useState<string | null>(null);
-  const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
+  const activeImageUrlRef = useRef<string | null>(null);
   const [mediaIndex, setMediaIndex] = useState(0);
 
   const media = scene?.media[mediaIndex] ?? null;
@@ -33,10 +33,10 @@ export default function LiveStage({
 
   useEffect(() => {
     if (!scene) return;
-    setPreviousUrl(activeImageUrl);
+    setPreviousUrl(activeImageUrlRef.current);
     setMediaIndex(0);
     setStatus("loading");
-  }, [activeImageUrl, mediaSignature, scene]);
+  }, [mediaSignature, scene]);
 
   const failCurrentMedia = () => {
     if (scene && mediaIndex + 1 < scene.media.length) {
@@ -81,7 +81,7 @@ export default function LiveStage({
           onReady={() => {
             setStatus("active");
             setPreviousUrl(null);
-            setActiveImageUrl(media.type === "image" ? media.url : null);
+            activeImageUrlRef.current = media.type === "image" ? media.url : null;
             onImageLoad?.();
           }}
           onError={failCurrentMedia}
