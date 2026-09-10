@@ -4,7 +4,7 @@
  * para que nenhuma rota precise repetir strings de domínio.
  */
 
-export const SITE_URL = "https://orbi-live-view.lovable.app";
+export const SITE_URL = "https://orbiliveword.com";
 export const SITE_NAME = "ORBI LIVE";
 
 export const absoluteUrl = (path: string) =>
