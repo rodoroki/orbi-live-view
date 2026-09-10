@@ -10,7 +10,8 @@ export const Route = createFileRoute("/atmosfera")({
       ...seoMeta({
         path: "/atmosfera",
         title: "ORBI LIVE — Camada atmosférica",
-        description: "Vento, temperatura, umidade e pressão apresentados como camadas sobre o mapa planetário.",
+        description:
+          "Vento, temperatura, umidade e pressão apresentados como camadas sobre o mapa planetário.",
       }),
     ],
     links: seoLinks("/atmosfera"),

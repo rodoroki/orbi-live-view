@@ -10,7 +10,8 @@ export const Route = createFileRoute("/oceano")({
       ...seoMeta({
         path: "/oceano",
         title: "ORBI LIVE — Sistema oceânico",
-        description: "Correntes, altura de ondas e temperatura da superfície do mar, observadas em escala global.",
+        description:
+          "Correntes, altura de ondas e temperatura da superfície do mar, observadas em escala global.",
       }),
     ],
     links: seoLinks("/oceano"),

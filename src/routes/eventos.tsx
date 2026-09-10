@@ -10,7 +10,8 @@ export const Route = createFileRoute("/eventos")({
       ...seoMeta({
         path: "/eventos",
         title: "ORBI LIVE — Eventos planetários",
-        description: "Registro contínuo de fenômenos naturais observados na superfície e na atmosfera.",
+        description:
+          "Registro contínuo de fenômenos naturais observados na superfície e na atmosfera.",
       }),
     ],
     links: seoLinks("/eventos"),

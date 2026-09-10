@@ -10,7 +10,8 @@ export const Route = createFileRoute("/timeline")({
       ...seoMeta({
         path: "/timeline",
         title: "ORBI LIVE — Linha do tempo",
-        description: "Reconstrução temporal dos eventos observados, permitindo avançar e retroceder na história recente do planeta.",
+        description:
+          "Reconstrução temporal dos eventos observados, permitindo avançar e retroceder na história recente do planeta.",
       }),
     ],
     links: seoLinks("/timeline"),

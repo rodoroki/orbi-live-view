@@ -10,7 +10,8 @@ export const Route = createFileRoute("/explorar")({
       ...seoMeta({
         path: "/explorar",
         title: "ORBI LIVE — Explorar o planeta",
-        description: "Navegue por regiões, marcadores e pontos de observação. Uma superfície aberta para descoberta.",
+        description:
+          "Navegue por regiões, marcadores e pontos de observação. Uma superfície aberta para descoberta.",
       }),
     ],
     links: seoLinks("/explorar"),
