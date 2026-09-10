@@ -10,6 +10,9 @@ export const SITE_NAME = "ORBI LIVE";
 export const absoluteUrl = (path: string) =>
   `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 
+/** Imagem social oficial e global do ORBI LIVE (1200x630). */
+export const SITE_OG_IMAGE = `${SITE_URL}/og/orbi-live-og.jpg`;
+
 type SeoInput = {
   path: string;
   title: string;
@@ -36,9 +39,14 @@ export function seoMeta({
     { property: "og:url", content: url },
     { property: "og:site_name", content: SITE_NAME },
     { property: "og:locale", content: locale },
+    { property: "og:image", content: SITE_OG_IMAGE },
+    { property: "og:image:width", content: "1200" },
+    { property: "og:image:height", content: "630" },
+    { property: "og:image:alt", content: "ORBI LIVE — Janela para o mundo." },
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
+    { name: "twitter:image", content: SITE_OG_IMAGE },
   ];
 }
 
