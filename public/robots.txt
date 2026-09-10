@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://orbi-live-view.lovable.app/sitemap.xml
+Sitemap: https://orbiliveword.com/sitemap.xml
