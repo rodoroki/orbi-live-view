@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { seoLinks } from "@/lib/seo";
+import { seoLinks, seoMeta } from "@/lib/seo";
 import { SectionPage } from "@/components/orbi/SectionPage";
 import { RelatedLinks } from "@/components/orbi/LivePage";
 import { useTranslation } from "@/lib/i18n";
@@ -7,18 +7,11 @@ import { useTranslation } from "@/lib/i18n";
 export const Route = createFileRoute("/eventos")({
   head: () => ({
     meta: [
-      { title: "ORBI LIVE — Eventos planetários" },
-      {
-        name: "description",
-        content: "Registro contínuo de fenômenos naturais observados na superfície e na atmosfera.",
-      },
-      { property: "og:title", content: "ORBI LIVE — Eventos planetários" },
-      {
-        property: "og:description",
-        content: "Registro contínuo de fenômenos naturais observados na superfície e na atmosfera.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      ...seoMeta({
+        path: "/eventos",
+        title: "ORBI LIVE — Eventos planetários",
+        description: "Registro contínuo de fenômenos naturais observados na superfície e na atmosfera.",
+      }),
     ],
     links: seoLinks("/eventos"),
   }),

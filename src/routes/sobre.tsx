@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { seoLinks } from "@/lib/seo";
+import { seoLinks, seoMeta } from "@/lib/seo";
 import { SectionPage } from "@/components/orbi/SectionPage";
 
 const INTRO =
@@ -8,12 +8,11 @@ const INTRO =
 export const Route = createFileRoute("/sobre")({
   head: () => ({
     meta: [
-      { title: "ORBI LIVE — Fontes e transparência" },
-      { name: "description", content: INTRO },
-      { property: "og:title", content: "ORBI LIVE — Fontes e transparência" },
-      { property: "og:description", content: INTRO },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      ...seoMeta({
+        path: "/sobre",
+        title: "ORBI LIVE — Fontes e transparência",
+        description: INTRO,
+      }),
     ],
     links: seoLinks("/sobre"),
   }),

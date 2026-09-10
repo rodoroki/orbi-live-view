@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { seoLinks } from "@/lib/seo";
+import { seoLinks, seoMeta } from "@/lib/seo";
 import { SectionPage } from "@/components/orbi/SectionPage";
 import { RelatedLinks } from "@/components/orbi/LivePage";
 import { useTranslation } from "@/lib/i18n";
@@ -7,20 +7,11 @@ import { useTranslation } from "@/lib/i18n";
 export const Route = createFileRoute("/timeline")({
   head: () => ({
     meta: [
-      { title: "ORBI LIVE — Linha do tempo" },
-      {
-        name: "description",
-        content:
-          "Reconstrução temporal dos eventos observados, permitindo avançar e retroceder na história recente do planeta.",
-      },
-      { property: "og:title", content: "ORBI LIVE — Linha do tempo" },
-      {
-        property: "og:description",
-        content:
-          "Reconstrução temporal dos eventos observados, permitindo avançar e retroceder na história recente do planeta.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      ...seoMeta({
+        path: "/timeline",
+        title: "ORBI LIVE — Linha do tempo",
+        description: "Reconstrução temporal dos eventos observados, permitindo avançar e retroceder na história recente do planeta.",
+      }),
     ],
     links: seoLinks("/timeline"),
   }),

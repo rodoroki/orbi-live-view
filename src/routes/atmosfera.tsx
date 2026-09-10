@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { seoLinks } from "@/lib/seo";
+import { seoLinks, seoMeta } from "@/lib/seo";
 import { SectionPage } from "@/components/orbi/SectionPage";
 import { RelatedLinks } from "@/components/orbi/LivePage";
 import { useTranslation } from "@/lib/i18n";
@@ -7,20 +7,11 @@ import { useTranslation } from "@/lib/i18n";
 export const Route = createFileRoute("/atmosfera")({
   head: () => ({
     meta: [
-      { title: "ORBI LIVE — Camada atmosférica" },
-      {
-        name: "description",
-        content:
-          "Vento, temperatura, umidade e pressão apresentados como camadas sobre o mapa planetário.",
-      },
-      { property: "og:title", content: "ORBI LIVE — Camada atmosférica" },
-      {
-        property: "og:description",
-        content:
-          "Vento, temperatura, umidade e pressão apresentados como camadas sobre o mapa planetário.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      ...seoMeta({
+        path: "/atmosfera",
+        title: "ORBI LIVE — Camada atmosférica",
+        description: "Vento, temperatura, umidade e pressão apresentados como camadas sobre o mapa planetário.",
+      }),
     ],
     links: seoLinks("/atmosfera"),
   }),

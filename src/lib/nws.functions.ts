@@ -27,7 +27,7 @@ export const getNwsAlerts = createServerFn({ method: "GET" })
       const res = await fetch(`${NWS_API}/alerts/active?${params.toString()}`, {
         headers: {
           Accept: "application/geo+json",
-          "User-Agent": "ORBI LIVE (contact via lovable.app)",
+          "User-Agent": "ORBI LIVE (https://orbiliveword.com)",
         },
       });
       if (!res.ok) return { events: [], error: `NWS request failed (${res.status})` };
