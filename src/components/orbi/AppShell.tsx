@@ -14,13 +14,14 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   if (isBroadcast) return <>{children}</>;
 
+  // Navegação por intenção do usuário, não por fonte de dados.
   const nav = [
     { label: t.nav.planet, to: "/" },
+    { label: t.nav.live, to: "/live" },
     { label: t.nav.events, to: "/eventos" },
-    { label: t.nav.atmosphere, to: "/atmosfera" },
-    { label: t.nav.ocean, to: "/oceano" },
     { label: t.nav.explore, to: "/explorar" },
   ] as const;
+
 
   return (
     <div className="relative min-h-screen bg-void text-foreground">

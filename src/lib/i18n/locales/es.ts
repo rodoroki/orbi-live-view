@@ -12,6 +12,7 @@ export const es = {
     close: "Cerrar",
   },
   nav: {
+    live: "En vivo",
     planet: "Planeta",
     events: "Eventos",
     atmosphere: "Atmósfera",

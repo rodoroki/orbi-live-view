@@ -30,9 +30,15 @@ function Page() {
         label={t.pages.related}
         links={[
           { to: "/", label: t.pages.links.globe },
+          { to: "/atmosfera", label: t.pages.links.globeAtmosphere },
+          { to: "/oceano", label: t.pages.links.globeOcean },
+          { to: "/earthquakes", label: t.pages.links.earthquakes },
+          { to: "/natural-events", label: t.pages.links.naturalEvents },
+          { to: "/timeline", label: t.pages.links.globeTimeline },
           { to: "/sobre", label: t.pages.links.sources },
         ]}
       />
+
     </SectionPage>
   );
 }
