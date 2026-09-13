@@ -23,8 +23,9 @@ import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
 
 const EARTH_DAY = "/textures/earth-day.jpg";
 const EARTH_NIGHT = "/textures/earth-night.jpg";
-const ATMOSPHERE_COLOR = "#63b3ff";
-const ATMOSPHERE_ALTITUDE = 0.22;
+const ATMOSPHERE_COLOR = "#7cc0ff";
+const ATMOSPHERE_ALTITUDE = 0.26;
+
 
 const BORDER_COLOR = "rgba(120, 200, 220, 0.32)";
 const LABEL_COLOR = "rgba(198, 226, 236, 0.72)";
@@ -318,31 +319,37 @@ const DAY_NIGHT_FRAGMENT = /* glsl */ `
   varying vec3 vNormal;
   varying vec2 vUv;
   void main() {
-    // --- LADO DIA: mais claro e com oceanos mais azuis (Terra vista do espaço)
+    // --- LADO DIA: oceanos mais ricos e profundos, continentes naturais
     vec3 day = texture2D(dayTexture, vUv).rgb;
-    day = pow(day, vec3(0.82)) * 1.45;
-    float ocean = clamp((day.b - day.r) * 2.2, 0.0, 1.0);
-    day = mix(day, day * vec3(0.62, 0.95, 1.5), ocean * 0.75);
+    day = pow(day, vec3(0.8)) * 1.48;
+    float ocean = clamp((day.b - day.r) * 2.3, 0.0, 1.0);
+    day = mix(day, day * vec3(0.5, 0.88, 1.62), ocean * 0.85);
+    // vida discreta nas massas de terra vegetadas
+    float land = clamp((day.g - day.b) * 2.0, 0.0, 1.0);
+    day = mix(day, day * vec3(0.94, 1.06, 0.9), land * 0.35);
     day = min(day, vec3(1.0));
 
-    // --- LADO NOITE: luzes urbanas bem mais vivas sobre um azul profundo
+    // --- LADO NOITE: luzes urbanas quentes sobre um azul oceânico profundo
     vec3 raw = texture2D(nightTexture, vUv).rgb;
     float lum = dot(raw, vec3(0.299, 0.587, 0.114));
-    vec3 lights = pow(raw, vec3(0.75)) * 3.2 * vec3(1.0, 0.84, 0.55) * smoothstep(0.02, 0.35, lum);
-    vec3 nightBase = vec3(0.035, 0.075, 0.13) + raw * 0.6;
+    float density = smoothstep(0.015, 0.3, lum);
+    vec3 warm = mix(vec3(1.0, 0.78, 0.46), vec3(1.0, 0.93, 0.82), density);
+    vec3 lights = pow(raw, vec3(0.68)) * 3.6 * warm * density;
+    vec3 nightBase = vec3(0.028, 0.062, 0.125) + raw * 0.55;
     vec3 night = nightBase + lights;
 
     float cosine = dot(normalize(vNormal), normalize(sunDirection));
     float mixAmount = smoothstep(-0.22, 0.32, cosine);
     vec3 color = mix(night, day, mixAmount);
 
-    // brilho azulado no crepúsculo
+    // brilho atmosférico no crepúsculo
     float twilight = 1.0 - abs(cosine * 4.0);
-    color += vec3(0.06, 0.14, 0.26) * clamp(twilight, 0.0, 1.0) * 0.9;
+    color += vec3(0.07, 0.16, 0.3) * clamp(twilight, 0.0, 1.0) * 1.0;
 
     gl_FragColor = vec4(min(color, vec3(1.0)), 1.0);
   }
 `;
+
 
 function createDayNightMaterial(): THREE.ShaderMaterial {
   const loader = new THREE.TextureLoader();

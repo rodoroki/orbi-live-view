@@ -96,12 +96,17 @@
   --sidebar-border: oklch(0.28 0.022 220 / 70%);
   --sidebar-ring: oklch(0.74 0.11 178 / 50%);
 
-  --void: oklch(0.09 0.012 230);
+  --void: oklch(0.09 0.016 240);
   --emerald-soft: oklch(0.78 0.12 168);
+  /* Cores que nascem do próprio planeta */
+  --atmosphere: oklch(0.72 0.1 235);
+  --ocean: oklch(0.55 0.11 240);
+  --discovery: oklch(0.78 0.13 78);
+  --nature: oklch(0.72 0.11 150);
   --gradient-void: radial-gradient(
     circle at 50% 45%,
-    oklch(0.24 0.05 210 / 55%),
-    oklch(0.09 0.012 230) 65%
+    oklch(0.27 0.062 232 / 60%),
+    oklch(0.09 0.016 240) 68%
   );
   --glow-orbit: 0 0 60px -10px oklch(0.74 0.11 178 / 35%);
   --grid-line: oklch(0.75 0.05 200 / 6%);
@@ -113,10 +118,15 @@
 @theme inline {
   --color-void: var(--void);
   --color-emerald-soft: var(--emerald-soft);
+  --color-atmosphere: var(--atmosphere);
+  --color-ocean: var(--ocean);
+  --color-discovery: var(--discovery);
+  --color-nature: var(--nature);
   --font-display: var(--font-display);
   --font-sans: var(--font-body);
   --font-mono: var(--font-mono);
 }
+
 
 .dark {
   --background: oklch(0.129 0.042 264.695);
