@@ -12,6 +12,7 @@ export const ptBR = {
     close: "Fechar",
   },
   nav: {
+    live: "Ao vivo",
     planet: "Planeta",
     events: "Eventos",
     atmosphere: "Atmosfera",
