@@ -331,7 +331,7 @@ function Index() {
       )}
 
       {selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
-        <DiscoveryCard event={selected} events={events} onClose={() => setPanelOpen(false)} />
+        <DiscoveryCard event={selected} events={events} onSelect={handleSelect} onClose={() => setPanelOpen(false)} />
       )}
 
       {!selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (

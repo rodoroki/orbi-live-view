@@ -131,6 +131,15 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
         <span className="font-mono text-[10px] text-muted-foreground/70">
           {format(t.events.resultCount, { count: filtered.length })}
         </span>
+ 
+      {filtered.length > 5 && (
+        <div className="mx-5 mt-2 rounded-sm border border-primary/20 bg-primary/5 p-2.5">
+          <p className="text-[10px] leading-tight text-primary/80">
+            <span className="font-semibold uppercase tracking-wider">{t.insight.challenge}:</span>{" "}
+            {t.insight.challenge}
+          </p>
+        </div>
+      )}
       </div>
 
       <div className="mt-1 min-h-[10rem] flex-1 overflow-y-auto px-5 pb-5">

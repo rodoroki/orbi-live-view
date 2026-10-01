@@ -178,6 +178,7 @@ export const es = {
     noForecast: "Sin pronóstico disponible para este evento.",
     nearYou: "Cerca de ti",
     nearYouCount: "{{count}} eventos relevantes detectados.",
+    humanHook: "Una señal del ritmo continuo del planeta.",    nextDiscovery: "Siguiente Señal",    challenge: "¿Puedes encontrar otra señal en la misma región?",
   },
   planet: {
     youAreHere: "Estás aquí",
