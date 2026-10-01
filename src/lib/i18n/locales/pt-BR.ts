@@ -179,6 +179,7 @@ export const ptBR = {
     noForecast: "Sem previsão disponível para este evento.",
     nearYou: "Perto de você",
     nearYouCount: "{{count}} eventos relevantes detectados.",
+    humanHook: "Um sinal do ritmo contínuo do planeta.",    nextDiscovery: "Próximo Sinal",    challenge: "Você consegue encontrar outro sinal na mesma região?",
   },
   planet: {
     youAreHere: "Você está aqui",

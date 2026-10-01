@@ -12,9 +12,11 @@ import { buildInsight } from "@/lib/intelligence";
  * Passo 2 — o contexto ("o que está acontecendo aqui?").
  */
 export default function DiscoveryCard({
+  onSelect,
   event,
   events = [],
   onClose,
+  onSelect?: (event: OrbiEvent) => void;
 }: {
   event: OrbiEvent;
   /** universo de eventos visíveis — base do contexto local */
@@ -110,6 +112,10 @@ export default function DiscoveryCard({
           <p className="label-track mt-6 text-[9px] text-muted-foreground/60">
             {t.insight.context}
           </p>
+ 
+          <p className="mt-4 text-[9px] font-light italic text-muted-foreground/50">
+            {insight.humanHook}
+          </p>
           <p className="mt-2 text-xs font-light leading-relaxed text-muted-foreground">
             {insight.context}
           </p>
@@ -129,6 +135,20 @@ export default function DiscoveryCard({
           </div>
 
           <button
+ 
+          {insight.nextDiscoveryId && onSelect && (
+            <button
+              type="button"
+              onClick={() => {
+                const next = events.find((e) => e.id === insight.nextDiscoveryId);
+                if (next) onSelect(next);
+              }}
+              className="focus-ring label-track group ml-auto mt-[-1.25rem] flex items-center gap-2 text-[10px] text-primary transition-opacity duration-300 hover:opacity-70"
+            >
+              {t.insight.nextDiscovery}
+              <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={1.4} />
+            </button>
+          )}
             type="button"
             onClick={() => setDeep(false)}
             className="focus-ring label-track mt-5 flex items-center gap-2 text-[10px] text-muted-foreground transition-colors duration-300 hover:text-foreground"
