@@ -23,7 +23,8 @@ import WebcamsPanel from "@/components/orbi/WebcamsPanel";
 import NowOnPlanet from "@/components/orbi/NowOnPlanet";
 import type { GeoPlace } from "@/lib/geo-search";
 import { CATEGORY_META, type EventCategory, type OrbiEvent } from "@/lib/orbi-events";
-import { useTranslation } from "@/lib/i18n";
+import { format, useTranslation } from "@/lib/i18n";
+import { DiscoveryPrompt } from "@/components/orbi/DiscoveryPrompt";
 import { useEonetEvents } from "@/lib/eonet";
 import { useUsgsEarthquakes } from "@/lib/usgs";
 import { useNwsAlerts } from "@/lib/nws";
@@ -110,7 +111,16 @@ function Index() {
     [events, userLocation],
   );
 
-  // painel de contexto reabre automaticamente ao selecionar um evento
+  // Microdesafio opcional: localizar no planeta um evento real destacado.
+  const [challengeDismissed, setChallengeDismissed] = useState(false);
+  const [found, setFound] = useState(false);
+  const challengeTarget = highlights[0] ?? null;
+
+  const timelineHint = useMemo(() => {
+    if (hour > 0 || !layers.includes("events") || sourcesPending) return undefined;
+    if (hour === 0) return events.length > 0 ? format(t.discovery.liveHint, { count: events.length }) : undefined;
+    return events.length > 0 ? format(t.discovery.pastHint, { count: events.length }) : t.discovery.pastEmpty;
+  }, [hour, events.length, layers, sourcesPending, t]);
 
   const handleGlobeReady = useCallback(
     (api: {
@@ -127,10 +137,18 @@ function Index() {
     (event: OrbiEvent) => {
       setSelected(event);
       setPanelOpen(true);
+      if (challengeTarget && event.id === challengeTarget.id && !challengeDismissed) setFound(true);
       // no mobile o painel de eventos vira card deslizante: fecha ao selecionar
       if (isMobile) setEventsOpen(false);
     },
-    [isMobile],
+    [isMobile, challengeTarget, challengeDismissed],
+  );
+
+  const handleFocus = useCallback(
+    (event: OrbiEvent) => {
+      if (mode === "globe") globeApi.current?.flyTo(event.lat, event.lng, 0.9);
+    },
+    [mode],
   );
 
   // ponto de observação: região buscada > evento selecionado > sua localização
@@ -289,7 +307,7 @@ function Index() {
           onToggleWebcams={() => setWebcamsOpen((v) => !v)}
           webcamsOpen={webcamsOpen}
         />
-        <TimelineBar hour={hour} onChange={setHour} />
+        <TimelineBar hour={hour} onChange={setHour} hint={timelineHint} />
         <ViewToggle mode={mode} onChange={setMode} />
       </div>
       {conditionsOpen && (
@@ -331,7 +349,7 @@ function Index() {
       )}
 
       {selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
-        <DiscoveryCard event={selected} events={events} onSelect={handleSelect} onClose={() => setPanelOpen(false)} />
+        <DiscoveryCard event={selected} events={events} onSelect={handleSelect} onFocus={mode === "globe" ? handleFocus : undefined} onClose={() => setPanelOpen(false)} />
       )}
 
       {!selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
@@ -350,6 +368,32 @@ function Index() {
               ? t.planet.calm
               : t.planet.sourceUnavailable}
         </p>
+      )}
+
+      {challengeTarget && !challengeDismissed && !selected && !eventsOpen && !conditionsOpen && hour === 0 && (
+        <DiscoveryPrompt
+          live
+          eyebrow={t.discovery.challenge}
+          onClose={() => setChallengeDismissed(true)}
+          className="absolute bottom-16 left-4 z-10 hidden w-[17rem] md:block"
+        >
+          {format(t.discovery.findEvent, {
+            phenomenon: (
+              t.discovery.phenomena[challengeTarget.category as keyof typeof t.discovery.phenomena] ?? ""
+            ).toLowerCase(),
+          })}
+          <span className="mt-1 block text-muted-foreground">{challengeTarget.place}</span>
+        </DiscoveryPrompt>
+      )}
+      {found && selected && challengeTarget && selected.id === challengeTarget.id && !challengeDismissed && (
+        <DiscoveryPrompt
+          live
+          eyebrow={t.discovery.challenge}
+          onClose={() => setChallengeDismissed(true)}
+          className="absolute bottom-16 left-4 z-10 hidden w-[17rem] md:block"
+        >
+          {t.discovery.found}
+        </DiscoveryPrompt>
       )}
 
       {/* Crédito de fonte — discreto, porém visível: credibilidade da informação */}
