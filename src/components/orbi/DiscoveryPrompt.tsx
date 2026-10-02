@@ -11,6 +11,7 @@ export function DiscoveryPrompt({
   onClose,
   className,
   live = false,
+  closeLabel = "Close",
 }: {
   eyebrow: string;
   children: ReactNode;
@@ -19,6 +20,7 @@ export function DiscoveryPrompt({
   onClose?: () => void;
   className?: string;
   live?: boolean;
+  closeLabel?: string;
 }) {
   return (
     <div
@@ -30,7 +32,9 @@ export function DiscoveryPrompt({
         <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-discovery" />
         <div className="min-w-0 flex-1">
           <p className="label-track text-[9px] text-discovery">{eyebrow}</p>
-          <div className="mt-1 text-xs font-light leading-relaxed text-foreground/90">{children}</div>
+          <div className="mt-1 text-xs font-light leading-relaxed text-foreground/90">
+            {children}
+          </div>
           {action && onAction && (
             <Button
               type="button"
@@ -50,7 +54,7 @@ export function DiscoveryPrompt({
             variant="ghost"
             size="icon"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={closeLabel}
             className="-mr-2 -mt-2 h-7 w-7 text-muted-foreground hover:bg-transparent hover:text-foreground"
           >
             <X className="h-3 w-3" strokeWidth={1.4} />

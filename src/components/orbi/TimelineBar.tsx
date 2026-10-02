@@ -13,9 +13,12 @@ const MAX = 48;
 export default function TimelineBar({
   hour,
   onChange,
+  hint,
 }: {
   hour: number;
   onChange: (hour: number) => void;
+  /** microcopy derivada da contagem real de eventos na janela */
+  hint?: string | undefined;
 }) {
   const { t, locale } = useTranslation();
   const [playing, setPlaying] = useState(false);
@@ -99,6 +102,15 @@ export default function TimelineBar({
           className="orbi-range absolute inset-x-0 -top-2.5 h-5 w-full cursor-pointer appearance-none bg-transparent opacity-0"
         />
       </div>
+      {hint && (
+        <p
+          key={hint}
+          aria-live="polite"
+          className="mt-3 animate-fade-in text-center text-[11px] font-light text-muted-foreground/80"
+        >
+          {hint}
+        </p>
+      )}
     </div>
   );
 }
