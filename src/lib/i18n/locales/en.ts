@@ -165,6 +165,9 @@ export const en = {
     exploreRegion: "Explore this region",
     otherEvents: "See other events",
     discoverMore: "Discover more",
+    liveHint: "{{count}} real signals on the planet right now.",
+    pastHint: "{{count}} signals had already been detected at this moment.",
+    pastEmpty: "No signal had been detected yet at this moment.",
     hooks: {
       fire: "The surface is changing here.",
       storm: "The atmosphere is moving here.",
