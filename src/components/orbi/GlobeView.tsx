@@ -26,7 +26,6 @@ const EARTH_NIGHT = "/textures/earth-night.jpg";
 const ATMOSPHERE_COLOR = "#7cc0ff";
 const ATMOSPHERE_ALTITUDE = 0.26;
 
-
 const BORDER_COLOR = "rgba(120, 200, 220, 0.32)";
 const LABEL_COLOR = "rgba(198, 226, 236, 0.72)";
 
@@ -349,7 +348,6 @@ const DAY_NIGHT_FRAGMENT = /* glsl */ `
     gl_FragColor = vec4(min(color, vec3(1.0)), 1.0);
   }
 `;
-
 
 function createDayNightMaterial(): THREE.ShaderMaterial {
   const loader = new THREE.TextureLoader();
