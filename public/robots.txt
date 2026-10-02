@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://orbiliveword.com/sitemap.xml
+Sitemap: https://orbiliveworld.com/sitemap.xml
