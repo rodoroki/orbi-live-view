@@ -118,8 +118,11 @@ function Index() {
 
   const timelineHint = useMemo(() => {
     if (hour > 0 || !layers.includes("events") || sourcesPending) return undefined;
-    if (hour === 0) return events.length > 0 ? format(t.discovery.liveHint, { count: events.length }) : undefined;
-    return events.length > 0 ? format(t.discovery.pastHint, { count: events.length }) : t.discovery.pastEmpty;
+    if (hour === 0)
+      return events.length > 0 ? format(t.discovery.liveHint, { count: events.length }) : undefined;
+    return events.length > 0
+      ? format(t.discovery.pastHint, { count: events.length })
+      : t.discovery.pastEmpty;
   }, [hour, events.length, layers, sourcesPending, t]);
 
   const handleGlobeReady = useCallback(
@@ -349,7 +352,13 @@ function Index() {
       )}
 
       {selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
-        <DiscoveryCard event={selected} events={events} onSelect={handleSelect} onFocus={mode === "globe" ? handleFocus : undefined} onClose={() => setPanelOpen(false)} />
+        <DiscoveryCard
+          event={selected}
+          events={events}
+          onSelect={handleSelect}
+          onFocus={mode === "globe" ? handleFocus : undefined}
+          onClose={() => setPanelOpen(false)}
+        />
       )}
 
       {!selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
@@ -370,31 +379,44 @@ function Index() {
         </p>
       )}
 
-      {challengeTarget && !challengeDismissed && !selected && !eventsOpen && !conditionsOpen && hour === 0 && (
-        <DiscoveryPrompt
-          live
-          eyebrow={t.discovery.challenge}
-          onClose={() => setChallengeDismissed(true)}
-          className="absolute bottom-16 left-4 z-10 hidden w-[17rem] md:block"
-        >
-          {format(t.discovery.findEvent, {
-            phenomenon: (
-              t.discovery.phenomena[challengeTarget.category as keyof typeof t.discovery.phenomena] ?? ""
-            ).toLowerCase(),
-          })}
-          <span className="mt-1 block text-muted-foreground">{challengeTarget.place}</span>
-        </DiscoveryPrompt>
-      )}
-      {found && selected && challengeTarget && selected.id === challengeTarget.id && !challengeDismissed && (
-        <DiscoveryPrompt
-          live
-          eyebrow={t.discovery.challenge}
-          onClose={() => setChallengeDismissed(true)}
-          className="absolute bottom-16 left-4 z-10 hidden w-[17rem] md:block"
-        >
-          {t.discovery.found}
-        </DiscoveryPrompt>
-      )}
+      {challengeTarget &&
+        !challengeDismissed &&
+        !selected &&
+        !eventsOpen &&
+        !conditionsOpen &&
+        hour === 0 && (
+          <DiscoveryPrompt
+            live
+            eyebrow={t.discovery.challenge}
+            onClose={() => setChallengeDismissed(true)}
+            closeLabel={t.common.close}
+            className="absolute bottom-16 left-4 z-10 hidden w-[17rem] md:block"
+          >
+            {format(t.discovery.findEvent, {
+              phenomenon: (
+                t.discovery.phenomena[
+                  challengeTarget.category as keyof typeof t.discovery.phenomena
+                ] ?? ""
+              ).toLowerCase(),
+            })}
+            <span className="mt-1 block text-muted-foreground">{challengeTarget.place}</span>
+          </DiscoveryPrompt>
+        )}
+      {found &&
+        selected &&
+        challengeTarget &&
+        selected.id === challengeTarget.id &&
+        !challengeDismissed && (
+          <DiscoveryPrompt
+            live
+            eyebrow={t.discovery.challenge}
+            onClose={() => setChallengeDismissed(true)}
+            closeLabel={t.common.close}
+            className="absolute bottom-16 left-4 z-10 hidden w-[17rem] md:block"
+          >
+            {t.discovery.found}
+          </DiscoveryPrompt>
+        )}
 
       {/* Crédito de fonte — discreto, porém visível: credibilidade da informação */}
       <Link

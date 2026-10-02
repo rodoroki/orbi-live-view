@@ -18,7 +18,7 @@ export default function TimelineBar({
   hour: number;
   onChange: (hour: number) => void;
   /** microcopy derivada da contagem real de eventos na janela */
-  hint?: string;
+  hint?: string | undefined;
 }) {
   const { t, locale } = useTranslation();
   const [playing, setPlaying] = useState(false);

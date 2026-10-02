@@ -18,7 +18,7 @@ export default function DiscoveryCard({
   event: OrbiEvent;
   events?: OrbiEvent[];
   onSelect?: (event: OrbiEvent) => void;
-  onFocus?: (event: OrbiEvent) => void;
+  onFocus?: ((event: OrbiEvent) => void) | undefined;
   onClose: () => void;
 }) {
   const { t } = useTranslation();
@@ -81,12 +81,23 @@ export default function DiscoveryCard({
           </p>
 
           <div className="mt-5 flex flex-wrap items-center gap-x-5">
-            <button type="button" onClick={() => setDeep(true)} className={`${linkCls} text-primary`}>
+            <button
+              type="button"
+              onClick={() => setDeep(true)}
+              className={`${linkCls} text-primary`}
+            >
               {t.discovery.discover}
-              <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={1.4} />
+              <ArrowRight
+                className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5"
+                strokeWidth={1.4}
+              />
             </button>
             {onFocus && (
-              <button type="button" onClick={() => onFocus(event)} className={`${linkCls} text-muted-foreground`}>
+              <button
+                type="button"
+                onClick={() => onFocus(event)}
+                className={`${linkCls} text-muted-foreground`}
+              >
                 {t.discovery.seeOnPlanet}
               </button>
             )}
@@ -95,21 +106,33 @@ export default function DiscoveryCard({
       ) : (
         <div className="animate-fade-in">
           <p className="label-track text-[9px] text-primary">{t.insight.title}</p>
-          <h3 className="mt-4 text-sm font-light leading-snug text-foreground">{insight.headline}</h3>
-          <p className="mt-2 text-sm font-light leading-relaxed text-muted-foreground">{insight.summary}</p>
+          <h3 className="mt-4 text-sm font-light leading-snug text-foreground">
+            {insight.headline}
+          </h3>
+          <p className="mt-2 text-sm font-light leading-relaxed text-muted-foreground">
+            {insight.summary}
+          </p>
 
-          <p className="label-track mt-6 text-[9px] text-muted-foreground/60">{t.insight.whatWeKnow}</p>
+          <p className="label-track mt-6 text-[9px] text-muted-foreground/60">
+            {t.insight.whatWeKnow}
+          </p>
           <div className="mt-3 flex flex-col gap-2.5">
             {insight.facts.map((fact) => (
               <Row key={fact.label} label={fact.label} value={fact.value} />
             ))}
           </div>
 
-          <p className="label-track mt-6 text-[9px] text-muted-foreground/60">{t.insight.context}</p>
-          <p className="mt-2 text-xs font-light leading-relaxed text-muted-foreground">{insight.context}</p>
+          <p className="label-track mt-6 text-[9px] text-muted-foreground/60">
+            {t.insight.context}
+          </p>
+          <p className="mt-2 text-xs font-light leading-relaxed text-muted-foreground">
+            {insight.context}
+          </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-2 border-t border-border pt-4">
-            <span className="label-track text-[9px] text-muted-foreground/50">{t.insight.source}</span>
+            <span className="label-track text-[9px] text-muted-foreground/50">
+              {t.insight.source}
+            </span>
             {insight.sources.map((s) => (
               <span
                 key={s}
@@ -121,19 +144,34 @@ export default function DiscoveryCard({
           </div>
 
           <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4">
-            <button type="button" onClick={() => setDeep(false)} className={`${linkCls} text-muted-foreground`}>
+            <button
+              type="button"
+              onClick={() => setDeep(false)}
+              className={`${linkCls} text-muted-foreground`}
+            >
               <ArrowLeft className="h-3 w-3" strokeWidth={1.4} />
               {t.discovery.back}
             </button>
             {onFocus && (
-              <button type="button" onClick={() => onFocus(event)} className={`${linkCls} text-muted-foreground`}>
+              <button
+                type="button"
+                onClick={() => onFocus(event)}
+                className={`${linkCls} text-muted-foreground`}
+              >
                 {t.discovery.exploreRegion}
               </button>
             )}
             {next && onSelect && (
-              <button type="button" onClick={() => onSelect(next)} className={`${linkCls} text-primary`}>
+              <button
+                type="button"
+                onClick={() => onSelect(next)}
+                className={`${linkCls} text-primary`}
+              >
                 {t.insight.nextDiscovery}
-                <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={1.4} />
+                <ArrowRight
+                  className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5"
+                  strokeWidth={1.4}
+                />
               </button>
             )}
           </div>

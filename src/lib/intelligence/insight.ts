@@ -21,7 +21,7 @@ export type OrbiInsight = {
   facts: InsightFact[];
   context: string;
   humanHook: string;
-  nextDiscoveryId?: string;
+  nextDiscoveryId?: string | undefined;
   hasContext: boolean;
   sources: string[];
 };
@@ -86,7 +86,7 @@ export function buildInsight(event: OrbiEvent, all: OrbiEvent[], t: Translations
     context,
     hasContext: ctx.hasContext,
     humanHook: t.insight.humanHook,
-    nextDiscoveryId: all.find(e => e.id !== event.id)?.id,
+    nextDiscoveryId: all.find((e) => e.id !== event.id)?.id,
     sources: [source],
   };
 }
