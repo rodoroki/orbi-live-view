@@ -22,7 +22,6 @@ export function AppShell({ children }: { children: ReactNode }) {
     { label: t.nav.explore, to: "/explorar" },
   ] as const;
 
-
   return (
     <div className="relative min-h-screen bg-void text-foreground">
       <header className="pointer-events-none absolute inset-x-0 top-0 z-20 flex h-14 items-center gap-6 px-4 md:h-16 md:gap-10 md:px-6">

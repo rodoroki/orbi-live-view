@@ -38,7 +38,6 @@ function Page() {
           { to: "/sobre", label: t.pages.links.sources },
         ]}
       />
-
     </SectionPage>
   );
 }

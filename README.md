@@ -95,7 +95,7 @@ Não altere a arquitetura para implementar APIs nesta etapa.
 
 This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://orbiliveword.com
+**Live app**: https://orbiliveworld.com
 
 ## Build with Lovable
 
