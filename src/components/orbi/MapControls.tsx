@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import {
   Globe2,
@@ -47,7 +48,7 @@ export function ToolRail() {
 }
 
 const iconBtn =
-  "focus-ring flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-all duration-200 hover:bg-accent hover:text-foreground active:scale-95 md:h-10 md:w-10";
+  "focus-ring flex h-11 w-11 shrink-0 p-0 items-center justify-center rounded-full text-muted-foreground transition-all duration-200 hover:bg-accent hover:text-foreground active:scale-95 md:h-11 md:w-11";
 
 export function MapTools({
   onZoom,
@@ -79,9 +80,9 @@ export function MapTools({
   const { t } = useTranslation();
 
   return (
-    <div className="surface-panel absolute bottom-20 right-3 z-10 flex flex-col rounded-full p-1.5 md:bottom-24 md:right-6">
+    <div className="surface-panel absolute bottom-[calc(4rem+env(safe-area-inset-bottom))] inset-x-3 z-10 flex flex-row overflow-x-auto rounded-full p-1.5 md:inset-x-auto md:bottom-24 md:right-6 md:flex-col">
       {onToggleConditions && (
-        <button
+        <Button variant="ghost" size="sm"
           type="button"
           aria-label={conditionsOpen ? t.conditions.close : t.conditions.open}
           title={t.conditions.title}
@@ -90,10 +91,10 @@ export function MapTools({
           onClick={onToggleConditions}
         >
           <Wind className="h-4 w-4" strokeWidth={1.4} />
-        </button>
+        </Button>
       )}
       {onToggleWebcams && (
-        <button
+        <Button variant="ghost" size="sm"
           type="button"
           aria-label={webcamsOpen ? t.webcams.close : t.webcams.open}
           title={t.webcams.title}
@@ -102,10 +103,10 @@ export function MapTools({
           onClick={onToggleWebcams}
         >
           <Camera className="h-4 w-4" strokeWidth={1.4} />
-        </button>
+        </Button>
       )}
       {onToggleEvents && (
-        <button
+        <Button variant="ghost" size="sm"
           type="button"
           aria-label={eventsOpen ? t.events.closePanel : t.events.openPanel}
           aria-pressed={eventsOpen}
@@ -113,24 +114,24 @@ export function MapTools({
           onClick={onToggleEvents}
         >
           <List className="h-4 w-4" strokeWidth={1.4} />
-        </button>
+        </Button>
       )}
-      <button type="button" aria-label={t.map.zoomIn} className={iconBtn} onClick={() => onZoom(1)}>
+      <Button variant="ghost" size="sm" type="button" aria-label={t.map.zoomIn} className={iconBtn} onClick={() => onZoom(1)}>
         <Plus className="h-4 w-4" strokeWidth={1.4} />
-      </button>
-      <button
+      </Button>
+      <Button variant="ghost" size="sm"
         type="button"
         aria-label={t.map.zoomOut}
         className={iconBtn}
         onClick={() => onZoom(-1)}
       >
         <Minus className="h-4 w-4" strokeWidth={1.4} />
-      </button>
-      <button type="button" aria-label={t.map.reset} className={iconBtn} onClick={onReset}>
+      </Button>
+      <Button variant="ghost" size="sm" type="button" aria-label={t.map.reset} className={iconBtn} onClick={onReset}>
         <Crosshair className="h-4 w-4" strokeWidth={1.4} />
-      </button>
+      </Button>
 
-      <button
+      <Button variant="ghost" size="sm"
         type="button"
         aria-label={t.map.layers}
         title={t.map.layers}
@@ -139,8 +140,8 @@ export function MapTools({
         onClick={onToggleLayers}
       >
         <Layers className="h-4 w-4" strokeWidth={1.4} />
-      </button>
-      <button
+      </Button>
+      <Button variant="ghost" size="sm"
         type="button"
         aria-label={t.map.filters}
         title={t.map.filters}
@@ -149,7 +150,7 @@ export function MapTools({
         onClick={onToggleFilters}
       >
         <SlidersHorizontal className="h-4 w-4" strokeWidth={1.4} />
-      </button>
+      </Button>
     </div>
   );
 }
@@ -164,23 +165,23 @@ export function ViewToggle({
   const { t } = useTranslation();
 
   return (
-    <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 md:bottom-6">
-      <button
+    <div className="absolute bottom-[calc(0.5rem+env(safe-area-inset-bottom))] left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 md:bottom-6">
+      <Button variant="ghost" size="sm"
         type="button"
+        aria-pressed={mode === "flat"}
         onClick={() => onChange("flat")}
-        className={`label-track focus-ring rounded-sm px-1 py-1 text-[10px] transition-colors duration-300 ${
+        className={`label-track focus-ring h-11 rounded-sm px-2 py-1 text-xs transition-colors duration-300 ${
           mode === "flat" ? "text-primary" : "text-muted-foreground/60 hover:text-foreground"
         }`}
       >
         {t.common.map}
-      </button>
+      </Button>
 
-      <button
+      <Button variant="ghost" size="sm"
         type="button"
-        aria-hidden
-        tabIndex={-1}
+        aria-label={mode === "flat" ? t.common.globe : t.common.map}
         onClick={() => onChange(mode === "flat" ? "globe" : "flat")}
-        className="relative flex h-3 w-8 items-center"
+        className="focus-ring relative flex h-11 w-11 items-center p-0"
       >
         <span className="h-px w-full bg-border" />
         <span
@@ -188,17 +189,18 @@ export function ViewToggle({
             mode === "flat" ? "left-0" : "left-[calc(100%-0.375rem)]"
           }`}
         />
-      </button>
+      </Button>
 
-      <button
+      <Button variant="ghost" size="sm"
         type="button"
+        aria-pressed={mode === "globe"}
         onClick={() => onChange("globe")}
-        className={`label-track focus-ring rounded-sm px-1 py-1 text-[10px] transition-colors duration-300 ${
+        className={`label-track focus-ring h-11 rounded-sm px-2 py-1 text-xs transition-colors duration-300 ${
           mode === "globe" ? "text-primary" : "text-muted-foreground/60 hover:text-foreground"
         }`}
       >
         {t.common.globe}
-      </button>
+      </Button>
     </div>
   );
 }
@@ -215,7 +217,7 @@ export function CategoryFilters({
   const { t } = useTranslation();
 
   return (
-    <div className="surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-2 animate-sheet-up md:inset-x-auto md:bottom-6 md:left-6 md:w-48 md:animate-rise">
+    <div className="orbi-sheet surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-2 animate-sheet-up md:inset-x-auto md:bottom-6 md:left-6 md:w-48 md:animate-rise">
       <div className="flex items-center justify-between px-1 pb-2">
         <p className="label-track text-muted-foreground">{t.map.filters}</p>
         {onClose && <PanelClose onClose={onClose} />}
@@ -225,12 +227,13 @@ export function CategoryFilters({
           const meta = CATEGORY_META[key];
           const on = active.includes(key);
           return (
-            <button
+            <Button variant="ghost" size="sm"
               key={key}
               type="button"
+              aria-pressed={on}
               onClick={() => onToggle(key)}
-              className={`focus-ring flex items-center gap-2.5 rounded-sm px-2.5 py-1.5 transition-colors duration-200 ${
-                on ? "text-foreground" : "text-muted-foreground/50"
+              className={`focus-ring flex min-h-11 items-center gap-2.5 rounded-sm px-2.5 py-1.5 transition-colors duration-200 ${
+                on ? "text-foreground" : "text-muted-foreground"
               } hover:bg-accent`}
             >
               <span
@@ -243,7 +246,7 @@ export function CategoryFilters({
               <span className="label-track">
                 {t.categories[key as keyof typeof t.categories] || meta.label}
               </span>
-            </button>
+            </Button>
           );
         })}
       </div>
@@ -254,15 +257,15 @@ export function CategoryFilters({
 function PanelClose({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation();
   return (
-    <button
+    <Button variant="ghost" size="sm"
       type="button"
       onClick={onClose}
       aria-label={t.common.close}
       title={t.common.close}
-      className="focus-ring -m-1.5 rounded-sm p-1.5 text-muted-foreground transition-colors duration-200 hover:text-foreground"
+      className="focus-ring -m-1.5 h-11 w-11 rounded-sm p-1.5 text-muted-foreground transition-colors duration-200 hover:text-foreground"
     >
       <X className="h-3.5 w-3.5" strokeWidth={1.4} />
-    </button>
+    </Button>
   );
 }
 
@@ -278,7 +281,7 @@ export function ContextCard({
   const { t, locale } = useTranslation();
 
   return (
-    <div className="surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-4 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-72 md:p-5 md:animate-rise">
+    <div className="orbi-sheet surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-4 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-72 md:p-5 md:animate-rise">
       <div className="flex items-start justify-between">
         <div>
           <p className="label-track text-primary">
@@ -291,14 +294,14 @@ export function ContextCard({
             {event ? event.title : t.common.explore}
           </h2>
         </div>
-        <button
+        <Button variant="ghost" size="sm"
           type="button"
           onClick={onClose}
           aria-label={t.common.close}
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
           <X className="h-4 w-4" strokeWidth={1.4} />
-        </button>
+        </Button>
       </div>
 
       {event ? (
@@ -353,7 +356,7 @@ export function LayersPanel({
   const { t } = useTranslation();
 
   return (
-    <div className="surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-3 animate-sheet-up md:inset-x-auto md:bottom-24 md:right-24 md:w-48 md:animate-rise">
+    <div className="orbi-sheet surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-3 animate-sheet-up md:inset-x-auto md:bottom-24 md:right-24 md:w-48 md:animate-rise">
       <div className="flex items-center justify-between px-1 pb-2">
         <p className="label-track text-muted-foreground">{t.layers.title}</p>
         {onClose && <PanelClose onClose={onClose} />}
@@ -363,14 +366,14 @@ export function LayersPanel({
         {MAP_LAYERS.map((layer) => {
           const on = active.includes(layer);
           return (
-            <button
+            <Button variant="ghost" size="sm"
               key={layer}
               type="button"
               role="switch"
               aria-checked={on}
               onClick={() => onToggle(layer)}
-              className={`focus-ring flex items-center justify-between gap-3 rounded-sm px-1.5 py-1.5 transition-colors duration-200 hover:bg-accent ${
-                on ? "text-foreground" : "text-muted-foreground/50"
+              className={`focus-ring flex min-h-11 items-center justify-between gap-3 rounded-sm px-1.5 py-1.5 transition-colors duration-200 hover:bg-accent ${
+                on ? "text-foreground" : "text-muted-foreground"
               }`}
             >
               <span className="label-track">{t.layers[layer]}</span>
@@ -385,7 +388,7 @@ export function LayersPanel({
                   }`}
                 />
               </span>
-            </button>
+            </Button>
           );
         })}
       </div>

@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Play, Pause } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
@@ -27,7 +28,7 @@ export default function TimelineBar({
     if (!playing) return;
     const id = window.setInterval(() => {
       onChange(hour >= MAX ? MIN : hour + 1);
-    }, 90);
+    }, 180);
     return () => window.clearInterval(id);
   }, [playing, hour, onChange]);
 
@@ -45,28 +46,28 @@ export default function TimelineBar({
   const pos = ((hour - MIN) / (MAX - MIN)) * 100;
 
   return (
-    <div className="absolute bottom-20 left-1/2 z-10 flex w-[min(92vw,440px)] -translate-x-1/2 flex-col items-center animate-rise md:w-[min(440px,40vw)]">
+    <div className="orbi-timeline absolute bottom-[calc(9rem+env(safe-area-inset-bottom))] md:bottom-20 left-1/2 z-10 flex w-[min(92vw,440px)] -translate-x-1/2 flex-col items-center animate-rise md:w-[min(440px,40vw)]">
       <div className="flex items-center gap-4">
-        <button
+        <Button variant="ghost" size="sm"
           type="button"
           aria-label={playing ? t.timeline.pause : t.timeline.play}
           onClick={() => setPlaying((v) => !v)}
-          className="focus-ring flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground/70 transition-colors duration-300 hover:text-primary"
+          className="focus-ring flex h-11 w-11 p-0 items-center justify-center rounded-full text-muted-foreground transition-colors duration-300 hover:text-primary"
         >
           {playing ? (
             <Pause className="h-3 w-3" strokeWidth={1.4} />
           ) : (
             <Play className="h-3 w-3" strokeWidth={1.4} />
           )}
-        </button>
+        </Button>
 
-        <button
+        <Button variant="ghost" size="sm"
           type="button"
           onClick={() => {
             setPlaying(false);
             onChange(0);
           }}
-          className={`label-track focus-ring flex items-center gap-2 rounded-sm px-1 text-[10px] transition-colors duration-300 ${
+          className={`label-track focus-ring flex min-h-11 items-center gap-2 rounded-sm px-1 text-[10px] transition-colors duration-300 ${
             hour === 0 ? "text-primary" : "text-foreground/80 hover:text-primary"
           }`}
         >
@@ -77,13 +78,13 @@ export default function TimelineBar({
             style={hour === 0 ? { animation: "orbi-pulse 2.6s ease-in-out infinite" } : undefined}
           />
           {mode.toUpperCase()}
-          <span className="text-muted-foreground/50">·</span>
-          <span className="text-muted-foreground/70">{relative}</span>
-        </button>
+          <span className="text-muted-foreground">·</span>
+          <span className="text-muted-foreground">{relative}</span>
+        </Button>
       </div>
 
-      <div className="relative mt-3 w-full">
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+      <div className="relative mt-1 h-11 w-full">
+        <div className="absolute top-1/2 h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
         <span
           className="pointer-events-none absolute top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary transition-[left] duration-200"
           style={{ left: `${pos}%` }}
@@ -95,18 +96,19 @@ export default function TimelineBar({
           step={1}
           value={hour}
           aria-label={t.timeline.title}
+          aria-valuetext={`${mode} · ${relative}`}
           onChange={(e) => {
             setPlaying(false);
             onChange(Number(e.target.value));
           }}
-          className="orbi-range absolute inset-x-0 -top-2.5 h-5 w-full cursor-pointer appearance-none bg-transparent opacity-0"
+          className="orbi-range focus-ring absolute inset-x-0 top-0 h-11 w-full cursor-pointer appearance-none bg-transparent opacity-0"
         />
       </div>
       {hint && (
         <p
           key={hint}
           aria-live="polite"
-          className="mt-3 animate-fade-in text-center text-[11px] font-light text-muted-foreground/80"
+          className="mt-1 animate-fade-in text-center text-[11px] font-light text-muted-foreground/80"
         >
           {hint}
         </p>

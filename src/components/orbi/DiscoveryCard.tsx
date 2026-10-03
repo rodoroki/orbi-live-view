@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, ArrowLeft, X } from "lucide-react";
 import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
@@ -46,18 +47,18 @@ export default function DiscoveryCard({
         : `${Math.round(minutes / 1440)} d`;
 
   const linkCls =
-    "focus-ring label-track group flex min-h-9 items-center gap-2 text-[10px] transition-opacity duration-300 hover:opacity-70";
+    "focus-ring label-track group flex min-h-11 items-center gap-2 text-xs transition-opacity duration-300 hover:opacity-70";
 
   return (
-    <div className="surface-panel absolute inset-x-3 bottom-20 z-20 rounded-md p-5 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-[19rem] md:p-6 md:animate-rise">
-      <button
+    <div className="orbi-sheet surface-panel absolute inset-x-3 bottom-20 z-20 rounded-md p-5 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-[19rem] md:p-6 md:animate-rise">
+      <Button variant="ghost" size="sm"
         type="button"
         onClick={onClose}
         aria-label={t.common.close}
-        className="focus-ring absolute right-3 top-3 rounded-sm p-1.5 text-muted-foreground/60 transition-colors duration-300 hover:text-foreground"
+        className="focus-ring absolute right-1 top-1 h-11 w-11 rounded-sm p-1.5 text-muted-foreground transition-colors duration-300 hover:text-foreground"
       >
         <X className="h-3.5 w-3.5" strokeWidth={1.4} />
-      </button>
+      </Button>
 
       {!deep ? (
         <div className="animate-fade-in" aria-live="polite">
@@ -66,7 +67,7 @@ export default function DiscoveryCard({
               className="h-1.5 w-1.5 rounded-full motion-safe:animate-pulse"
               style={{ backgroundColor: color }}
             />
-            <span className="label-track text-[9px] text-discovery">{t.discovery.lookAtThis}</span>
+            <span className="label-track text-[11px] text-discovery">{t.discovery.lookAtThis}</span>
           </span>
 
           <p className="mt-3 pr-6 text-base font-light leading-snug text-foreground">
@@ -76,12 +77,12 @@ export default function DiscoveryCard({
             {(event.place?.trim() || t.eventDetails.locationUnavailable).toUpperCase()}
           </h2>
           <p className="mt-1 text-sm font-light leading-snug text-muted-foreground">{phenomenon}</p>
-          <p className="label-track mt-3 text-[9px] text-muted-foreground/60">
+          <p className="label-track mt-3 text-[11px] text-muted-foreground">
             {format(t.discovery.detected, { time: elapsed })}
           </p>
 
           <div className="mt-5 flex flex-wrap items-center gap-x-5">
-            <button
+            <Button variant="ghost" size="sm"
               type="button"
               onClick={() => setDeep(true)}
               className={`${linkCls} text-primary`}
@@ -91,21 +92,21 @@ export default function DiscoveryCard({
                 className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5"
                 strokeWidth={1.4}
               />
-            </button>
+            </Button>
             {onFocus && (
-              <button
+              <Button variant="ghost" size="sm"
                 type="button"
                 onClick={() => onFocus(event)}
                 className={`${linkCls} text-muted-foreground`}
               >
                 {t.discovery.seeOnPlanet}
-              </button>
+              </Button>
             )}
           </div>
         </div>
       ) : (
         <div className="animate-fade-in">
-          <p className="label-track text-[9px] text-primary">{t.insight.title}</p>
+          <p className="label-track text-[11px] text-primary">{t.insight.title}</p>
           <h3 className="mt-4 text-sm font-light leading-snug text-foreground">
             {insight.headline}
           </h3>
@@ -113,7 +114,7 @@ export default function DiscoveryCard({
             {insight.summary}
           </p>
 
-          <p className="label-track mt-6 text-[9px] text-muted-foreground/60">
+          <p className="label-track mt-6 text-[11px] text-muted-foreground">
             {t.insight.whatWeKnow}
           </p>
           <div className="mt-3 flex flex-col gap-2.5">
@@ -122,7 +123,7 @@ export default function DiscoveryCard({
             ))}
           </div>
 
-          <p className="label-track mt-6 text-[9px] text-muted-foreground/60">
+          <p className="label-track mt-6 text-[11px] text-muted-foreground">
             {t.insight.context}
           </p>
           <p className="mt-2 text-xs font-light leading-relaxed text-muted-foreground">
@@ -130,13 +131,13 @@ export default function DiscoveryCard({
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-2 border-t border-border pt-4">
-            <span className="label-track text-[9px] text-muted-foreground/50">
+            <span className="label-track text-[11px] text-muted-foreground">
               {t.insight.source}
             </span>
             {insight.sources.map((s) => (
               <span
                 key={s}
-                className="label-track rounded-full border border-border/60 px-2.5 py-1 text-[9px] text-muted-foreground/70"
+                className="label-track rounded-full border border-border/60 px-2.5 py-1 text-[11px] text-muted-foreground"
               >
                 {s}
               </span>
@@ -144,25 +145,25 @@ export default function DiscoveryCard({
           </div>
 
           <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4">
-            <button
+            <Button variant="ghost" size="sm"
               type="button"
               onClick={() => setDeep(false)}
               className={`${linkCls} text-muted-foreground`}
             >
               <ArrowLeft className="h-3 w-3" strokeWidth={1.4} />
               {t.discovery.back}
-            </button>
+            </Button>
             {onFocus && (
-              <button
+              <Button variant="ghost" size="sm"
                 type="button"
                 onClick={() => onFocus(event)}
                 className={`${linkCls} text-muted-foreground`}
               >
                 {t.discovery.exploreRegion}
-              </button>
+              </Button>
             )}
             {next && onSelect && (
-              <button
+              <Button variant="ghost" size="sm"
                 type="button"
                 onClick={() => onSelect(next)}
                 className={`${linkCls} text-primary`}
@@ -172,7 +173,7 @@ export default function DiscoveryCard({
                   className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5"
                   strokeWidth={1.4}
                 />
-              </button>
+              </Button>
             )}
           </div>
         </div>
@@ -184,8 +185,8 @@ export default function DiscoveryCard({
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between gap-4">
-      <span className="label-track text-[9px] text-muted-foreground/70">{label}</span>
-      <span className="text-right font-mono text-xs text-foreground/90">{value}</span>
+      <span className="label-track text-[11px] text-muted-foreground">{label}</span>
+      <span className="min-w-0 break-words text-right font-mono text-xs text-foreground/90">{value}</span>
     </div>
   );
 }

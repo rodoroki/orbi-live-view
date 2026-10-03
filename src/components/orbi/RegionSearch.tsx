@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import { Search, X, LocateFixed } from "lucide-react";
 import { usePlaceSearch, type GeoPlace } from "@/lib/geo-search";
@@ -21,11 +22,11 @@ export default function RegionSearch({
   const { data: results, isFetching } = usePlaceSearch(query, locale);
 
   useEffect(() => {
-    const onDown = (e: MouseEvent) => {
+    const onDown = (e: PointerEvent) => {
       if (boxRef.current && !boxRef.current.contains(e.target as Node)) setOpen(false);
     };
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
   }, []);
 
   const pick = (place: GeoPlace) => {
@@ -53,7 +54,7 @@ export default function RegionSearch({
       ref={boxRef}
       className="absolute left-1/2 top-20 z-30 w-[min(92vw,26rem)] -translate-x-1/2 md:top-24 md:left-[calc(50%+7rem)] xl:left-1/2"
     >
-      <div className="surface-panel flex items-center gap-2 rounded-full py-2 pl-3 pr-1.5">
+      <div className="surface-panel flex items-center gap-2 rounded-full py-0 pl-3 pr-1.5">
         <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" strokeWidth={1.4} />
         <input
           value={query}
@@ -63,6 +64,7 @@ export default function RegionSearch({
           }}
           onFocus={() => setOpen(true)}
           onKeyDown={(e) => {
+            if (e.key === "Escape") { setOpen(false); e.currentTarget.blur(); }
             if (e.key === "Enter") {
               setOpen(true);
               const firstResult = results?.[0];
@@ -71,31 +73,31 @@ export default function RegionSearch({
           }}
           placeholder={t.search.placeholder}
           aria-label={t.search.title}
-          className="w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70"
+          className="min-w-0 w-full bg-transparent text-base md:text-xs text-foreground outline-none placeholder:text-muted-foreground"
         />
         {current && !query && (
-          <span className="label-track shrink-0 text-[9px] text-primary">{current.name}</span>
+          <span className="label-track max-w-24 truncate text-[11px] text-primary">{current.name}</span>
         )}
         {query && (
-          <button
+          <Button variant="ghost" size="sm"
             type="button"
             aria-label={t.common.close}
             onClick={() => setQuery("")}
-            className="focus-ring text-muted-foreground hover:text-foreground"
+            className="focus-ring h-11 w-11 shrink-0 p-0 text-muted-foreground hover:text-foreground"
           >
             <X className="h-3.5 w-3.5" strokeWidth={1.4} />
-          </button>
+          </Button>
         )}
-        <button
+        <Button variant="ghost" size="sm"
           type="button"
           aria-label={t.search.myLocation}
           title={t.search.myLocation}
           onClick={locate}
-          className="focus-ring text-muted-foreground hover:text-primary"
+          className="focus-ring h-11 w-11 shrink-0 p-0 text-muted-foreground hover:text-primary"
         >
           <LocateFixed className="h-3.5 w-3.5" strokeWidth={1.4} />
-        </button>
-        <button
+        </Button>
+        <Button variant="ghost" size="sm"
           type="button"
           onClick={() => {
             setOpen(true);
@@ -103,24 +105,24 @@ export default function RegionSearch({
             if (firstResult) pick(firstResult);
           }}
           disabled={query.trim().length < 2}
-          className="focus-ring label-track shrink-0 rounded-full bg-primary/15 px-3 py-1.5 text-[9px] text-primary transition-colors hover:bg-primary/25 disabled:opacity-40"
+          className="focus-ring label-track shrink-0 rounded-full min-h-11 bg-primary/15 px-3 py-1.5 text-[11px] text-primary transition-colors hover:bg-primary/25 disabled:opacity-40"
         >
           {t.common.search}
-        </button>
+        </Button>
       </div>
 
       {open && query.trim().length >= 2 && (
         <div className="surface-panel mt-2 max-h-72 overflow-y-auto rounded-md p-1 animate-rise">
           {(results ?? []).map((place) => (
-            <button
+            <Button variant="ghost" size="sm"
               key={`${place.kind}-${place.id}`}
               type="button"
               onClick={() => pick(place)}
-              className="focus-ring flex w-full items-baseline justify-between gap-3 rounded-sm px-2.5 py-2 text-left transition-colors hover:bg-accent"
+              className="focus-ring grid min-h-11 h-auto w-full grid-cols-[minmax(0,1fr)_auto] whitespace-normal items-baseline justify-between gap-3 rounded-sm px-2.5 py-2 text-left transition-colors hover:bg-accent"
             >
-              <span className="text-xs text-foreground">{place.name}</span>
-              <span className="label-track text-[9px] text-muted-foreground">{place.detail}</span>
-            </button>
+              <span className="min-w-0 text-sm text-foreground">{place.name}</span>
+              <span className="label-track max-w-32 text-right text-[11px] text-muted-foreground">{place.detail}</span>
+            </Button>
           ))}
           {!isFetching && (results ?? []).length === 0 && (
             <p className="label-track px-2.5 py-3 text-[9px] text-muted-foreground">

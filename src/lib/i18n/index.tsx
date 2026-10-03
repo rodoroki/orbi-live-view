@@ -37,21 +37,20 @@ export function I18nProvider({
   children: React.ReactNode;
   initialLocale?: Locale;
 }) {
-  const [locale, setLocale] = useState<Locale>(() => {
-    if (typeof window === "undefined") return initialLocale;
-    const saved = localStorage.getItem("orbi-locale") as Locale;
-    if (saved && translations[saved]) return saved;
-
-    const browserLang = navigator.language;
-    if (browserLang.startsWith("pt")) return "pt-BR";
-    if (browserLang.startsWith("es")) return "es";
-    return "en";
-  });
+  const [locale, setLocale] = useState<Locale>(initialLocale);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    const saved = localStorage.getItem("orbi-locale");
+    setLocale(saved === "en" || saved === "pt-BR" || saved === "es" ? saved : resolveLocale(navigator.language));
+    setReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
     localStorage.setItem("orbi-locale", locale);
     document.documentElement.lang = locale;
-  }, [locale]);
+  }, [locale, ready]);
 
   const value = {
     locale,

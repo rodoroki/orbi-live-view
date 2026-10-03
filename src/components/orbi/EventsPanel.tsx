@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import {
@@ -55,17 +56,17 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
   }, [events, query, category, region, severity, period, t]);
 
   return (
-    <aside className="surface-panel absolute inset-x-3 bottom-20 z-20 flex max-h-[72vh] flex-col overflow-hidden rounded-md animate-sheet-up md:inset-x-auto md:bottom-24 md:left-20 md:top-20 md:z-10 md:max-h-none md:w-[300px] md:animate-rise">
+    <aside className="orbi-sheet surface-panel absolute inset-x-3 bottom-20 z-20 flex max-h-[72vh] flex-col overflow-y-auto overscroll-contain rounded-md animate-sheet-up md:inset-x-auto md:bottom-24 md:left-20 md:top-20 md:z-10 md:max-h-none md:w-[300px] md:animate-rise">
       <div className="flex shrink-0 items-start justify-between px-5 pt-5">
         <p className="label-track text-primary">{t.events.panelTitle}</p>
-        <button
+        <Button variant="ghost" size="sm"
           type="button"
           onClick={onClose}
           aria-label={t.events.closePanel}
-          className="focus-ring -m-2 rounded-sm p-2 text-muted-foreground transition-colors duration-200 hover:text-foreground"
+          className="focus-ring -m-2 h-11 w-11 rounded-sm p-2 text-muted-foreground transition-colors duration-200 hover:text-foreground"
         >
           <X className="h-3.5 w-3.5" strokeWidth={1.4} />
-        </button>
+        </Button>
       </div>
 
       {/* search */}
@@ -75,8 +76,9 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            aria-label={t.events.searchPlaceholder}
             placeholder={t.events.searchPlaceholder}
-            className="w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground/70"
+            className="min-w-0 w-full bg-transparent text-base md:text-xs text-foreground outline-none placeholder:text-muted-foreground"
           />
         </div>
       </div>
@@ -128,23 +130,15 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
       {/* list */}
       <div className="mt-5 flex shrink-0 items-baseline justify-between border-t border-border/60 px-5 pt-4">
         <p className="label-track text-muted-foreground">{t.events.recent}</p>
-        <span className="font-mono text-[10px] text-muted-foreground/70">
+        <span className="font-mono text-[10px] text-muted-foreground">
           {format(t.events.resultCount, { count: filtered.length })}
         </span>
 
-        {filtered.length > 5 && (
-          <div className="mx-5 mt-2 rounded-sm border border-primary/20 bg-primary/5 p-2.5">
-            <p className="text-[10px] leading-tight text-primary/80">
-              <span className="font-semibold uppercase tracking-wider">{t.insight.challenge}:</span>{" "}
-              {t.insight.challenge}
-            </p>
-          </div>
-        )}
       </div>
 
-      <div className="mt-1 min-h-[10rem] flex-1 overflow-y-auto px-5 pb-5">
+      <div className="mt-1 min-h-0 shrink-0 md:min-h-[10rem] md:flex-1 overflow-visible md:overflow-y-auto px-5 pb-5">
         {filtered.length === 0 ? (
-          <p className="py-6 text-xs text-muted-foreground/70">{t.events.noResults}</p>
+          <p className="py-6 text-xs text-muted-foreground">{t.events.noResults}</p>
         ) : (
           <ul className="-mx-2 flex flex-col">
             {filtered.map((event) => {
@@ -152,10 +146,10 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
               const active = selected?.id === event.id;
               return (
                 <li key={event.id}>
-                  <button
+                  <Button variant="ghost" size="sm"
                     type="button"
                     onClick={() => onSelect(event)}
-                    className={`focus-ring w-full border-b border-border/40 px-2 py-3 text-left transition-colors duration-200 ${
+                    className={`focus-ring h-auto w-full justify-start whitespace-normal border-b border-border/40 px-2 py-3 text-left transition-colors duration-200 ${
                       active
                         ? "bg-accent/50 text-foreground"
                         : "text-foreground/90 hover:bg-accent/30"
@@ -167,23 +161,23 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
                         style={{ backgroundColor: sev.color }}
                       />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-[13px] font-medium tracking-tight">
+                        <p className="line-clamp-2 text-sm font-medium tracking-tight">
                           {event.title}
                         </p>
                         <p className="truncate text-[11px] text-muted-foreground">{event.place}</p>
-                        <div className="mt-1.5 flex items-center gap-2 text-[11px]">
+                        <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px]">
                           <span style={{ color: sev.color }}>{t.severity[event.severity]}</span>
                           <span className="h-2.5 w-px bg-border" />
                           <span className="text-muted-foreground">
                             {t.categories[event.category]}
                           </span>
-                          <span className="ml-auto text-muted-foreground/70">
+                          <span className="ml-auto text-muted-foreground">
                             {formatElapsed(event.detectedMinutesAgo, locale)}
                           </span>
                         </div>
                       </div>
                     </div>
-                  </button>
+                  </Button>
                 </li>
               );
             })}
@@ -210,11 +204,12 @@ function FilterRow({
       <p className="label-track text-[10px] text-muted-foreground/80">{label}</p>
       <div className="mt-1.5 flex flex-wrap gap-1.5">
         {options.map((option) => (
-          <button
+          <Button variant="ghost" size="sm"
             key={option.key}
             type="button"
+            aria-pressed={value === option.key}
             onClick={() => onChange(option.key)}
-            className={`focus-ring flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] transition-colors duration-200 ${
+            className={`focus-ring flex min-h-11 items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] transition-colors duration-200 ${
               value === option.key
                 ? "bg-accent text-foreground"
                 : "text-muted-foreground hover:text-foreground"
@@ -227,7 +222,7 @@ function FilterRow({
               />
             )}
             {option.label}
-          </button>
+          </Button>
         ))}
       </div>
     </div>

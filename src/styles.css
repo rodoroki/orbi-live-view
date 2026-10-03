@@ -291,3 +291,15 @@
   background: var(--primary);
   cursor: grab;
 }
+
+/* Floating panels share a bounded, scrollable phone sheet; the map stays exposed. */
+@media (max-width: 767px) {
+  .orbi-sheet {
+    bottom: calc(8rem + env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 17rem - env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background-color: color-mix(in oklab, var(--card) 94%, transparent);
+  }
+  .orbi-panel-open .orbi-timeline { visibility: hidden; pointer-events: none; }
+}

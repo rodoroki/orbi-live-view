@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { X, Map as MapIcon } from "lucide-react";
 import { ATMOSPHERE_METRICS, OCEAN_METRICS, type Metric } from "@/lib/conditions";
@@ -22,11 +23,11 @@ function Sparkline({ points }: { points: number[] }) {
 function MetricRow({ metric, label }: { metric: Metric; label: string }) {
   return (
     <div className="group flex items-center gap-3 rounded-sm px-1.5 py-1.5 transition-colors duration-200 hover:bg-accent">
-      <span className="label-track flex-1 text-[9px] text-muted-foreground">{label}</span>
+      <span className="label-track min-w-0 flex-1 text-[11px] text-muted-foreground">{label}</span>
       <span className="text-primary/70">
         <Sparkline points={metric.series} />
       </span>
-      <span className="w-24 text-right font-mono text-xs text-foreground">{metric.value}</span>
+      <span className="w-24 shrink-0 text-right font-mono text-xs text-foreground">{metric.value}</span>
     </div>
   );
 }
@@ -54,31 +55,32 @@ export default function ConditionsPanel({
       : ATMOSPHERE_METRICS.map((m) => liveMetrics?.find((live) => live.key === m.key) ?? m);
 
   return (
-    <div className="surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-4 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-80 md:p-5 md:animate-rise">
+    <div className="orbi-sheet surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-4 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-80 md:p-5 md:animate-rise">
       <div className="flex items-start justify-between">
         <p className="label-track text-primary">{t.conditions.title}</p>
-        <button
+        <Button variant="ghost" size="sm"
           type="button"
           onClick={onClose}
           aria-label={t.common.close}
-          className="focus-ring text-muted-foreground transition-colors hover:text-foreground"
+          className="focus-ring -m-2 h-11 w-11 shrink-0 p-0 text-muted-foreground transition-colors hover:text-foreground"
         >
           <X className="h-4 w-4" strokeWidth={1.4} />
-        </button>
+        </Button>
       </div>
 
       <div className="mt-4 flex items-center gap-1">
         {(["atmosphere", "ocean"] as const).map((key) => (
-          <button
+          <Button variant="ghost" size="sm"
             key={key}
             type="button"
+            aria-pressed={tab === key}
             onClick={() => setTab(key)}
-            className={`label-track focus-ring rounded-full px-3 py-1.5 text-[9px] transition-colors duration-200 ${
+            className={`label-track focus-ring min-h-11 rounded-full px-3 py-1.5 text-[11px] transition-colors duration-200 ${
               tab === key ? "bg-accent text-primary" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {t.conditions[key]}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -88,16 +90,16 @@ export default function ConditionsPanel({
         ))}
       </div>
 
-      <button
+      <Button variant="ghost" size="sm"
         type="button"
         onClick={onOpenWeatherMap}
-        className="focus-ring mt-4 flex w-full items-center justify-center gap-2 rounded-full border border-border py-2 text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground active:scale-[0.99]"
+        className="focus-ring mt-4 flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-border py-2 text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground active:scale-[0.99]"
       >
         <MapIcon className="h-3.5 w-3.5" strokeWidth={1.4} />
-        <span className="label-track text-[9px]">{t.conditions.viewWeatherMap}</span>
-      </button>
+        <span className="label-track text-[11px]">{t.conditions.viewWeatherMap}</span>
+      </Button>
 
-      <p className="label-track mt-4 border-t border-border pt-3 text-[9px] text-muted-foreground/70">
+      <p className="label-track mt-4 border-t border-border pt-3 text-[11px] text-muted-foreground">
         {isLive ? `${t.common.live} · WINDY GFS` : t.common.simulatedData}
       </p>
     </div>
