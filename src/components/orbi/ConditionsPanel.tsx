@@ -27,7 +27,9 @@ function MetricRow({ metric, label }: { metric: Metric; label: string }) {
       <span className="text-primary/70">
         <Sparkline points={metric.series} />
       </span>
-      <span className="w-24 shrink-0 text-right font-mono text-xs text-foreground">{metric.value}</span>
+      <span className="w-24 shrink-0 text-right font-mono text-xs text-foreground">
+        {metric.value}
+      </span>
     </div>
   );
 }
@@ -58,7 +60,9 @@ export default function ConditionsPanel({
     <div className="orbi-sheet surface-panel absolute inset-x-3 bottom-20 z-10 rounded-md p-4 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-80 md:p-5 md:animate-rise">
       <div className="flex items-start justify-between">
         <p className="label-track text-primary">{t.conditions.title}</p>
-        <Button variant="ghost" size="sm"
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           onClick={onClose}
           aria-label={t.common.close}
@@ -70,7 +74,9 @@ export default function ConditionsPanel({
 
       <div className="mt-4 flex items-center gap-1">
         {(["atmosphere", "ocean"] as const).map((key) => (
-          <Button variant="ghost" size="sm"
+          <Button
+            variant="ghost"
+            size="sm"
             key={key}
             type="button"
             aria-pressed={tab === key}
@@ -90,7 +96,9 @@ export default function ConditionsPanel({
         ))}
       </div>
 
-      <Button variant="ghost" size="sm"
+      <Button
+        variant="ghost"
+        size="sm"
         type="button"
         onClick={onOpenWeatherMap}
         className="focus-ring mt-4 flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-border py-2 text-muted-foreground transition-colors duration-200 hover:bg-accent hover:text-foreground active:scale-[0.99]"

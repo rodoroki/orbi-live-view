@@ -1,7 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { ReactNode } from "react";
 import { OrbiMark } from "./OrbiMark";
 import { useTranslation } from "@/lib/i18n";
@@ -59,19 +65,42 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="ml-auto flex shrink-0 items-center gap-2 md:gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label={t.common.explore} title={t.common.explore} className="pointer-events-auto h-11 w-11 text-muted-foreground lg:hidden"><Menu /></Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={t.common.explore}
+                title={t.common.explore}
+                className="pointer-events-auto h-11 w-11 text-muted-foreground lg:hidden"
+              >
+                <Menu />
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              {nav.map((item) => <DropdownMenuItem key={item.to} asChild className="min-h-11"><Link to={item.to}>{item.label}</Link></DropdownMenuItem>)}
+              {nav.map((item) => (
+                <DropdownMenuItem key={item.to} asChild className="min-h-11">
+                  <Link to={item.to}>{item.label}</Link>
+                </DropdownMenuItem>
+              ))}
               <DropdownMenuSeparator />
-              {(["pt-BR", "en", "es"] as const).map((code) => <DropdownMenuItem key={code} onSelect={() => setLocale(code)} className="min-h-11" aria-current={locale === code ? "true" : undefined}>{code === "pt-BR" ? "Português" : code === "en" ? "English" : "Español"}</DropdownMenuItem>)}
+              {(["pt-BR", "en", "es"] as const).map((code) => (
+                <DropdownMenuItem
+                  key={code}
+                  onSelect={() => setLocale(code)}
+                  className="min-h-11"
+                  aria-current={locale === code ? "true" : undefined}
+                >
+                  {code === "pt-BR" ? "Português" : code === "en" ? "English" : "Español"}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
           <div className="label-track pointer-events-auto hidden items-center gap-2 text-[10px] text-muted-foreground sm:flex">
             {(["pt-BR", "en", "es"] as const).map((code, i) => (
               <span key={code} className="flex items-center gap-2">
                 {i > 0 && <span className="opacity-20">|</span>}
-                <Button variant="ghost" size="sm"
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => setLocale(code)}
                   className={`focus-ring h-11 min-w-8 rounded-sm px-1 transition-colors duration-200 hover:text-foreground ${
                     locale === code ? "text-primary" : ""

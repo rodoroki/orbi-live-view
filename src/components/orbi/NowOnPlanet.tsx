@@ -31,7 +31,9 @@ export default function NowOnPlanet({
         {events.slice(0, 3).map((event) => {
           const meta = CATEGORY_META[event.category];
           return (
-            <Button variant="ghost" size="sm"
+            <Button
+              variant="ghost"
+              size="sm"
               key={event.id}
               type="button"
               onClick={() => onSelect(event)}

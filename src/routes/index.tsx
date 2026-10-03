@@ -72,6 +72,24 @@ function Index() {
   const [active, setActive] = useState<EventCategory[]>(ALL_CATEGORIES);
   const [flatScale, setFlatScale] = useState(1);
   const [hour, setHour] = useState(0);
+  const closePanels = useCallback(() => {
+    setFiltersOpen(false);
+    setLayersOpen(false);
+    setEventsOpen(false);
+    setConditionsOpen(false);
+    setWebcamsOpen(false);
+    setPanelOpen(false);
+  }, []);
+
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      if (weatherMapOpen) setWeatherMapOpen(false);
+      else closePanels();
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [closePanels, weatherMapOpen]);
   const globeApi = useRef<{
     zoom: (d: 1 | -1) => void;
     reset: () => void;
@@ -138,13 +156,14 @@ function Index() {
 
   const handleSelect = useCallback(
     (event: OrbiEvent) => {
+      closePanels();
       setSelected(event);
       setPanelOpen(true);
       if (challengeTarget && event.id === challengeTarget.id && !challengeDismissed) setFound(true);
       // no mobile o painel de eventos vira card deslizante: fecha ao selecionar
       if (isMobile) setEventsOpen(false);
     },
-    [isMobile, challengeTarget, challengeDismissed],
+    [isMobile, challengeTarget, challengeDismissed, closePanels],
   );
 
   const handleFocus = useCallback(
@@ -174,11 +193,12 @@ function Index() {
   }, [userLocation]);
 
   const handlePickPlace = useCallback((next: GeoPlace) => {
+    closePanels();
     setPlace(next);
     setSelected(null);
     setConditionsOpen(true);
     globeApi.current?.flyTo(next.lat, next.lng, next.kind === "continent" ? 1.9 : 0.9);
-  }, []);
+  }, [closePanels]);
 
   // A interface recua quando o usuário apenas observa o planeta.
   const [chrome, setChrome] = useState(true);
@@ -215,7 +235,7 @@ function Index() {
 
   return (
     <div
-      className="absolute inset-0 overflow-hidden"
+      className={`absolute inset-0 overflow-hidden ${panelOpen || filtersOpen || layersOpen || eventsOpen || conditionsOpen || webcamsOpen ? "orbi-panel-open" : ""}`}
       style={{ background: "var(--gradient-void)" }}
     >
       {/* Conteúdo semântico no DOM: descreve o produto a leitores de tela e a mecanismos de busca. */}
@@ -284,30 +304,30 @@ function Index() {
           {t.planet.youAreHere}
         </p>
       )}
-      {!eventsOpen && !conditionsOpen && (
+      {!selected && !eventsOpen && !conditionsOpen && !webcamsOpen && !layersOpen && !filtersOpen && (
         <NowOnPlanet events={highlights} origin={userLocation} onSelect={handleSelect} />
       )}
       <RegionSearch onPick={handlePickPlace} current={place} />
       <div
         className={`transition-opacity duration-700 ${
-          chrome ? "opacity-100" : "opacity-0 hover:opacity-100"
+          isMobile || chrome ? "opacity-100" : "opacity-0 hover:opacity-100 focus-within:opacity-100"
         }`}
       >
         <MapTools
           onZoom={handleZoom}
           onReset={handleReset}
-          onToggleFilters={() => setFiltersOpen((v) => !v)}
+          onToggleFilters={() => { closePanels(); setFiltersOpen(!filtersOpen); }}
           filtersOpen={filtersOpen}
-          onToggleLayers={() => setLayersOpen((v) => !v)}
+          onToggleLayers={() => { closePanels(); setLayersOpen(!layersOpen); }}
           layersOpen={layersOpen}
-          onToggleEvents={() => setEventsOpen((v) => !v)}
+          onToggleEvents={() => { closePanels(); setEventsOpen(!eventsOpen); }}
           eventsOpen={eventsOpen}
           onToggleConditions={() => {
-            setConditionsOpen((v) => !v);
-            setPanelOpen(false);
+            closePanels();
+            setConditionsOpen(!conditionsOpen);
           }}
           conditionsOpen={conditionsOpen}
-          onToggleWebcams={() => setWebcamsOpen((v) => !v)}
+          onToggleWebcams={() => { closePanels(); setWebcamsOpen(!webcamsOpen); }}
           webcamsOpen={webcamsOpen}
         />
         <TimelineBar hour={hour} onChange={setHour} hint={timelineHint} />
@@ -384,6 +404,9 @@ function Index() {
         !selected &&
         !eventsOpen &&
         !conditionsOpen &&
+         !webcamsOpen &&
+         !layersOpen &&
+         !filtersOpen &&
         hour === 0 && (
           <DiscoveryPrompt
             live

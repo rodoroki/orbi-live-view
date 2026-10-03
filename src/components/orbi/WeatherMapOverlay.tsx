@@ -55,7 +55,9 @@ export default function WeatherMapOverlay({
               {t.conditions.weatherMapTitle}
             </h2>
           </div>
-          <Button variant="ghost" size="sm"
+          <Button
+            variant="ghost"
+            size="sm"
             type="button"
             onClick={onClose}
             aria-label={t.common.close}
@@ -67,7 +69,9 @@ export default function WeatherMapOverlay({
 
         <div className="mt-4 flex flex-wrap gap-1">
           {WEATHER_LAYERS.map((key) => (
-            <Button variant="ghost" size="sm"
+            <Button
+              variant="ghost"
+              size="sm"
               key={key}
               type="button"
               aria-pressed={layer === key}

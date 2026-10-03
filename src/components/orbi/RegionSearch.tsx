@@ -64,7 +64,10 @@ export default function RegionSearch({
           }}
           onFocus={() => setOpen(true)}
           onKeyDown={(e) => {
-            if (e.key === "Escape") { setOpen(false); e.currentTarget.blur(); }
+            if (e.key === "Escape") {
+              setOpen(false);
+              e.currentTarget.blur();
+            }
             if (e.key === "Enter") {
               setOpen(true);
               const firstResult = results?.[0];
@@ -76,10 +79,14 @@ export default function RegionSearch({
           className="min-w-0 w-full bg-transparent text-base md:text-xs text-foreground outline-none placeholder:text-muted-foreground"
         />
         {current && !query && (
-          <span className="label-track max-w-24 truncate text-[11px] text-primary">{current.name}</span>
+          <span className="label-track max-w-24 truncate text-[11px] text-primary">
+            {current.name}
+          </span>
         )}
         {query && (
-          <Button variant="ghost" size="sm"
+          <Button
+            variant="ghost"
+            size="sm"
             type="button"
             aria-label={t.common.close}
             onClick={() => setQuery("")}
@@ -88,7 +95,9 @@ export default function RegionSearch({
             <X className="h-3.5 w-3.5" strokeWidth={1.4} />
           </Button>
         )}
-        <Button variant="ghost" size="sm"
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           aria-label={t.search.myLocation}
           title={t.search.myLocation}
@@ -97,7 +106,9 @@ export default function RegionSearch({
         >
           <LocateFixed className="h-3.5 w-3.5" strokeWidth={1.4} />
         </Button>
-        <Button variant="ghost" size="sm"
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           onClick={() => {
             setOpen(true);
@@ -114,14 +125,18 @@ export default function RegionSearch({
       {open && query.trim().length >= 2 && (
         <div className="surface-panel mt-2 max-h-72 overflow-y-auto rounded-md p-1 animate-rise">
           {(results ?? []).map((place) => (
-            <Button variant="ghost" size="sm"
+            <Button
+              variant="ghost"
+              size="sm"
               key={`${place.kind}-${place.id}`}
               type="button"
               onClick={() => pick(place)}
               className="focus-ring grid min-h-11 h-auto w-full grid-cols-[minmax(0,1fr)_auto] whitespace-normal items-baseline justify-between gap-3 rounded-sm px-2.5 py-2 text-left transition-colors hover:bg-accent"
             >
               <span className="min-w-0 text-sm text-foreground">{place.name}</span>
-              <span className="label-track max-w-32 text-right text-[11px] text-muted-foreground">{place.detail}</span>
+              <span className="label-track max-w-32 text-right text-[11px] text-muted-foreground">
+                {place.detail}
+              </span>
             </Button>
           ))}
           {!isFetching && (results ?? []).length === 0 && (

@@ -112,7 +112,11 @@ function categoryColor(event: OrbiEvent) {
 
 type EventMarker = OrbiEvent & { active: boolean };
 
-function createEventPill(event: EventMarker, onSelect: (event: OrbiEvent) => void, categoryLabel: string) {
+function createEventPill(
+  event: EventMarker,
+  onSelect: (event: OrbiEvent) => void,
+  categoryLabel: string,
+) {
   const color = categoryColor(event);
   const pill = document.createElement("button");
   pill.type = "button";
@@ -661,7 +665,9 @@ export default function GlobeView({
           htmlLat="lat"
           htmlLng="lng"
           htmlAltitude={(d: object) => ((d as EventMarker).active ? 0.035 : 0.018)}
-          htmlElement={(d: object) => createEventPill(d as EventMarker, onSelect, t.categories[(d as EventMarker).category])}
+          htmlElement={(d: object) =>
+            createEventPill(d as EventMarker, onSelect, t.categories[(d as EventMarker).category])
+          }
           // Observation Layer — sinais: um pulso discreto, com pausa
           ringsData={reducedMotion ? [] : focusRings}
           ringLat="lat"

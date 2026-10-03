@@ -20,7 +20,9 @@ export default function WebcamsPanel({
     <div className="orbi-sheet surface-panel absolute inset-x-3 bottom-20 z-20 max-h-[60vh] overflow-y-auto rounded-md p-4 animate-sheet-up md:inset-x-auto md:bottom-auto md:left-24 md:top-24 md:w-80 md:p-5 md:animate-rise">
       <div className="flex items-start justify-between">
         <p className="label-track text-primary">{t.webcams.title}</p>
-        <Button variant="ghost" size="sm"
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           onClick={onClose}
           aria-label={t.common.close}

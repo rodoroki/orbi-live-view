@@ -127,7 +127,6 @@
   --font-mono: var(--font-mono);
 }
 
-
 .dark {
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
@@ -301,5 +300,8 @@
     overscroll-behavior: contain;
     background-color: color-mix(in oklab, var(--card) 94%, transparent);
   }
-  .orbi-panel-open .orbi-timeline { visibility: hidden; pointer-events: none; }
+  .orbi-panel-open .orbi-timeline {
+    visibility: hidden;
+    pointer-events: none;
+  }
 }

@@ -42,7 +42,11 @@ export function I18nProvider({
 
   useEffect(() => {
     const saved = localStorage.getItem("orbi-locale");
-    setLocale(saved === "en" || saved === "pt-BR" || saved === "es" ? saved : resolveLocale(navigator.language));
+    setLocale(
+      saved === "en" || saved === "pt-BR" || saved === "es"
+        ? saved
+        : resolveLocale(navigator.language),
+    );
     setReady(true);
   }, []);
 

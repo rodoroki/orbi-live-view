@@ -48,7 +48,9 @@ export default function TimelineBar({
   return (
     <div className="orbi-timeline absolute bottom-[calc(9rem+env(safe-area-inset-bottom))] md:bottom-20 left-1/2 z-10 flex w-[min(92vw,440px)] -translate-x-1/2 flex-col items-center animate-rise md:w-[min(440px,40vw)]">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm"
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           aria-label={playing ? t.timeline.pause : t.timeline.play}
           onClick={() => setPlaying((v) => !v)}
@@ -61,7 +63,9 @@ export default function TimelineBar({
           )}
         </Button>
 
-        <Button variant="ghost" size="sm"
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           onClick={() => {
             setPlaying(false);

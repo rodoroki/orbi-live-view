@@ -51,7 +51,9 @@ export default function DiscoveryCard({
 
   return (
     <div className="orbi-sheet surface-panel absolute inset-x-3 bottom-20 z-20 rounded-md p-5 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-[19rem] md:p-6 md:animate-rise">
-      <Button variant="ghost" size="sm"
+      <Button
+        variant="ghost"
+        size="sm"
         type="button"
         onClick={onClose}
         aria-label={t.common.close}
@@ -82,7 +84,9 @@ export default function DiscoveryCard({
           </p>
 
           <div className="mt-5 flex flex-wrap items-center gap-x-5">
-            <Button variant="ghost" size="sm"
+            <Button
+              variant="ghost"
+              size="sm"
               type="button"
               onClick={() => setDeep(true)}
               className={`${linkCls} text-primary`}
@@ -94,7 +98,9 @@ export default function DiscoveryCard({
               />
             </Button>
             {onFocus && (
-              <Button variant="ghost" size="sm"
+              <Button
+                variant="ghost"
+                size="sm"
                 type="button"
                 onClick={() => onFocus(event)}
                 className={`${linkCls} text-muted-foreground`}
@@ -123,9 +129,7 @@ export default function DiscoveryCard({
             ))}
           </div>
 
-          <p className="label-track mt-6 text-[11px] text-muted-foreground">
-            {t.insight.context}
-          </p>
+          <p className="label-track mt-6 text-[11px] text-muted-foreground">{t.insight.context}</p>
           <p className="mt-2 text-xs font-light leading-relaxed text-muted-foreground">
             {insight.context}
           </p>
@@ -145,7 +149,9 @@ export default function DiscoveryCard({
           </div>
 
           <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4">
-            <Button variant="ghost" size="sm"
+            <Button
+              variant="ghost"
+              size="sm"
               type="button"
               onClick={() => setDeep(false)}
               className={`${linkCls} text-muted-foreground`}
@@ -154,7 +160,9 @@ export default function DiscoveryCard({
               {t.discovery.back}
             </Button>
             {onFocus && (
-              <Button variant="ghost" size="sm"
+              <Button
+                variant="ghost"
+                size="sm"
                 type="button"
                 onClick={() => onFocus(event)}
                 className={`${linkCls} text-muted-foreground`}
@@ -163,7 +171,9 @@ export default function DiscoveryCard({
               </Button>
             )}
             {next && onSelect && (
-              <Button variant="ghost" size="sm"
+              <Button
+                variant="ghost"
+                size="sm"
                 type="button"
                 onClick={() => onSelect(next)}
                 className={`${linkCls} text-primary`}
@@ -186,7 +196,9 @@ function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between gap-4">
       <span className="label-track text-[11px] text-muted-foreground">{label}</span>
-      <span className="min-w-0 break-words text-right font-mono text-xs text-foreground/90">{value}</span>
+      <span className="min-w-0 break-words text-right font-mono text-xs text-foreground/90">
+        {value}
+      </span>
     </div>
   );
 }

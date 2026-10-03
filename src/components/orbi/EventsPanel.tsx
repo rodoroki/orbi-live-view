@@ -59,7 +59,9 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
     <aside className="orbi-sheet surface-panel absolute inset-x-3 bottom-20 z-20 flex max-h-[72vh] flex-col overflow-y-auto overscroll-contain rounded-md animate-sheet-up md:inset-x-auto md:bottom-24 md:left-20 md:top-20 md:z-10 md:max-h-none md:w-[300px] md:animate-rise">
       <div className="flex shrink-0 items-start justify-between px-5 pt-5">
         <p className="label-track text-primary">{t.events.panelTitle}</p>
-        <Button variant="ghost" size="sm"
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           onClick={onClose}
           aria-label={t.events.closePanel}
@@ -133,7 +135,6 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
         <span className="font-mono text-[10px] text-muted-foreground">
           {format(t.events.resultCount, { count: filtered.length })}
         </span>
-
       </div>
 
       <div className="mt-1 min-h-0 shrink-0 md:min-h-[10rem] md:flex-1 overflow-visible md:overflow-y-auto px-5 pb-5">
@@ -146,7 +147,9 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
               const active = selected?.id === event.id;
               return (
                 <li key={event.id}>
-                  <Button variant="ghost" size="sm"
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     type="button"
                     onClick={() => onSelect(event)}
                     className={`focus-ring h-auto w-full justify-start whitespace-normal border-b border-border/40 px-2 py-3 text-left transition-colors duration-200 ${
@@ -204,7 +207,9 @@ function FilterRow({
       <p className="label-track text-[10px] text-muted-foreground/80">{label}</p>
       <div className="mt-1.5 flex flex-wrap gap-1.5">
         {options.map((option) => (
-          <Button variant="ghost" size="sm"
+          <Button
+            variant="ghost"
+            size="sm"
             key={option.key}
             type="button"
             aria-pressed={value === option.key}

@@ -82,7 +82,9 @@ export function MapTools({
   return (
     <div className="surface-panel absolute bottom-[calc(4rem+env(safe-area-inset-bottom))] inset-x-3 z-10 flex flex-row overflow-x-auto rounded-full p-1.5 md:inset-x-auto md:bottom-24 md:right-6 md:flex-col">
       {onToggleConditions && (
-        <Button variant="ghost" size="sm"
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           aria-label={conditionsOpen ? t.conditions.close : t.conditions.open}
           title={t.conditions.title}
@@ -94,7 +96,9 @@ export function MapTools({
         </Button>
       )}
       {onToggleWebcams && (
-        <Button variant="ghost" size="sm"
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           aria-label={webcamsOpen ? t.webcams.close : t.webcams.open}
           title={t.webcams.title}
@@ -106,7 +110,9 @@ export function MapTools({
         </Button>
       )}
       {onToggleEvents && (
-        <Button variant="ghost" size="sm"
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           aria-label={eventsOpen ? t.events.closePanel : t.events.openPanel}
           aria-pressed={eventsOpen}
@@ -116,10 +122,19 @@ export function MapTools({
           <List className="h-4 w-4" strokeWidth={1.4} />
         </Button>
       )}
-      <Button variant="ghost" size="sm" type="button" aria-label={t.map.zoomIn} className={iconBtn} onClick={() => onZoom(1)}>
+      <Button
+        variant="ghost"
+        size="sm"
+        type="button"
+        aria-label={t.map.zoomIn}
+        className={iconBtn}
+        onClick={() => onZoom(1)}
+      >
         <Plus className="h-4 w-4" strokeWidth={1.4} />
       </Button>
-      <Button variant="ghost" size="sm"
+      <Button
+        variant="ghost"
+        size="sm"
         type="button"
         aria-label={t.map.zoomOut}
         className={iconBtn}
@@ -127,11 +142,20 @@ export function MapTools({
       >
         <Minus className="h-4 w-4" strokeWidth={1.4} />
       </Button>
-      <Button variant="ghost" size="sm" type="button" aria-label={t.map.reset} className={iconBtn} onClick={onReset}>
+      <Button
+        variant="ghost"
+        size="sm"
+        type="button"
+        aria-label={t.map.reset}
+        className={iconBtn}
+        onClick={onReset}
+      >
         <Crosshair className="h-4 w-4" strokeWidth={1.4} />
       </Button>
 
-      <Button variant="ghost" size="sm"
+      <Button
+        variant="ghost"
+        size="sm"
         type="button"
         aria-label={t.map.layers}
         title={t.map.layers}
@@ -141,7 +165,9 @@ export function MapTools({
       >
         <Layers className="h-4 w-4" strokeWidth={1.4} />
       </Button>
-      <Button variant="ghost" size="sm"
+      <Button
+        variant="ghost"
+        size="sm"
         type="button"
         aria-label={t.map.filters}
         title={t.map.filters}
@@ -166,7 +192,9 @@ export function ViewToggle({
 
   return (
     <div className="absolute bottom-[calc(0.5rem+env(safe-area-inset-bottom))] left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 md:bottom-6">
-      <Button variant="ghost" size="sm"
+      <Button
+        variant="ghost"
+        size="sm"
         type="button"
         aria-pressed={mode === "flat"}
         onClick={() => onChange("flat")}
@@ -177,7 +205,9 @@ export function ViewToggle({
         {t.common.map}
       </Button>
 
-      <Button variant="ghost" size="sm"
+      <Button
+        variant="ghost"
+        size="sm"
         type="button"
         aria-label={mode === "flat" ? t.common.globe : t.common.map}
         onClick={() => onChange(mode === "flat" ? "globe" : "flat")}
@@ -191,7 +221,9 @@ export function ViewToggle({
         />
       </Button>
 
-      <Button variant="ghost" size="sm"
+      <Button
+        variant="ghost"
+        size="sm"
         type="button"
         aria-pressed={mode === "globe"}
         onClick={() => onChange("globe")}
@@ -227,7 +259,9 @@ export function CategoryFilters({
           const meta = CATEGORY_META[key];
           const on = active.includes(key);
           return (
-            <Button variant="ghost" size="sm"
+            <Button
+              variant="ghost"
+              size="sm"
               key={key}
               type="button"
               aria-pressed={on}
@@ -257,7 +291,9 @@ export function CategoryFilters({
 function PanelClose({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation();
   return (
-    <Button variant="ghost" size="sm"
+    <Button
+      variant="ghost"
+      size="sm"
       type="button"
       onClick={onClose}
       aria-label={t.common.close}
@@ -294,7 +330,9 @@ export function ContextCard({
             {event ? event.title : t.common.explore}
           </h2>
         </div>
-        <Button variant="ghost" size="sm"
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           onClick={onClose}
           aria-label={t.common.close}
@@ -366,7 +404,9 @@ export function LayersPanel({
         {MAP_LAYERS.map((layer) => {
           const on = active.includes(layer);
           return (
-            <Button variant="ghost" size="sm"
+            <Button
+              variant="ghost"
+              size="sm"
               key={layer}
               type="button"
               role="switch"

@@ -37,7 +37,9 @@ export default function FlatMapView({ events, selected, onSelect }: Props) {
           const meta = CATEGORY_META[event.category];
           const active = selected?.id === event.id;
           return (
-            <Button variant="ghost" size="sm"
+            <Button
+              variant="ghost"
+              size="sm"
               key={event.id}
               type="button"
               onClick={() => onSelect(event)}
@@ -62,7 +64,9 @@ export default function FlatMapView({ events, selected, onSelect }: Props) {
               />
               <span
                 className={`pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded-full border border-border/60 bg-background/90 px-2 py-0.5 text-[10px] font-medium leading-none text-foreground backdrop-blur-md transition-opacity duration-200 ${
-                  active ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+                  active
+                    ? "opacity-100"
+                    : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
                 }`}
               >
                 {event.place}
