@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { X } from "lucide-react";
 import { WEATHER_LAYERS, type MetricKey } from "@/lib/conditions";
@@ -26,7 +27,7 @@ export default function WeatherMapOverlay({
   coords: { lat: number; lng: number } | null;
 }) {
   const { t, locale } = useTranslation();
-  const [layer, setLayer] = useState<MetricKey>(WEATHER_LAYERS[0]!);
+  const [layer, setLayer] = useState<MetricKey>(WEATHER_LAYERS[0] ?? "wind");
 
   const lat = coords?.lat ?? -15.8;
   const lng = coords?.lng ?? -47.9;
@@ -54,34 +55,39 @@ export default function WeatherMapOverlay({
               {t.conditions.weatherMapTitle}
             </h2>
           </div>
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             type="button"
             onClick={onClose}
             aria-label={t.common.close}
-            className="focus-ring text-muted-foreground transition-colors hover:text-foreground"
+            className="focus-ring -m-2 h-11 w-11 shrink-0 p-0 text-muted-foreground transition-colors hover:text-foreground"
           >
             <X className="h-4 w-4" strokeWidth={1.4} />
-          </button>
+          </Button>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-1">
           {WEATHER_LAYERS.map((key) => (
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               key={key}
               type="button"
+              aria-pressed={layer === key}
               onClick={() => setLayer(key)}
-              className={`label-track focus-ring rounded-full px-3 py-1.5 text-[9px] transition-colors duration-200 ${
+              className={`label-track focus-ring min-h-11 rounded-full px-3 py-1.5 text-[11px] transition-colors duration-200 ${
                 layer === key
                   ? "bg-accent text-primary"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t.metrics[key as keyof typeof t.metrics]}
-            </button>
+            </Button>
           ))}
         </div>
 
-        <div className="relative mt-4 flex-1 overflow-hidden rounded-md border border-border">
+        <div className="relative mt-4 min-h-0 flex-1 overflow-hidden rounded-md border border-border">
           <iframe
             key={`${overlay}-${lat.toFixed(2)}-${lng.toFixed(2)}`}
             title={t.conditions.weatherMapTitle}
@@ -92,7 +98,7 @@ export default function WeatherMapOverlay({
           />
         </div>
 
-        <p className="label-track mt-3 text-[9px] text-muted-foreground/70">
+        <p className="label-track mt-3 text-[11px] text-muted-foreground">
           {t.common.live} · WINDY
         </p>
       </div>

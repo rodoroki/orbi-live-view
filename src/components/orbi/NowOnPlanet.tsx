@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
 import { useTranslation } from "@/lib/i18n";
 import { distanceKm } from "@/lib/intelligence";
@@ -30,7 +31,9 @@ export default function NowOnPlanet({
         {events.slice(0, 3).map((event) => {
           const meta = CATEGORY_META[event.category];
           return (
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               key={event.id}
               type="button"
               onClick={() => onSelect(event)}
@@ -43,7 +46,7 @@ export default function NowOnPlanet({
               <span className="max-w-[11rem] truncate text-[11px] font-light text-foreground/85">
                 {event.place}
               </span>
-            </button>
+            </Button>
           );
         })}
       </div>

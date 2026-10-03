@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { useTranslation } from "@/lib/i18n";
 import * as THREE from "three";
 import Globe, { type GlobeMethods } from "react-globe.gl";
 import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
@@ -110,13 +112,17 @@ function categoryColor(event: OrbiEvent) {
 
 type EventMarker = OrbiEvent & { active: boolean };
 
-function createEventPill(event: EventMarker, onSelect: (event: OrbiEvent) => void) {
+function createEventPill(
+  event: EventMarker,
+  onSelect: (event: OrbiEvent) => void,
+  categoryLabel: string,
+) {
   const color = categoryColor(event);
   const pill = document.createElement("button");
   pill.type = "button";
   pill.className =
-    "group relative flex h-4 w-4 cursor-pointer items-center justify-center rounded-full transition-transform duration-200 hover:scale-125";
-  pill.setAttribute("aria-label", `${CATEGORY_META[event.category].label} · ${event.place}`);
+    "focus-ring group relative flex h-8 w-8 md:h-6 md:w-6 cursor-pointer items-center justify-center rounded-full transition-transform duration-200 hover:scale-125";
+  pill.setAttribute("aria-label", `${categoryLabel} · ${event.place}`);
 
   const halo = document.createElement("span");
   halo.className = "absolute inset-0 rounded-full opacity-25";
@@ -132,7 +138,7 @@ function createEventPill(event: EventMarker, onSelect: (event: OrbiEvent) => voi
 
   const label = document.createElement("span");
   label.className =
-    "pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded-full border border-border/60 bg-background/90 px-2 py-0.5 text-[10px] font-medium leading-none text-foreground opacity-0 backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100";
+    "pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded-full border border-border/60 bg-background/90 px-2 py-0.5 text-[10px] font-medium leading-none text-foreground opacity-0 backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100";
   label.textContent = event.place;
   if (event.active) label.classList.replace("opacity-0", "opacity-100");
 
@@ -389,6 +395,8 @@ export default function GlobeView({
   showRegions = true,
   onPickRegion,
 }: Props) {
+  const reducedMotion = useReducedMotion();
+  const { t } = useTranslation();
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -490,7 +498,7 @@ export default function GlobeView({
     initialized.current = true;
 
     const controls = globe.controls() as unknown as Controls;
-    controls.autoRotate = true;
+    controls.autoRotate = !reducedMotion;
     controls.autoRotateSpeed = AUTO_ROTATE_SPEED;
     controls.enableZoom = true;
     controls.enablePan = false;
@@ -507,7 +515,7 @@ export default function GlobeView({
         );
       },
       reset: () => {
-        (globe.controls() as unknown as Controls).autoRotate = true;
+        (globe.controls() as unknown as Controls).autoRotate = !reducedMotion;
         globe.pointOfView(DEFAULT_VIEW, RESET_ANIMATION_MS);
       },
       flyTo: (lat, lng, altitude = SELECT_ALTITUDE) => {
@@ -562,7 +570,7 @@ export default function GlobeView({
     const onEnd = () => {
       if (idle) window.clearTimeout(idle);
       idle = window.setTimeout(() => {
-        controls.autoRotate = true;
+        controls.autoRotate = !reducedMotion;
       }, 6000);
     };
     controls.addEventListener("start", onStart);
@@ -572,7 +580,12 @@ export default function GlobeView({
       controls.removeEventListener("start", onStart);
       controls.removeEventListener("end", onEnd);
     };
-  }, [size.width]);
+  }, [size.width, reducedMotion]);
+
+  useEffect(() => {
+    const globe = globeRef.current;
+    if (globe && reducedMotion) (globe.controls() as unknown as Controls).autoRotate = false;
+  }, [reducedMotion]);
 
   // ---------------------------------------------------------------------------
   // RENDER
@@ -652,9 +665,11 @@ export default function GlobeView({
           htmlLat="lat"
           htmlLng="lng"
           htmlAltitude={(d: object) => ((d as EventMarker).active ? 0.035 : 0.018)}
-          htmlElement={(d: object) => createEventPill(d as EventMarker, onSelect)}
+          htmlElement={(d: object) =>
+            createEventPill(d as EventMarker, onSelect, t.categories[(d as EventMarker).category])
+          }
           // Observation Layer — sinais: um pulso discreto, com pausa
-          ringsData={focusRings}
+          ringsData={reducedMotion ? [] : focusRings}
           ringLat="lat"
           ringLng="lng"
           ringColor={(d: object) =>

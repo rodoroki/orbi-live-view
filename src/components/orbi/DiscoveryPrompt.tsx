@@ -41,7 +41,7 @@ export function DiscoveryPrompt({
               variant="ghost"
               size="sm"
               onClick={onAction}
-              className="mt-2 h-auto px-0 py-1 text-[10px] text-primary hover:bg-transparent hover:text-primary/70"
+              className="mt-2 min-h-11 h-auto px-0 py-1 text-xs text-primary hover:bg-transparent hover:text-primary/70"
             >
               {action}
               <ArrowRight className="h-3 w-3" strokeWidth={1.4} />
@@ -55,7 +55,7 @@ export function DiscoveryPrompt({
             size="icon"
             onClick={onClose}
             aria-label={closeLabel}
-            className="-mr-2 -mt-2 h-7 w-7 text-muted-foreground hover:bg-transparent hover:text-foreground"
+            className="-mr-2 -mt-2 h-11 w-11 shrink-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
           >
             <X className="h-3 w-3" strokeWidth={1.4} />
           </Button>

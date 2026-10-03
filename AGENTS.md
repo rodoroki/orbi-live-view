@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Discovery microcopy must be derived deterministically from loaded real events; never synthesize events or unsupported scientific claims.
+- Home floating panels are mutually exclusive and use the shared bounded phone-sheet treatment so map controls remain reachable.
