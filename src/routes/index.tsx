@@ -192,13 +192,16 @@ function Index() {
     return () => window.clearTimeout(id);
   }, [userLocation]);
 
-  const handlePickPlace = useCallback((next: GeoPlace) => {
-    closePanels();
-    setPlace(next);
-    setSelected(null);
-    setConditionsOpen(true);
-    globeApi.current?.flyTo(next.lat, next.lng, next.kind === "continent" ? 1.9 : 0.9);
-  }, [closePanels]);
+  const handlePickPlace = useCallback(
+    (next: GeoPlace) => {
+      closePanels();
+      setPlace(next);
+      setSelected(null);
+      setConditionsOpen(true);
+      globeApi.current?.flyTo(next.lat, next.lng, next.kind === "continent" ? 1.9 : 0.9);
+    },
+    [closePanels],
+  );
 
   // A interface recua quando o usuário apenas observa o planeta.
   const [chrome, setChrome] = useState(true);
@@ -304,30 +307,49 @@ function Index() {
           {t.planet.youAreHere}
         </p>
       )}
-      {!selected && !eventsOpen && !conditionsOpen && !webcamsOpen && !layersOpen && !filtersOpen && (
-        <NowOnPlanet events={highlights} origin={userLocation} onSelect={handleSelect} />
-      )}
+      {!selected &&
+        !eventsOpen &&
+        !conditionsOpen &&
+        !webcamsOpen &&
+        !layersOpen &&
+        !filtersOpen && (
+          <NowOnPlanet events={highlights} origin={userLocation} onSelect={handleSelect} />
+        )}
       <RegionSearch onPick={handlePickPlace} current={place} />
       <div
         className={`transition-opacity duration-700 ${
-          isMobile || chrome ? "opacity-100" : "opacity-0 hover:opacity-100 focus-within:opacity-100"
+          isMobile || chrome
+            ? "opacity-100"
+            : "opacity-0 hover:opacity-100 focus-within:opacity-100"
         }`}
       >
         <MapTools
           onZoom={handleZoom}
           onReset={handleReset}
-          onToggleFilters={() => { closePanels(); setFiltersOpen(!filtersOpen); }}
+          onToggleFilters={() => {
+            closePanels();
+            setFiltersOpen(!filtersOpen);
+          }}
           filtersOpen={filtersOpen}
-          onToggleLayers={() => { closePanels(); setLayersOpen(!layersOpen); }}
+          onToggleLayers={() => {
+            closePanels();
+            setLayersOpen(!layersOpen);
+          }}
           layersOpen={layersOpen}
-          onToggleEvents={() => { closePanels(); setEventsOpen(!eventsOpen); }}
+          onToggleEvents={() => {
+            closePanels();
+            setEventsOpen(!eventsOpen);
+          }}
           eventsOpen={eventsOpen}
           onToggleConditions={() => {
             closePanels();
             setConditionsOpen(!conditionsOpen);
           }}
           conditionsOpen={conditionsOpen}
-          onToggleWebcams={() => { closePanels(); setWebcamsOpen(!webcamsOpen); }}
+          onToggleWebcams={() => {
+            closePanels();
+            setWebcamsOpen(!webcamsOpen);
+          }}
           webcamsOpen={webcamsOpen}
         />
         <TimelineBar hour={hour} onChange={setHour} hint={timelineHint} />
@@ -404,9 +426,9 @@ function Index() {
         !selected &&
         !eventsOpen &&
         !conditionsOpen &&
-         !webcamsOpen &&
-         !layersOpen &&
-         !filtersOpen &&
+        !webcamsOpen &&
+        !layersOpen &&
+        !filtersOpen &&
         hour === 0 && (
           <DiscoveryPrompt
             live
