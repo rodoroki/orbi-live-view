@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import {
@@ -86,7 +87,7 @@ export default function EventsPanel({ events, selected, onSelect, onClose }: Pro
       </div>
 
       {/* filters */}
-      <div className="mt-4 flex shrink-0 flex-col gap-3 px-5">
+      <div className="mt-4 grid shrink-0 grid-cols-2 gap-3 px-5 md:flex md:flex-col">
         <FilterRow
           label={t.events.category}
           options={[
@@ -205,7 +206,13 @@ function FilterRow({
   return (
     <div>
       <p className="label-track text-[10px] text-muted-foreground/80">{label}</p>
-      <div className="mt-1.5 flex flex-wrap gap-1.5">
+      <div className="mt-1.5 md:hidden">
+        <Select value={value} onValueChange={onChange}>
+          <SelectTrigger aria-label={label} className="h-11"><SelectValue /></SelectTrigger>
+          <SelectContent>{options.map((option) => <SelectItem key={option.key} value={option.key} className="min-h-11">{option.label}</SelectItem>)}</SelectContent>
+        </Select>
+      </div>
+      <div className="mt-1.5 hidden flex-wrap gap-1.5 md:flex">
         {options.map((option) => (
           <Button
             variant="ghost"

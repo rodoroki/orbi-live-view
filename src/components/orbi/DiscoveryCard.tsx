@@ -47,7 +47,7 @@ export default function DiscoveryCard({
         : `${Math.round(minutes / 1440)} d`;
 
   const linkCls =
-    "focus-ring label-track group flex min-h-11 items-center gap-2 text-xs transition-opacity duration-300 hover:opacity-70";
+    "focus-ring label-track group flex min-h-11 h-auto items-center gap-2 bg-transparent px-0 text-xs transition-opacity duration-300 hover:bg-transparent hover:opacity-70";
 
   return (
     <div className="orbi-sheet surface-panel absolute inset-x-3 bottom-20 z-20 rounded-md p-5 animate-sheet-up md:inset-x-auto md:bottom-auto md:right-6 md:top-24 md:w-[19rem] md:p-6 md:animate-rise">

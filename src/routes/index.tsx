@@ -267,7 +267,7 @@ function Index() {
         </nav>
       </header>
 
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 isolate z-0">
         {mode === "globe" ? (
           <ClientOnly fallback={<StageFallback />}>
             <Suspense fallback={<StageFallback />}>
