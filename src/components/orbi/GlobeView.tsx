@@ -396,6 +396,8 @@ export default function GlobeView({
   onPickRegion,
 }: Props) {
   const reducedMotion = useReducedMotion();
+  const reducedRef = useRef(reducedMotion);
+  reducedRef.current = reducedMotion;
   const { t } = useTranslation();
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -520,7 +522,10 @@ export default function GlobeView({
       },
       flyTo: (lat, lng, altitude = SELECT_ALTITUDE) => {
         (globe.controls() as unknown as Controls).autoRotate = false;
-        globe.pointOfView({ lat, lng, altitude: clampAltitude(altitude) }, SELECT_ANIMATION_MS);
+        globe.pointOfView(
+          { lat, lng, altitude: clampAltitude(altitude) },
+          reducedRef.current ? 0 : SELECT_ANIMATION_MS,
+        );
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -536,7 +541,7 @@ export default function GlobeView({
     (globe.controls() as unknown as Controls).autoRotate = false;
     globe.pointOfView(
       { lat: selected.lat, lng: selected.lng, altitude: SELECT_ALTITUDE },
-      SELECT_ANIMATION_MS,
+      reducedRef.current ? 0 : SELECT_ANIMATION_MS,
     );
   }, [selected]);
 
@@ -547,7 +552,9 @@ export default function GlobeView({
     const globe = globeRef.current;
     if (!globe || !focus) return;
     (globe.controls() as unknown as Controls).autoRotate = false;
-    globe.pointOfView({ lat: focus.lat, lng: focus.lng, altitude: 1.2 }, SELECT_ANIMATION_MS);
+    globe.pointOfView({ lat: focus.lat, lng: focus.lng, altitude: 1.2 },
+      reducedRef.current ? 0 : SELECT_ANIMATION_MS,
+    );
   }, [focus]);
 
   // ---------------------------------------------------------------------------
