@@ -31,6 +31,8 @@ import { useNwsAlerts } from "@/lib/nws";
 import { useUserLocation } from "@/lib/user-location";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { rankEvents } from "@/lib/intelligence";
+import { useExploration } from "@/lib/exploration/context";
+import { pickDiscovery } from "@/lib/exploration/discovery";
 import { jsonLdScript, organizationJsonLd, seoLinks, seoMeta, websiteJsonLd } from "@/lib/seo";
 
 const GlobeView = lazy(() => import("@/components/orbi/GlobeView"));
@@ -59,7 +61,9 @@ function Index() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<"flat" | "globe">("globe");
-  const [selected, setSelected] = useState<OrbiEvent | null>(null);
+  const exploration = useExploration();
+  const selected = exploration.selectedDiscovery;
+  const setSelected = exploration.select;
   const [panelOpen, setPanelOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [layersOpen, setLayersOpen] = useState(false);
@@ -399,9 +403,75 @@ function Index() {
           events={events}
           onSelect={handleSelect}
           onFocus={mode === "globe" ? handleFocus : undefined}
+          visited={exploration.seen}
+          previous={exploration.previousDiscovery}
+          following={exploration.followedDiscovery?.id === selected.id}
+          inHistory={hour < 0}
+          onBack={exploration.back}
+          onFollow={(e) =>
+            exploration.followedDiscovery?.id === e.id
+              ? exploration.unfollow()
+              : exploration.follow(e)
+          }
+          onCameras={() => {
+            closePanels();
+            setWebcamsOpen(true);
+          }}
+          onWeather={() => {
+            closePanels();
+            setConditionsOpen(true);
+          }}
+          onHistory={setHour}
           onClose={() => setPanelOpen(false)}
         />
       )}
+
+      <div className="absolute left-1/2 top-[8.5rem] z-10 flex -translate-x-1/2 flex-col items-center gap-2 md:top-[5.5rem]">
+        {exploration.followedDiscovery && (
+          <div
+            className="flex items-center rounded-full border border-border/50 bg-background/60 pl-3 backdrop-blur"
+            role="status"
+          >
+            <button
+              type="button"
+              aria-label={t.exploration.returnTo}
+              onClick={() =>
+                exploration.followedDiscovery && handleSelect(exploration.followedDiscovery)
+              }
+              className="focus-ring label-track flex min-h-11 max-w-[60vw] items-center gap-2 truncate text-[10px] text-foreground/85"
+            >
+              <span
+                className="h-1.5 w-1.5 shrink-0 rounded-full bg-discovery motion-safe:animate-pulse"
+                aria-hidden
+              />
+              <span className="truncate">
+                {t.exploration.following.toUpperCase()} — {exploration.followedDiscovery.place}
+              </span>
+            </button>
+            <button
+              type="button"
+              aria-label={t.exploration.stopFollowing}
+              onClick={exploration.unfollow}
+              className="focus-ring flex h-11 w-11 items-center justify-center text-muted-foreground hover:text-foreground"
+            >
+              ×
+            </button>
+          </div>
+        )}
+        {!selected && events.length > 0 && (
+          <button
+            type="button"
+            aria-label={t.exploration.discoverAria}
+            onClick={() => {
+              const pick = pickDiscovery(events, exploration.seen);
+              if (pick) handleSelect(pick);
+            }}
+            className="focus-ring label-track min-h-11 rounded-full border border-border/50 bg-background/40 px-4 text-[10px] text-foreground/85 backdrop-blur transition-colors hover:border-primary/40"
+          >
+            {t.exploration.discover}
+          </button>
+        )}
+      </div>
 
       {!selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
         <ContextCard event={null} total={events.length} onClose={() => setPanelOpen(false)} />

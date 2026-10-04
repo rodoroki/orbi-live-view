@@ -37,7 +37,9 @@ describe("exploration engine", () => {
   test("history is only offered inside the 48h window", () => {
     expect(historyHourFor(ev("x", 0, 0, { detectedMinutesAgo: 90 }))).toBe(-3);
     expect(historyHourFor(ev("x", 0, 0, { detectedMinutesAgo: 60 * 50 }))).toBeNull();
-    expect(toDiscovery(ev("x", 0, 0, { detectedMinutesAgo: 60 * 50 })).availableActions).not.toContain("history");
+    expect(
+      toDiscovery(ev("x", 0, 0, { detectedMinutesAgo: 60 * 50 })).availableActions,
+    ).not.toContain("history");
   });
 
   test("next discovery never repeats visited events", () => {

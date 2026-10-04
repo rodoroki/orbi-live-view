@@ -4,7 +4,11 @@ import { ArrowRight, ArrowLeft, X } from "lucide-react";
 import { CATEGORY_META, type OrbiEvent } from "@/lib/orbi-events";
 import { format, useTranslation } from "@/lib/i18n";
 import { buildInsight, eventHook } from "@/lib/intelligence";
-import { getNearbyDiscoveries, getNextDiscovery, historyHourFor } from "@/lib/exploration/discovery";
+import {
+  getNearbyDiscoveries,
+  getNextDiscovery,
+  historyHourFor,
+} from "@/lib/exploration/discovery";
 
 /**
  * ORBI — Discovery: o que estou vendo → o que posso descobrir aqui → entender → explorar.
@@ -176,12 +180,24 @@ export default function DiscoveryCard({
 
           <div className="mt-4 flex flex-col">
             {onCameras && (
-              <Button variant="ghost" size="sm" type="button" onClick={onCameras} className={`${linkCls} text-foreground/90`}>
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                onClick={onCameras}
+                className={`${linkCls} text-foreground/90`}
+              >
                 {x.cameras}
               </Button>
             )}
             {onWeather && (
-              <Button variant="ghost" size="sm" type="button" onClick={onWeather} className={`${linkCls} text-foreground/90`}>
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                onClick={onWeather}
+                className={`${linkCls} text-foreground/90`}
+              >
                 {x.weather}
               </Button>
             )}
@@ -217,7 +233,9 @@ export default function DiscoveryCard({
                           style={{ backgroundColor: CATEGORY_META[n.category]?.color }}
                           aria-hidden
                         />
-                        <span className="truncate text-xs font-light text-foreground/90">{n.place}</span>
+                        <span className="truncate text-xs font-light text-foreground/90">
+                          {n.place}
+                        </span>
                       </span>
                       <span className="shrink-0 font-mono text-[11px] text-muted-foreground">
                         {format(x.km, { km: distanceKm })}
@@ -229,7 +247,9 @@ export default function DiscoveryCard({
             </>
           )}
 
-          <p className="label-track mt-5 text-[11px] text-muted-foreground">{t.insight.whatWeKnow}</p>
+          <p className="label-track mt-5 text-[11px] text-muted-foreground">
+            {t.insight.whatWeKnow}
+          </p>
           <div className="mt-3 flex flex-col gap-2.5">
             {insight.facts.map((fact) => (
               <Row key={fact.label} label={fact.label} value={fact.value} />
@@ -237,7 +257,9 @@ export default function DiscoveryCard({
           </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-border pt-4">
-            <span className="label-track text-[11px] text-muted-foreground">{t.insight.source}</span>
+            <span className="label-track text-[11px] text-muted-foreground">
+              {t.insight.source}
+            </span>
             {insight.sources.map((s) => (
               <span
                 key={s}
@@ -260,7 +282,13 @@ export default function DiscoveryCard({
               {t.discovery.back}
             </Button>
             {onFollow && !following && (
-              <Button variant="ghost" size="sm" type="button" onClick={() => onFollow(event)} className={`${linkCls} text-muted-foreground`}>
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                onClick={() => onFollow(event)}
+                className={`${linkCls} text-muted-foreground`}
+              >
                 {x.wantFollow}
               </Button>
             )}
@@ -274,7 +302,10 @@ export default function DiscoveryCard({
               className={`${linkCls} text-primary`}
             >
               {next.reason === "nearby" ? x.nextNearby : x.nextElsewhere}
-              <ArrowRight className="h-3 w-3 shrink-0 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={1.4} />
+              <ArrowRight
+                className="h-3 w-3 shrink-0 transition-transform duration-300 group-hover:translate-x-0.5"
+                strokeWidth={1.4}
+              />
             </Button>
           )}
         </div>
