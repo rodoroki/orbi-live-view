@@ -53,7 +53,7 @@ export const Route = createFileRoute("/")({
     scripts: [jsonLdScript(websiteJsonLd), jsonLdScript(organizationJsonLd)],
   }),
   validateSearch: (search: Record<string, unknown>): { discover?: boolean } =>
-    search.discover === true || search.discover === "true" ? { discover: true } : {},
+    search["discover"] === true || search["discover"] === "true" ? { discover: true } : {},
   component: Index,
 });
 
