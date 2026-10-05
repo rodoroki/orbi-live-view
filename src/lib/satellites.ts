@@ -1,5 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { eciToGeodetic, gstime, json2satrec, propagate, degreesLat, degreesLong } from "satellite.js";
+import {
+  eciToGeodetic,
+  gstime,
+  json2satrec,
+  propagate,
+  degreesLat,
+  degreesLong,
+} from "satellite.js";
 import { getOrbitalElements, type OrbitalElements } from "@/lib/space.functions";
 
 export type SatPosition = {

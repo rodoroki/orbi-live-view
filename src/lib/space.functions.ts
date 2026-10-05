@@ -138,7 +138,8 @@ export const getNasaMedia = createServerFn({ method: "GET" })
       const items: NasaMedia[] = (json.collection?.items ?? [])
         .map((item) => {
           const d = item.data?.[0];
-          const image = item.links?.find((l) => l.render === "image")?.href ?? item.links?.[0]?.href;
+          const image =
+            item.links?.find((l) => l.render === "image")?.href ?? item.links?.[0]?.href;
           if (!d?.nasa_id || !d.title || !image?.startsWith("https://")) return null;
           return {
             nasaId: d.nasa_id,
