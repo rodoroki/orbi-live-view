@@ -52,8 +52,12 @@ export const Route = createFileRoute("/")({
     links: seoLinks("/"),
     scripts: [jsonLdScript(websiteJsonLd), jsonLdScript(organizationJsonLd)],
   }),
+  validateSearch: (search: Record<string, unknown>): { discover?: boolean } =>
+    search.discover === true || search.discover === "true" ? { discover: true } : {},
   component: Index,
 });
+
+const JOURNEY_KEY = "orbi.journey.v1";
 
 const ALL_CATEGORIES = Object.keys(CATEGORY_META) as EventCategory[];
 
@@ -62,6 +66,16 @@ function Index() {
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<"flat" | "globe">("globe");
   const exploration = useExploration();
+  const { discover } = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const [journeyDone, setJourneyDone] = useState(true);
+  useEffect(() => {
+    setJourneyDone(window.localStorage.getItem(JOURNEY_KEY) === "done");
+  }, []);
+  const finishJourney = useCallback(() => {
+    setJourneyDone(true);
+    window.localStorage.setItem(JOURNEY_KEY, "done");
+  }, []);
   const selected = exploration.selectedDiscovery;
   const setSelected = exploration.select;
   const [panelOpen, setPanelOpen] = useState(false);
@@ -169,6 +183,18 @@ function Index() {
     },
     [isMobile, challengeTarget, challengeDismissed, closePanels],
   );
+
+  useEffect(() => {
+    if (!discover || sourcesPending) return;
+    const pick = pickDiscovery(events, exploration.seen);
+    if (pick) handleSelect(pick);
+    void navigate({ to: ".", search: {}, replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [discover, sourcesPending]);
+
+  useEffect(() => {
+    if (exploration.followedDiscovery && !journeyDone) finishJourney();
+  }, [exploration.followedDiscovery, journeyDone, finishJourney]);
 
   const handleFocus = useCallback(
     (event: OrbiEvent) => {
@@ -491,7 +517,30 @@ function Index() {
         </p>
       )}
 
-      {challengeTarget &&
+      {!journeyDone &&
+        events.length > 0 &&
+        hour === 0 &&
+        !eventsOpen &&
+        !conditionsOpen &&
+        !webcamsOpen &&
+        !layersOpen &&
+        !filtersOpen && (
+          <DiscoveryPrompt
+            eyebrow={t.exploration.lookCloser}
+            onClose={finishJourney}
+            closeLabel={t.exploration.gotIt}
+            action={selected ? undefined : t.exploration.discover}
+            onAction={() => {
+              const pick = pickDiscovery(events, exploration.seen);
+              if (pick) handleSelect(pick);
+            }}
+            className={`absolute left-4 z-10 w-[min(17rem,calc(100vw-2rem))] ${selected ? "top-[8.5rem] md:bottom-16 md:top-auto" : "top-[12rem] md:bottom-16 md:top-auto"}`}
+          >
+            {selected ? t.exploration.journeyStep2 : t.exploration.firstVisit}
+          </DiscoveryPrompt>
+        )}
+      {journeyDone &&
+        challengeTarget &&
         !challengeDismissed &&
         !selected &&
         !eventsOpen &&
@@ -517,7 +566,8 @@ function Index() {
             <span className="mt-1 block text-muted-foreground">{challengeTarget.place}</span>
           </DiscoveryPrompt>
         )}
-      {found &&
+      {journeyDone &&
+        found &&
         selected &&
         challengeTarget &&
         selected.id === challengeTarget.id &&
