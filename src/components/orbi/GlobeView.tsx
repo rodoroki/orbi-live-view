@@ -552,7 +552,8 @@ export default function GlobeView({
     const globe = globeRef.current;
     if (!globe || !focus) return;
     (globe.controls() as unknown as Controls).autoRotate = false;
-    globe.pointOfView({ lat: focus.lat, lng: focus.lng, altitude: 1.2 },
+    globe.pointOfView(
+      { lat: focus.lat, lng: focus.lng, altitude: 1.2 },
       reducedRef.current ? 0 : SELECT_ANIMATION_MS,
     );
   }, [focus]);
