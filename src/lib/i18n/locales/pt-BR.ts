@@ -146,7 +146,8 @@ export const ptBR = {
     empty: "Nenhuma câmera nesta região.",
   },
   exploration: {
-    journeyStep2: "Olhe mais de perto: abra Descobrir para ver o que está ao redor, como estava antes, e acompanhe se quiser.",
+    journeyStep2:
+      "Olhe mais de perto: abra Descobrir para ver o que está ao redor, como estava antes, e acompanhe se quiser.",
     gatewayIntro: "Escolha por onde começar. Só aparecem fontes conectadas hoje.",
     discoverPath: "Deixe o ORBI encontrar algo real acontecendo agora.",
     catEvents: "Eventos",

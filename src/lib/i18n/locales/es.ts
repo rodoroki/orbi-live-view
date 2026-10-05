@@ -146,7 +146,8 @@ export const es = {
     empty: "No hay cámaras en esta zona.",
   },
   exploration: {
-    journeyStep2: "Mira más de cerca: abre Descubrir para ver qué hay alrededor, cómo estaba antes, y síguelo si quieres.",
+    journeyStep2:
+      "Mira más de cerca: abre Descubrir para ver qué hay alrededor, cómo estaba antes, y síguelo si quieres.",
     gatewayIntro: "Elige por dónde empezar. Solo aparecen fuentes conectadas hoy.",
     discoverPath: "Deja que ORBI encuentre algo real ocurriendo ahora.",
     catEvents: "Eventos",

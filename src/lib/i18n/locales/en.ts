@@ -146,7 +146,8 @@ export const en = {
     empty: "No cameras in this area.",
   },
   exploration: {
-    journeyStep2: "Look closer: open Discover to see what is around, how it was before, and follow it if you want.",
+    journeyStep2:
+      "Look closer: open Discover to see what is around, how it was before, and follow it if you want.",
     gatewayIntro: "Choose where to start. Only sources connected today appear.",
     discoverPath: "Let ORBI find something real happening now.",
     catEvents: "Events",
