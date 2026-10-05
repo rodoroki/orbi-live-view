@@ -15,7 +15,7 @@ export function DiscoveryPrompt({
 }: {
   eyebrow: string;
   children: ReactNode;
-  action?: string;
+  action?: string | undefined;
   onAction?: () => void;
   onClose?: () => void;
   className?: string;

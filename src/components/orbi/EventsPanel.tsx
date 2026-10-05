@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import {
@@ -208,8 +214,16 @@ function FilterRow({
       <p className="label-track text-[10px] text-muted-foreground/80">{label}</p>
       <div className="mt-1.5 md:hidden">
         <Select value={value} onValueChange={onChange}>
-          <SelectTrigger aria-label={label} className="h-11"><SelectValue /></SelectTrigger>
-          <SelectContent>{options.map((option) => <SelectItem key={option.key} value={option.key} className="min-h-11">{option.label}</SelectItem>)}</SelectContent>
+          <SelectTrigger aria-label={label} className="h-11">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {options.map((option) => (
+              <SelectItem key={option.key} value={option.key} className="min-h-11">
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
       </div>
       <div className="mt-1.5 hidden flex-wrap gap-1.5 md:flex">
