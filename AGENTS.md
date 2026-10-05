@@ -11,3 +11,4 @@
 
 - Discovery microcopy must be derived deterministically from loaded real events; never synthesize events or unsupported scientific claims.
 - Home floating panels are mutually exclusive and use the shared bounded phone-sheet treatment so map controls remain reachable.
+- Exploration state (selection, follow, journey history) lives in ExplorationProvider at the root, and discovery ranking lives in src/lib/exploration — so views share one source of truth and never duplicate ranking logic.
