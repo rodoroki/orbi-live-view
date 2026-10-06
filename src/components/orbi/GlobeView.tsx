@@ -710,7 +710,11 @@ export default function GlobeView({
           htmlElement={(d: object) =>
             "sat" in d && satellite
               ? createSatellitePill(satellite.name, satellite.onSelect)
-              : createEventPill(d as EventMarker, onSelect, t.categories[(d as EventMarker).category])
+              : createEventPill(
+                  d as EventMarker,
+                  onSelect,
+                  t.categories[(d as EventMarker).category],
+                )
           }
           pathsData={satellite && satellite.track.length > 1 ? [satellite.track] : []}
           pathPoints={(d: object) => d as { lat: number; lng: number }[]}

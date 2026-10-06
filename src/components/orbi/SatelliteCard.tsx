@@ -89,7 +89,13 @@ export default function SatelliteCard({
           {following ? x.following : x.satFollow}
         </Button>
         {pos && (
-          <Button variant="ghost" size="sm" type="button" onClick={onRegion} className={`${link} text-muted-foreground`}>
+          <Button
+            variant="ghost"
+            size="sm"
+            type="button"
+            onClick={onRegion}
+            className={`${link} text-muted-foreground`}
+          >
             {x.satRegion}
           </Button>
         )}
@@ -108,14 +114,22 @@ export default function SatelliteCard({
               className="focus-ring flex min-h-11 h-auto w-full justify-between px-0 text-xs font-light hover:bg-transparent hover:opacity-70"
             >
               <span className="truncate">{event.place}</span>
-              <span className="font-mono text-muted-foreground">{format(x.km, { km: distanceKm })}</span>
+              <span className="font-mono text-muted-foreground">
+                {format(x.km, { km: distanceKm })}
+              </span>
             </Button>
           ))}
         </>
       )}
 
       {onNext && (
-        <Button variant="ghost" size="sm" type="button" onClick={onNext} className={`${link} text-primary`}>
+        <Button
+          variant="ghost"
+          size="sm"
+          type="button"
+          onClick={onNext}
+          className={`${link} text-primary`}
+        >
           {x.satNext}
           <ArrowRight className="h-3 w-3" strokeWidth={1.4} />
         </Button>
