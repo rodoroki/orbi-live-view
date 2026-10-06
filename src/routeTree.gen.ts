@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AtmosferaRouteImport } from './routes/atmosfera'
 import { Route as EarthquakesRouteImport } from './routes/earthquakes'
+import { Route as EspacoRouteImport } from './routes/espaco'
 import { Route as EventosRouteImport } from './routes/eventos'
 import { Route as ExplorarRouteImport } from './routes/explorar'
 import { Route as LiveRouteImport } from './routes/live'
@@ -35,6 +36,11 @@ const AtmosferaRoute = AtmosferaRouteImport.update({
 const EarthquakesRoute = EarthquakesRouteImport.update({
   id: '/earthquakes',
   path: '/earthquakes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EspacoRoute = EspacoRouteImport.update({
+  id: '/espaco',
+  path: '/espaco',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventosRoute = EventosRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/atmosfera': typeof AtmosferaRoute
   '/earthquakes': typeof EarthquakesRoute
+  '/espaco': typeof EspacoRoute
   '/eventos': typeof EventosRoute
   '/explorar': typeof ExplorarRoute
   '/live': typeof LiveRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/atmosfera': typeof AtmosferaRoute
   '/earthquakes': typeof EarthquakesRoute
+  '/espaco': typeof EspacoRoute
   '/eventos': typeof EventosRoute
   '/explorar': typeof ExplorarRoute
   '/live': typeof LiveRoute
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/atmosfera': typeof AtmosferaRoute
   '/earthquakes': typeof EarthquakesRoute
+  '/espaco': typeof EspacoRoute
   '/eventos': typeof EventosRoute
   '/explorar': typeof ExplorarRoute
   '/live': typeof LiveRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/'
     | '/atmosfera'
     | '/earthquakes'
+    | '/espaco'
     | '/eventos'
     | '/explorar'
     | '/live'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/'
     | '/atmosfera'
     | '/earthquakes'
+    | '/espaco'
     | '/eventos'
     | '/explorar'
     | '/live'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/'
     | '/atmosfera'
     | '/earthquakes'
+    | '/espaco'
     | '/eventos'
     | '/explorar'
     | '/live'
@@ -175,6 +187,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AtmosferaRoute: typeof AtmosferaRoute
   EarthquakesRoute: typeof EarthquakesRoute
+  EspacoRoute: typeof EspacoRoute
   EventosRoute: typeof EventosRoute
   ExplorarRoute: typeof ExplorarRoute
   LiveRoute: typeof LiveRoute
@@ -207,6 +220,13 @@ declare module '@tanstack/react-router' {
       path: '/earthquakes'
       fullPath: '/earthquakes'
       preLoaderRoute: typeof EarthquakesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/espaco': {
+      id: '/espaco'
+      path: '/espaco'
+      fullPath: '/espaco'
+      preLoaderRoute: typeof EspacoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/eventos': {
@@ -279,6 +299,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AtmosferaRoute: AtmosferaRoute,
   EarthquakesRoute: EarthquakesRoute,
+  EspacoRoute: EspacoRoute,
   EventosRoute: EventosRoute,
   ExplorarRoute: ExplorarRoute,
   LiveRoute: LiveRoute,
