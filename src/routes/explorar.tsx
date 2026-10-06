@@ -30,6 +30,7 @@ function Page() {
     { to: "/weather", label: x.catWeather },
     { to: "/oceano", label: x.catOceans },
     { to: "/natural-events", label: x.catFires },
+    { to: "/espaco", label: x.catSpace },
   ] as const;
 
   return (
@@ -56,7 +57,16 @@ function Page() {
             </Link>
           </li>
         ))}
-        {[x.catAircraft, x.catSatellites, x.catSpace].map((label) => (
+        <li>
+          <Link
+            to="/"
+            search={{ sat: 25544 }}
+            className="focus-ring flex min-h-11 items-center text-sm font-light text-foreground/90 hover:text-primary"
+          >
+            {x.catSatellites}
+          </Link>
+        </li>
+        {[x.catAircraft].map((label) => (
           <li
             key={label}
             className="flex min-h-11 flex-col justify-center text-sm font-light text-muted-foreground"

@@ -89,6 +89,14 @@ type Props = {
   /** exibe fronteiras e nomes de países */
   showRegions?: boolean;
   onPickRegion?: (place: { lat: number; lng: number; name: string }) => void;
+  /** Satélite real selecionado: posição calculada (SGP4) e traço no solo. */
+  satellite?: {
+    name: string;
+    lat: number;
+    lng: number;
+    track: { lat: number; lng: number }[];
+    onSelect?: () => void;
+  } | null;
 };
 
 type Controls = {
@@ -386,12 +394,32 @@ function updateSunDirection(material: THREE.ShaderMaterial) {
 
 type CountryLabel = { name: string; continent: string; lat: number; lng: number; size: number };
 
+function createSatellitePill(name: string, onSelect?: () => void): HTMLElement {
+  const el = document.createElement("button");
+  el.type = "button";
+  el.setAttribute("aria-label", name);
+  el.className =
+    "focus-ring flex items-center gap-1.5 rounded-full border border-primary/50 bg-background/85 px-2 py-1 text-[10px] font-medium leading-none text-foreground backdrop-blur-md";
+  el.style.pointerEvents = "auto";
+  const dot = document.createElement("span");
+  dot.className = "h-1.5 w-1.5 rounded-full bg-primary";
+  const label = document.createElement("span");
+  label.textContent = name;
+  el.append(dot, label);
+  el.addEventListener("click", (e) => {
+    e.stopPropagation();
+    onSelect?.();
+  });
+  return el;
+}
+
 export default function GlobeView({
   events,
   selected,
   onSelect,
   onReady,
   focus,
+  satellite = null,
   showRegions = true,
   onPickRegion,
 }: Props) {
@@ -669,13 +697,33 @@ export default function GlobeView({
             onPickRegion?.({ lat: l.lat, lng: l.lng, name: l.name });
           }}
           // Observation Layer — pastilhas identificáveis e interativas
-          htmlElementsData={eventMarkers}
+          htmlElementsData={
+            satellite
+              ? [...eventMarkers, { sat: true, lat: satellite.lat, lng: satellite.lng }]
+              : eventMarkers
+          }
           htmlLat="lat"
           htmlLng="lng"
-          htmlAltitude={(d: object) => ((d as EventMarker).active ? 0.035 : 0.018)}
-          htmlElement={(d: object) =>
-            createEventPill(d as EventMarker, onSelect, t.categories[(d as EventMarker).category])
+          htmlAltitude={(d: object) =>
+            "sat" in d ? 0.06 : (d as EventMarker).active ? 0.035 : 0.018
           }
+          htmlElement={(d: object) =>
+            "sat" in d && satellite
+              ? createSatellitePill(satellite.name, satellite.onSelect)
+              : createEventPill(
+                  d as EventMarker,
+                  onSelect,
+                  t.categories[(d as EventMarker).category],
+                )
+          }
+          pathsData={satellite && satellite.track.length > 1 ? [satellite.track] : []}
+          pathPoints={(d: object) => d as { lat: number; lng: number }[]}
+          pathPointLat="lat"
+          pathPointLng="lng"
+          pathPointAlt={0.05}
+          pathColor={() => ["rgba(140,200,255,0.05)", "rgba(140,200,255,0.75)"]}
+          pathStroke={1.2}
+          pathTransitionDuration={0}
           // Observation Layer — sinais: um pulso discreto, com pausa
           ringsData={reducedMotion ? [] : focusRings}
           ringLat="lat"

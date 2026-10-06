@@ -33,6 +33,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { rankEvents } from "@/lib/intelligence";
 import { useExploration } from "@/lib/exploration/context";
 import { pickDiscovery } from "@/lib/exploration/discovery";
+import { groundTrack, positionAt, useSatellites } from "@/lib/satellites";
+import SatelliteCard from "@/components/orbi/SatelliteCard";
+import { SPACE_TOPICS } from "@/lib/space.functions";
 import { jsonLdScript, organizationJsonLd, seoLinks, seoMeta, websiteJsonLd } from "@/lib/seo";
 
 const GlobeView = lazy(() => import("@/components/orbi/GlobeView"));
@@ -52,8 +55,13 @@ export const Route = createFileRoute("/")({
     links: seoLinks("/"),
     scripts: [jsonLdScript(websiteJsonLd), jsonLdScript(organizationJsonLd)],
   }),
-  validateSearch: (search: Record<string, unknown>): { discover?: boolean } =>
-    search["discover"] === true || search["discover"] === "true" ? { discover: true } : {},
+  validateSearch: (search: Record<string, unknown>): { discover?: boolean; sat?: number } => {
+    const out: { discover?: boolean; sat?: number } = {};
+    if (search["discover"] === true || search["discover"] === "true") out.discover = true;
+    const sat = Number(search["sat"]);
+    if (Number.isInteger(sat) && sat > 0) out.sat = sat;
+    return out;
+  },
   component: Index,
 });
 
@@ -66,7 +74,36 @@ function Index() {
   const isMobile = useIsMobile();
   const [mode, setMode] = useState<"flat" | "globe">("globe");
   const exploration = useExploration();
-  const { discover } = Route.useSearch();
+  const { discover, sat: satParam } = Route.useSearch();
+  // Satélites reais: carregados só quando o usuário entra nessa porta.
+  const [satId, setSatId] = useState<number | null>(satParam ?? null);
+  const [satFollow, setSatFollow] = useState(false);
+  const [satWanted, setSatWanted] = useState(satParam != null);
+  const satellites = useSatellites(satWanted);
+  const satList = satellites.data?.satellites ?? [];
+  const sat = satId != null ? (satList.find((s) => s.NORAD_CAT_ID === satId) ?? null) : null;
+  const [satNow, setSatNow] = useState(() => new Date());
+  useEffect(() => {
+    if (satParam != null) {
+      setSatId(satParam);
+      setSatWanted(true);
+    }
+  }, [satParam]);
+  useEffect(() => {
+    if (!sat) return;
+    setSatNow(new Date());
+    const id = window.setInterval(() => setSatNow(new Date()), 5000);
+    return () => window.clearInterval(id);
+  }, [sat]);
+  const satPos = useMemo(() => (sat ? positionAt(sat, satNow) : null), [sat, satNow]);
+  const satTrack = useMemo(
+    () => (sat ? groundTrack(sat, satNow) : []),
+    // o traço só precisa ser recalculado a cada minuto
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sat, Math.floor(satNow.getTime() / 60_000)],
+  );
+  const satSeen = useRef<number[]>([]);
+  const discoverCount = useRef(0);
   const navigate = Route.useNavigate();
   const [journeyDone, setJourneyDone] = useState(true);
   useEffect(() => {
@@ -184,10 +221,52 @@ function Index() {
     [isMobile, challengeTarget, challengeDismissed, closePanels],
   );
 
+  const openSat = useCallback(
+    (id: number) => {
+      closePanels();
+      setSelected(null);
+      setSatWanted(true);
+      setSatId(id);
+      if (!satSeen.current.includes(id)) satSeen.current.push(id);
+    },
+    [closePanels, setSelected],
+  );
+  const closeSat = useCallback(() => {
+    setSatId(null);
+    setSatFollow(false);
+    if (satParam != null) void navigate({ to: ".", search: {}, replace: true });
+  }, [satParam, navigate]);
+
+  /** DESCOBRIR alterna entre fontes reais: evento → satélite → conteúdo NASA. */
+  const discoverAny = () => {
+    const turn = discoverCount.current++ % 3;
+    if (turn === 1 && satList.length > 0) {
+      const next = satList.find((s) => !satSeen.current.includes(s.NORAD_CAT_ID)) ?? satList[0]!;
+      openSat(next.NORAD_CAT_ID);
+      return;
+    }
+    if (turn === 1) setSatWanted(true); // prepara a próxima vez sem bloquear
+    if (turn === 2) {
+      const topic = SPACE_TOPICS[Math.floor(discoverCount.current / 3) % SPACE_TOPICS.length]!;
+      void navigate({ to: "/espaco", search: { topic } });
+      return;
+    }
+    const pick = pickDiscovery(events, exploration.seen);
+    if (pick) {
+      closeSat();
+      handleSelect(pick);
+    }
+  };
+
+  // Acompanhar: a câmera segue a posição calculada.
+  useEffect(() => {
+    if (satFollow && satPos && mode === "globe")
+      globeApi.current?.flyTo(satPos.lat, satPos.lng, 1.6);
+  }, [satFollow, satPos, mode]);
+
   useEffect(() => {
     if (!discover || sourcesPending) return;
-    const pick = pickDiscovery(events, exploration.seen);
-    if (pick) handleSelect(pick);
+    discoverAny();
     void navigate({ to: ".", search: {}, replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [discover, sourcesPending]);
@@ -307,6 +386,11 @@ function Index() {
                 onSelect={handleSelect}
                 onReady={handleGlobeReady}
                 focus={place ? { lat: place.lat, lng: place.lng, name: place.name } : null}
+                satellite={
+                  sat && satPos
+                    ? { name: sat.OBJECT_NAME, lat: satPos.lat, lng: satPos.lng, track: satTrack }
+                    : null
+                }
                 showRegions={layers.includes("base")}
                 onPickRegion={(r) =>
                   handlePickPlace({
@@ -423,6 +507,56 @@ function Index() {
         />
       )}
 
+      {sat && !selected && !conditionsOpen && !webcamsOpen && !(isMobile && eventsOpen) && (
+        <SatelliteCard
+          sat={sat}
+          pos={satPos}
+          following={satFollow}
+          events={events}
+          onFollow={() => setSatFollow((f) => !f)}
+          onRegion={() =>
+            satPos &&
+            handlePickPlace({
+              id: `sat-${sat.NORAD_CAT_ID}`,
+              name: sat.OBJECT_NAME,
+              detail: "",
+              lat: satPos.lat,
+              lng: satPos.lng,
+              kind: "country",
+            })
+          }
+          onSelectEvent={(e) => {
+            closeSat();
+            handleSelect(e);
+          }}
+          onNext={
+            satList.length > 1
+              ? () => {
+                  const i = satList.findIndex((s) => s.NORAD_CAT_ID === sat.NORAD_CAT_ID);
+                  openSat(satList[(i + 1) % satList.length]!.NORAD_CAT_ID);
+                }
+              : undefined
+          }
+          onClose={closeSat}
+        />
+      )}
+      {satId != null && !sat && satellites.isPending && (
+        <p
+          className="label-track absolute bottom-24 left-1/2 z-10 -translate-x-1/2 text-[11px] text-muted-foreground"
+          role="status"
+        >
+          {t.exploration.satLoading}
+        </p>
+      )}
+      {satId != null && !sat && satellites.isError && (
+        <p
+          className="label-track absolute bottom-24 left-1/2 z-10 -translate-x-1/2 text-[11px] text-muted-foreground"
+          role="status"
+        >
+          {t.exploration.satError}
+        </p>
+      )}
+
       {selected && panelOpen && !conditionsOpen && !(isMobile && eventsOpen) && (
         <DiscoveryCard
           event={selected}
@@ -484,13 +618,12 @@ function Index() {
             </button>
           </div>
         )}
-        {!selected && events.length > 0 && (
+        {!selected && !sat && events.length > 0 && (
           <button
             type="button"
             aria-label={t.exploration.discoverAria}
             onClick={() => {
-              const pick = pickDiscovery(events, exploration.seen);
-              if (pick) handleSelect(pick);
+              discoverAny();
             }}
             className="focus-ring label-track min-h-11 rounded-full border border-border/50 bg-background/40 px-4 text-[10px] text-foreground/85 backdrop-blur transition-colors hover:border-primary/40"
           >
@@ -531,8 +664,7 @@ function Index() {
             closeLabel={t.exploration.gotIt}
             action={selected ? undefined : t.exploration.discover}
             onAction={() => {
-              const pick = pickDiscovery(events, exploration.seen);
-              if (pick) handleSelect(pick);
+              discoverAny();
             }}
             className={`absolute left-4 z-10 w-[min(17rem,calc(100vw-2rem))] ${selected ? "top-[8.5rem] md:bottom-16 md:top-auto" : "top-[12rem] md:bottom-16 md:top-auto"}`}
           >
