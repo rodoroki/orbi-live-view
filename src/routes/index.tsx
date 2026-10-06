@@ -618,7 +618,7 @@ function Index() {
             </button>
           </div>
         )}
-        {!selected && events.length > 0 && (
+        {!selected && !sat && events.length > 0 && (
           <button
             type="button"
             aria-label={t.exploration.discoverAria}
